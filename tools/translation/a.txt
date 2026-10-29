@@ -1,0 +1,324 @@
+## 1.1
+Hello! | 你好！ | 您好！ |
+What is your name? | 你叫什么名字？ | 您叫什么名字？ |
+My name is Wang Ying. | 我叫王英。 | |
+What is your surname? | 您贵姓？ | | polite
+My surname is Wang. | 我姓王。 | |
+Is she Wang Ying? | 她是王英吗？ | |
+Yes, she is Wang Ying. | 是，她是王英。 | 她是王英。 |
+He is not called Li Ming. | 他不叫李明。 | |
+What is his name? | 他叫什么名字？ | |
+Which country are you from? | 你是哪国人？ | 您是哪国人？ |
+Which country is she from? | 她是哪国人？ | |
+How are you? | 你好吗？ | 您好吗？ |
+Is his surname Li? | 他姓李吗？ | |
+Her surname is not Wang. | 她不姓王。 | |
+My surname is Li. What about you? | 我姓李，你呢？ | 我姓李，您呢？ |
+She is also called Wang Ying. | 她也叫王英。 | |
+What are their names? | 他们叫什么名字？ | |
+Is your surname Wang? | 你姓王吗？ | 您姓王吗？ |
+Are you Li Ming? | 你是李明吗？ | 您是李明吗？ |
+I am not Li Ming, I am Wang Ying. | 我不是李明，我是王英。 | |
+Hello, everyone! (to a group) | 你们好！ | |
+Is her name Wang Ying? | 她叫王英吗？ | |
+What is her surname? | 她姓什么？ | |
+His surname is also Li. | 他也姓李。 | |
+I am Li Ming. And you? | 我是李明，你呢？ | 我叫李明，你呢？ |
+## 1.2
+I am Chinese. | 我是中国人。 | |
+Are you American? | 你是美国人吗？ | 您是美国人吗？ |
+She is Australian. | 她是澳大利亚人。 | |
+He is Canadian, not American. | 他是加拿大人，不是美国人。 | |
+Are you American or Canadian? | 你是美国人还是加拿大人？ | | use 还是
+We are all Chinese. | 我们都是中国人。 | |
+They are all classmates. | 他们都是同学。 | |
+Teacher Wang is Chinese. | 王老师是中国人。 | |
+Do you speak Chinese? | 你说汉语吗？ | |
+I speak English. | 我说英语。 | |
+I only speak English. | 我只说英语。 | |
+Does she speak French or English? | 她说法语还是英语？ | | use 还是
+He also speaks French. | 他也说法语。 | |
+Do you all speak Chinese? | 你们都说汉语吗？ | |
+Not all of us speak French. | 我们不都说法语。 | | 不都 = not all
+None of us speak French. | 我们都不说法语。 | | 都不 = none
+Is your teacher Chinese? | 你们老师是中国人吗？ | 你老师是中国人吗？ |
+Hello, Teacher! | 老师好！ | 老师，您好！/ 老师，你好！ |
+Which country is your classmate from? | 你同学是哪国人？ | |
+My classmate is Australian. | 我同学是澳大利亚人。 | |
+Teacher Li only speaks Chinese. | 李老师只说汉语。 | |
+Are they all American? | 他们都是美国人吗？ | |
+Hello, classmates! | 同学们好！ | |
+Is the teacher called Wang Ying? | 老师叫王英吗？ | |
+I'm Canadian. What about you? | 我是加拿大人，你呢？ | |
+She is Australian too. | 她也是澳大利亚人。 | |
+Is Li Ming Chinese or American? | 李明是中国人还是美国人？ | | use 还是
+## 2.1
+I'm very glad to meet you. | 认识你很高兴。 | 很高兴认识你。/ 认识您很高兴。/ 很高兴认识您。 |
+I work at an import and export company. | 我在进出口公司工作。 | |
+She studies at university. | 她在大学学习。 | |
+What is your phone number? | 你的电话号码是什么？ | |
+My phone number is 8605 0172. | 我的电话号码是八六零五零一七二。 | | write the digits in characters
+Can I phone you? | 我可以给你打电话吗？ | 我可以给您打电话吗？ |
+You can send me an email. | 你可以给我发电子邮件。 | |
+He works at a company. | 他在公司工作。 | |
+Our teacher is very good. | 我们的老师很好。 | 我们老师很好。 |
+My Chinese teacher is Teacher Wang. | 我的汉语老师是王老师。 | 我汉语老师是王老师。 |
+Do you know her? | 你认识她吗？ | 您认识她吗？ |
+I don't know him. | 我不认识他。 | |
+Are you in the Chinese department? | 你是汉语系的吗？ | |
+I study in the Chinese department. | 我在汉语系学习。 | |
+She is my classmate. | 她是我的同学。 | 她是我同学。 |
+They are all very happy. | 他们都很高兴。 | |
+May I send you an email? | 我可以给您发电子邮件吗？ | 我可以给你发电子邮件吗？ |
+You can phone me. | 你可以给我打电话。 | |
+I'm very glad too. | 我也很高兴。 | |
+Their company is very good. | 他们的公司很好。 | 他们公司很好。 |
+My job is good. | 我的工作很好。 | |
+He studies Chinese at university. | 他在大学学习汉语。 | |
+What is Teacher Wang's phone number? | 王老师的电话号码是什么？ | |
+Is she very happy? | 她很高兴吗？ | |
+We all study Chinese. | 我们都学习汉语。 | |
+Li Ming works at a company too. | 李明也在公司工作。 | |
+## 2.2
+Where do you work? | 你在哪儿工作？ | 您在哪儿工作？ |
+Where do you study? | 你在哪儿学习？ | |
+I study at Lincoln University. | 我在林肯大学学习。 | |
+She works in the Department of East Asian Studies. | 她在东亚学系工作。 | |
+Please come in! | 请进！ | |
+Please sit down! | 请坐！ | |
+Please have some tea! | 请喝茶！ | |
+Thank you! | 谢谢！ | 谢谢你！/ 谢谢您！ |
+Do you like drinking tea? | 你喜欢喝茶吗？ | 你喜欢茶吗？ |
+This is my friend. | 这是我的朋友。 | 这是我朋友。 |
+That is my teacher. | 那是我的老师。 | 那是我老师。 |
+Your university is very big. | 你们大学很大。 | 你们的大学很大。/ 你的大学很大。 |
+How is the School of Oriental Studies? | 东方学院怎么样？ | |
+Is she pretty? | 她漂亮吗？ | |
+My girlfriend is very pretty. | 我女朋友很漂亮。 | 我的女朋友很漂亮。 |
+He is my boyfriend. | 他是我的男朋友。 | 他是我男朋友。 |
+Is he British? | 他是英国人吗？ | |
+Our college is very small. | 我们学院很小。 | 我们的学院很小。 |
+How is the tea? | 茶怎么样？ | |
+How is your Chinese teacher? | 你的汉语老师怎么样？ | 你汉语老师怎么样？ |
+I like my work. | 我喜欢我的工作。 | |
+Where is she? | 她在哪儿？ | |
+Thank you, Teacher! | 谢谢老师！ | 谢谢您，老师！/ 老师，谢谢您！ |
+I like Chinese tea. | 我喜欢中国茶。 | |
+Is this your friend? | 这是你朋友吗？ | 这是你的朋友吗？ |
+That is Lincoln University. | 那是林肯大学。 | |
+Which country is your friend from? | 你朋友是哪国人？ | 你的朋友是哪国人？ |
+## 3.1
+How many people are there in your family? | 你家有几口人？ | |
+There are four people in my family. | 我家有四口人。 | |
+Dad, Mum, my wife and me. | 爸爸、妈妈、我太太和我。 | 爸爸，妈妈，我太太和我。 |
+Do you have children? | 你有孩子吗？ | |
+I have two children. | 我有两个孩子。 | | use 两, not 二
+A boy and a girl. | 一个男孩子，一个女孩子。 | 一个男孩子和一个女孩子。 |
+How old is your child? | 你的孩子几岁？ | 你孩子几岁？ | young child: use 几岁
+How old are you? | 你多大？ | | adult: use 多大
+She is five years old. | 她五岁。 | |
+Your child is very cute. | 你的孩子很可爱。 | 你孩子很可爱。 |
+This is my home. | 这是我家。 | |
+This place is very pretty. | 这个地方很漂亮。 | 这儿很漂亮。 |
+Is your home here? | 你家在这儿吗？ | |
+Teacher Wang's wife is Australian. | 王老师的太太是澳大利亚人。 | |
+Let's drink tea! | 我们喝茶吧！ | |
+Is your dad a teacher? | 你爸爸是老师吗？ | 你的爸爸是老师吗？ |
+My mum and dad both work. | 我妈妈和爸爸都工作。 | 我爸爸妈妈都工作。/ 我爸爸和妈妈都工作。 |
+I have two Chinese friends. | 我有两个中国朋友。 | |
+How many classmates do you have? (fewer than ten) | 你有几个同学？ | |
+Your mum is very pretty. | 你妈妈很漂亮。 | 你的妈妈很漂亮。 |
+My wife works at a company. | 我太太在公司工作。 | |
+What place is this? | 这是什么地方？ | |
+There are five people in Wang Ying's family. | 王英家有五口人。 | |
+You're Teacher Li, right? | 你是李老师吧？ | 您是李老师吧？ | use 吧
+The child is two years old. | 孩子两岁。 | |
+I like this place. | 我喜欢这个地方。 | 我喜欢这儿。 |
+## 3.2
+Why do you want to go to China? | 你为什么想去中国？ | |
+Because our company has a branch office there. | 因为我们公司在那里有分公司。 | 因为我们公司在那儿有分公司。 |
+My boss wants me to go to Guangdong. | 我老板让我去广东。 | 我的老板让我去广东。 | use 让
+How many students does your school have? | 你们学校有多少学生？ | 你们学校有多少个学生？ |
+Our school has about ten thousand students. | 我们学校大概有一万个学生。 | 我们学校大概有一万学生。 |
+The company has about three hundred people. | 公司大概有三百个人。 | 公司大概有三百人。 |
+I don't have children. | 我没有孩子。 | |
+There are no students here. | 这儿没有学生。 | 这里没有学生。 |
+Do you want to go to Guangdong? | 你想去广东吗？ | |
+I want to go to the UK. | 我想去英国。 | |
+She doesn't want to go. | 她不想去。 | |
+Why don't you want to go? | 你为什么不想去？ | |
+How many teachers are there in your department? | 你们系有多少老师？ | 你们系有多少个老师？/ 你们系有几个老师？ |
+This university has two thousand Chinese students. | 这个大学有两千个中国学生。 | 这个大学有两千中国学生。 |
+Is your boss Chinese? | 你的老板是中国人吗？ | 你老板是中国人吗？ |
+My mum won't let me go. | 我妈妈不让我去。 | |
+Is there a branch office in Guangdong? | 广东有分公司吗？ | 在广东有分公司吗？ |
+He is probably a student. | 他大概是学生。 | |
+Why do you like Chinese? | 你为什么喜欢汉语？ | |
+Because my mum is Chinese. | 因为我妈妈是中国人。 | |
+Where is your school? | 你们学校在哪儿？ | 你的学校在哪儿？ |
+How many people are there? | 那里有多少人？ | 那儿有多少人？ |
+I'd like to go there. | 我想去那里。 | 我想去那儿。 |
+The boss wants to go to Australia. | 老板想去澳大利亚。 | |
+Our school has one thousand two hundred students. | 我们学校有一千二百个学生。 | 我们学校有一千两百个学生。/ 我们学校有一千二百学生。 |
+We don't have a branch office in Canada. | 我们在加拿大没有分公司。 | 我们公司在加拿大没有分公司。 |
+## 4.1
+What does this mean? | 这是什么意思？ | |
+Chinese is very interesting. | 汉语很有意思。 | 中文很有意思。 |
+Do you know what this means? | 你知道这是什么意思吗？ | |
+I don't know. | 我不知道。 | |
+What do you want to do? | 你想干什么？ | 你要干什么？ |
+Let me have a look. | 我看一下。 | 我看看。/ 让我看一下。 |
+Can I take a look? | 我可以看一下吗？ | 我可以看看吗？ |
+Give me a map, please. | 请给我一张地图。 | 给我一张地图。 |
+I want two maps. | 我要两张地图。 | |
+This map is really good. | 这张地图真好。 | |
+OK! | 行！ | 好！ |
+Do you want to go to the mountains to have fun? | 你想去山里玩儿吗？ | |
+My English is fairly good. | 我的英文比较好。 | 我的英语比较好。 |
+That place is really pretty. | 那个地方真漂亮。 | 那里真漂亮。/ 那儿真漂亮。 |
+Is that a dragon? | 那是龙吗？ | |
+Yes, that's right. | 是的。 | |
+Is this an English map? | 这是英文地图吗？ | |
+I want to go to that place to have fun. | 我想去那个地方玩儿。 | |
+Do you know where she is? | 你知道她在哪儿吗？ | |
+He really likes Chinese. | 他真喜欢汉语。 | 他真喜欢中文。 |
+The mountains here are really pretty. | 这儿的山真漂亮。 | 这里的山真漂亮。 |
+Please give me that Chinese map. | 请给我那张中文地图。 | |
+This place is fairly small. | 这个地方比较小。 | |
+Let's go and have fun! | 我们去玩儿吧！ | |
+Do you want some tea? | 你要茶吗？ | 你要喝茶吗？/ 你想喝茶吗？ |
+Do you know Li Ming's phone number? | 你知道李明的电话号码吗？ | |
+## 4.2
+Excuse me, where is the classroom? | 请问，教室在哪儿？ | |
+Who is that? | 那是谁？ | |
+Whose book is this? | 这是谁的书？ | |
+This book is mine. | 这本书是我的。 | |
+Can I use your pen? | 我可以用你的笔吗？ | 我能用你的笔吗？/ 我可以用一下你的笔吗？/ 我能用一下你的笔吗？ |
+Of course! | 当然！ | 当然可以！ |
+I have three pens and two notebooks. | 我有三支笔和两个本子。 | 我有三支笔和两本本子。 |
+A Chinese-English dictionary is very useful. | 汉英词典很有用。 | 汉英词典非常有用。 |
+This dictionary is extremely useful. | 这本词典非常有用。 | |
+Do you have a Chinese-English dictionary? | 你有汉英词典吗？ | |
+Can I use it? | 我能用吗？ | 我可以用吗？ |
+Where do we have class? | 我们在哪儿上课？ | |
+We have class in this classroom. | 我们在这个教室上课。 | |
+Is that right? | 对吗？ | |
+Yes, that's right. (correct) | 对。 | 对！ |
+Beijing is very big. | 北京非常大。 | 北京很大。 |
+Do you want to go to Shanghai or Beijing? | 你想去上海还是北京？ | 你想去上海还是去北京？ |
+Who is your Chinese teacher? | 你的汉语老师是谁？ | 谁是你的汉语老师？ |
+I want a pen. | 我要一支笔。 | |
+Who has a pen? | 谁有笔？ | |
+Can she go to Shanghai? | 她能去上海吗？ | |
+This book is very interesting. | 这本书非常有意思。 | 这本书很有意思。 |
+Of course I like Beijing. | 我当然喜欢北京。 | |
+My friend works in Shanghai. | 我朋友在上海工作。 | 我的朋友在上海工作。 |
+Is this your notebook? | 这是你的本子吗？ | |
+Who wants a map? | 谁要地图？ | |
+## 5.1
+How much is this shirt? | 这件衬衫多少钱？ | |
+It's 85 kuai. | 八十五块。 | 八十五块钱。/ 八十五元。 |
+Too expensive! | 太贵了！ | |
+Can it be a little cheaper? | 能便宜一点儿吗？ | 可以便宜一点儿吗？/ 便宜一点儿吧！ |
+Can I try it on? | 我可以试一下吗？ | 我可以试试吗？/ 我能试一下吗？/ 我能试试吗？ |
+I want to buy a pair of trousers. | 我想买一条裤子。 | 我要买一条裤子。 |
+These trousers are not very expensive. | 这条裤子不太贵。 | |
+Do you sell white shirts? | 你们卖白衬衫吗？ | |
+The clothes in this shop are very cheap. | 这个商店的衣服很便宜。 | 这家商店的衣服很便宜。 |
+I like the red one. | 我喜欢红的。 | |
+Miss, how much is this? | 小姐，这个多少钱？ | |
+Mr. Wang, what would you like to buy? | 王先生，您要买什么？ | 王先生，您想买什么？/ 王先生，你要买什么？ |
+I also want to buy a white shirt. | 我还想买一件白衬衫。 | 我还要买一件白衬衫。 |
+Can you speak Chinese? | 你会说汉语吗？ | | use 会
+I can speak a little Chinese. | 我会说一点儿汉语。 | |
+Then I'll buy two (shirts). | 那我买两件。 | |
+The things here are too expensive. | 这儿的东西太贵了。 | 这里的东西太贵了。 |
+Is that red shirt cheap? | 那件红衬衫便宜吗？ | |
+I don't have money. | 我没有钱。 | 我没钱。 |
+Where can I buy clothes? | 我在哪儿能买衣服？ | 在哪儿可以买衣服？/ 哪儿能买衣服？ |
+He can't speak French. | 他不会说法语。 | |
+This shop doesn't sell trousers. | 这个商店不卖裤子。 | |
+It's too small. | 太小了。 | |
+A shirt is 120 kuai. | 一件衬衫一百二十块。 | 一件衬衫一百二十块钱。/ 一件衬衫一百二十元。 |
+Do you want to try this one on? | 你想试试这件吗？ | 你要试一下这件吗？/ 你想试一下这件吗？ |
+These trousers are 200 kuai. Too expensive! | 这条裤子两百块，太贵了！ | 这条裤子二百块，太贵了！ |
+## 5.2
+What would you like to eat? | 你想吃什么？ | 您想吃什么？/ 你们要吃什么？ |
+We'll have a sweet and sour fish. | 来一个糖醋鱼。 | 我们要一个糖醋鱼。 | ordering: use 来
+Two bottles of beer, please. | 来两瓶啤酒。 | 我们要两瓶啤酒。/ 给我们两瓶啤酒。 |
+I like spicy food. | 我喜欢吃辣的。 | 我喜欢辣的。 |
+Hot and sour soup is very tasty. | 酸辣汤很好吃。 | 酸辣汤很好喝。 |
+Do you like dumplings? | 你喜欢吃水饺吗？ | 你喜欢水饺吗？ |
+Braised beef is the most delicious. | 红烧牛肉最好吃。 | |
+Is this dish spicy? | 这个菜辣吗？ | |
+Not very spicy. | 不太辣。 | |
+Please wait a moment. | 请等一下。 | |
+This restaurant's food is very good. | 这个饭店的菜很好吃。 | 这家饭店的菜很好吃。 |
+We also want rice. | 我们还要米饭。 | 还要米饭。 |
+I don't eat meat. | 我不吃肉。 | |
+She doesn't like vinegar. | 她不喜欢醋。 | | careful: 吃醋 also means "to be jealous"
+Too sour! | 太酸了！ | |
+Can you cook Chinese food? | 你会烧中国菜吗？ | |
+My mum can cook sweet and sour fish. | 我妈妈会烧糖醋鱼。 | |
+Do you want beer or tea? | 你要啤酒还是茶？ | 你喝啤酒还是喝茶？ |
+Which restaurant is the best? | 哪个饭店最好？ | |
+Let's go to a restaurant to eat! | 我们去饭店吃饭吧！ | |
+Is beef expensive here? | 这儿的牛肉贵吗？ | 这里的牛肉贵吗？ |
+I don't want sugar. | 我不要糖。 | |
+I'll have dumplings. | 我要水饺。 | 我吃水饺。 |
+Do you want to come to my home? | 你想来我家吗？ | |
+Which dish do you like most? | 你最喜欢什么菜？ | 你最喜欢哪个菜？ |
+Chinese food is delicious. | 中国菜很好吃。 | |
+## 6.1
+What are you planning to do tomorrow? | 你明天打算干什么？ | 明天你打算干什么？ |
+I plan to rest at home. | 我打算在家里休息。 | 我打算在家休息。 |
+Do you want to play ball with us? | 你想跟我们一起打球吗？ | |
+I work part-time on Saturdays. | 我星期六打工。 | |
+I work part-time during the day. | 我白天打工。 | |
+I have a date tomorrow evening. | 我明天晚上有约会。 | 明天晚上我有约会。 |
+Who do you have a date with? | 你跟谁有约会？ | 你跟谁约会？ |
+In the evening I watch TV at home. | 我晚上在家里看电视。 | 我晚上在家看电视。/ 晚上我在家看电视。 | time before place
+Let's go together! | 我们一起去吧！ | |
+Do you like watching TV? | 你喜欢看电视吗？ | |
+What are you doing on Saturday? | 你星期六干什么？ | 星期六你干什么？ |
+I'm going to play ball with friends. | 我跟朋友一起去打球。 | 我打算跟朋友一起打球。 |
+Is your mum at home tomorrow? | 你妈妈明天在家吗？ | |
+Where do you work part-time? | 你在哪儿打工？ | |
+I work part-time at a restaurant. | 我在饭店打工。 | |
+Tomorrow is Saturday. | 明天是星期六。 | 明天星期六。 |
+Do you work part-time in the evening? | 你晚上打工吗？ | |
+She doesn't rest during the day. | 她白天不休息。 | |
+This Saturday I want to rest at home. | 这个星期六我想在家休息。 | 这个星期六我想在家里休息。 |
+Let's watch TV together. | 我们一起看电视吧。 | |
+We plan to go to Shanghai together. | 我们打算一起去上海。 | |
+My friend and I play ball on Saturdays. | 我跟朋友星期六打球。 | 我和朋友星期六打球。/ 星期六我跟朋友打球。 |
+Tomorrow evening I want to go to a restaurant with my girlfriend. | 明天晚上我想跟女朋友一起去饭店吃饭。 | 明天晚上我想跟我女朋友去饭店吃饭。 |
+He doesn't like working part-time. | 他不喜欢打工。 | |
+What is Mr. Wang planning to do? | 王先生打算干什么？ | |
+## 6.2
+What time is it now? | 现在几点？ | 现在几点钟？ |
+It's half past three. | 三点半。 | 现在三点半。 |
+It's a quarter past nine. | 九点一刻。 | 九点十五分。 |
+It's 7:45. | 七点三刻。 | 七点四十五分。 |
+Are you free tomorrow afternoon? | 你明天下午有空儿吗？ | 明天下午你有空儿吗？ |
+Sorry, I'm busy today. | 对不起，我今天很忙。 | 对不起，今天我很忙。 |
+It doesn't matter. | 没关系。 | |
+When shall we meet? | 我们什么时候见面？ | |
+Let's meet at two in the afternoon. | 我们下午两点见面吧。 | 我们下午两点钟见面吧。 |
+I'll come and pick you up. | 我来接你。 | 我去接你。 |
+I do homework in the evening. | 我晚上做功课。 | 晚上我做功课。 |
+Would you like coffee or tea? | 你要咖啡还是茶？ | 你喝咖啡还是喝茶？/ 你想喝咖啡还是茶？ |
+Goodbye! | 再见！ | |
+Do you have anything on today? | 你今天有事儿吗？ | 今天你有事儿吗？ |
+I have something on this morning. | 我今天上午有事儿。 | 今天上午我有事儿。 |
+I'm free in the early morning. | 我早上有空儿。 | |
+This is Teacher Wang. (polite) | 这位是王老师。 | | use 位
+When do you have class? | 你什么时候上课？ | |
+I have class at 8:30 a.m. | 我上午八点半上课。 | 我早上八点半上课。 |
+Are you busy now? | 你现在忙吗？ | |
+See you tomorrow! | 明天见！ | |
+Let's drink coffee together this afternoon. | 今天下午我们一起喝咖啡吧。 | 我们今天下午一起喝咖啡吧。 |
+Sorry, I don't have free time. | 对不起，我没有空儿。 | 对不起，我没空儿。 |
+It's 10:05. | 十点零五分。 | 现在十点零五分。 |
+Who will pick you up? | 谁来接你？ | 谁去接你？ |
+What are you busy with? | 你忙什么？ | 你在忙什么？ |
