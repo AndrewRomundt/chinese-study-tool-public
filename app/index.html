@@ -93,7 +93,6 @@ h2 { font-size: 22px; }
 .today { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
 .today { box-shadow: var(--lift); }
 .today h1 { font-size: 26px; }
-.democlip { width: 100%; max-width: 380px; aspect-ratio: 4 / 5; border-radius: 14px; border: 1px solid var(--line); background: var(--card); }
 .today h1 .han { font-family: var(--f-han); display: block; font-size: 20px; font-weight: 500; color: var(--muted); margin-top: 4px; }
 .today h1 .han .w { white-space: nowrap; }
 .today p { margin: 4px 0 0; color: var(--muted); text-wrap: pretty; }
@@ -647,8 +646,6 @@ function renderWelcome() {
         <button class="btn primary" id="startDemo" type="button">Start studying</button>
         <a class="btn" href="https://github.com/AndrewRomundt/chinese-study-tool-public" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:inline-flex;align-items:center">Source on GitHub</a>
       </div>
-      <p class="note">Or watch a 25-second clip first (no sound):</p>
-      <video class="democlip" src="demo.mp4" poster="demo-poster.jpg" controls playsinline muted preload="none" aria-label="A short clip of writing two words and having them marked"></video>
     </section>
   </div>`;
   $("#startDemo").onclick = () => { try { localStorage.setItem(WELCOME_KEY, "1"); } catch (e) {} go("home"); };
