@@ -365,6 +365,7 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
 const $ = (s, el = document) => el.querySelector(s);
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ordinal = n => n + ((n % 100 > 10 && n % 100 < 14) ? "th" : { 1: "st", 2: "nd", 3: "rd" }[n % 10] || "th");
 const main = $("#main");
 const DAY = 864e5;
 const INTERVALS = [0, 1, 3, 7, 14, 30]; // days, by stage after a correct answer
@@ -876,7 +877,7 @@ const Mark = (() => {
     let end = best.indexOf(Math.max(0, ...best));
     while (end >= 0) { keep.add(seq[end].i); end = prev[end]; }
     seq.forEach(x => { if (!keep.has(x.i)) marks[x.i] = "order"; });
-    return marks;
+    return { marks, assign };
   }
   // free: each user stroke may match any not-yet-used stroke of the character
   function freeMatch(user, meds, lenc) {
@@ -891,7 +892,20 @@ const Mark = (() => {
     for (const p of pairs) if (assign[p.i] < 0 && !used.has(p.j)) { used.add(p.j); assign[p.i] = p.j; marks[p.i] = "ok"; }
     return { marks, assign };
   }
-  const free = (user, meds, lenc) => freeMatch(user, meds, lenc).marks;
+  // which way an end has to move, relative to the rest of your (aligned) character
+  const side = (from, to) => { const dx = to.x - from.x, dy = to.y - from.y; return Math.abs(dy) >= Math.abs(dx) ? (dy > 0 ? "higher" : "lower") : (dx > 0 ? "further right" : "further left"); };
+  // the first check of matchData a red stroke fails against its book stroke, in words
+  function explain(pts, s, idx, T) {
+    const lenc = T.pos;
+    if (avgDist(pts, s) > 350 * (T.near && idx > 0 ? 0.5 : 1) * lenc) return "in the wrong place";
+    const far = [];
+    if (dist(s[0], pts[0]) > 250 * lenc) far.push("start it " + side(pts[0], s[0]));
+    if (dist(last(s), last(pts)) > 250 * lenc) far.push("end it " + side(last(pts), last(s)));
+    if (far.length) return far.join(" and ");
+    if (!dirMatch(pts, s)) return "goes the wrong way";
+    if (!shapeFit(pts, s, T.shape)) return "wrong shape";
+    return "too short";
+  }
   // writing the whole character smaller, bigger or off-centre in the box is not a stroke error:
   // move and scale the writing so its bounding box sits where the model character's does
   function align(user, meds) {
@@ -911,9 +925,19 @@ const Mark = (() => {
     const meds = data.medians.map(m => m.map(([x, y]) => ({ x, y })));
     const lenc = TOL[mode] || TOL.standard;
     user = align(user, meds);
-    const marks = mode === "free" ? free(user, meds, lenc) : strict(user, meds, lenc);
+    const { marks, assign } = mode === "free" ? freeMatch(user, meds, lenc) : strict(user, meds, lenc);
     const good = marks.filter(m => m === "ok").length;
-    return { marks, good, expected: meds.length, drawn: user.length, correct: good === meds.length && user.length === meds.length };
+    // each red stroke is explained against the book stroke at its own position if that one is unmatched, else the nearest unmatched one
+    const open = meds.map((_, j) => j).filter(j => !assign.includes(j));
+    const why = marks.map((m, i) => {
+      if (m !== "wrong") return "";
+      const pts = clean(user[i]);
+      if (pts.length < 2) return "too short";
+      if (!open.length) return "extra stroke";
+      const j = open.includes(i) ? i : open.reduce((a, b) => avgDist(pts, meds[a]) <= avgDist(pts, meds[b]) ? a : b);
+      return explain(pts, meds[j], j, lenc);
+    });
+    return { marks, why, good, expected: meds.length, drawn: user.length, correct: good === meds.length && user.length === meds.length };
   }
   return { character };
 })();
@@ -1225,36 +1249,39 @@ function renderCard() {
     // model characters under each box, with a note on what went wrong; bigger under big iPad boxes
     const ms = size >= 200 ? 88 : 64;
     $("#boxes").style.setProperty("--mw", ms + "px");
+    const tells = []; // the stroke fixes, so the verdict in the dock can name them too
     boxes.forEach((b, k) => {
       const m = st.marks[k], col = b.parentElement, note = col.querySelector(".mnote");
       if (!revealed) b.classList.add(m.correct ? "done" : "wrongbox"); // a shown answer is a study aid, not a mistake
       col.querySelector(".model").hidden = revealed; // a shown answer is already in the boxes; no second copy underneath
       st.modelFor = (k, ms) => { $("#mw" + k).innerHTML = ""; st.models[k] = HanziWriter.create("mw" + k, [...st.answer][k], { width: ms, height: ms, padding: 3, strokeColor: C.ink, renderer: "svg", charDataLoader: loader, strokeAnimationSpeed: 1.4, delayBetweenStrokes: 150 }); };
       st.modelFor(k, ms); st.ms = ms;
-      const order = m.marks.filter(x => x === "order").length, back = m.marks.filter(x => x === "backwards").length;
       const msgs = [];
       if (m.correct) msgs.push("All strokes right");
       else {
         if (m.drawn !== m.expected) msgs.push(`${m.drawn} stroke${m.drawn === 1 ? "" : "s"}, should be ${m.expected}`);
-        if (order) msgs.push(`${order} out of order`);
-        if (back) msgs.push(`${back} written backwards`);
-        const wrong = m.marks.filter(x => x === "wrong" || x === "extra").length;
-        if (wrong) msgs.push(`${wrong} wrong shape or place`);
+        // each coloured stroke by the order you wrote it, with what to change
+        const fixes = m.marks.map((x, i) => ({ x, i, t: x === "order" ? "out of order" : x === "backwards" ? "written backwards" : x === "wrong" ? m.why[i] : "" })).filter(f => f.t);
+        if (fixes.length > 4) msgs.push(`${fixes.length} strokes are red or amber`); // a different character: a list would just be noise
+        else fixes.forEach(f => msgs.push(`${ordinal(f.i + 1)} stroke: ${f.t}`));
         if (!msgs.length) msgs.push(`${m.good} of ${m.expected} strokes right`);
+        if (m.drawn) tells.push(...msgs.map(t => boxes.length > 1 ? `${[...st.answer][k]} ${t}` : t));
       }
       note.textContent = revealed ? "" : m.drawn ? msgs.join(" · ") : "Not written"; // a shown answer is for studying, so the attempt is not graded
       // a box far from the character (a word not known yet) gets a quiet note; red is for a real attempt that went wrong
       note.className = "mnote " + (m.correct ? "good" : Math.abs(m.drawn - m.expected) > 2 ? "" : "bad");
     });
 
-    const label = tracing ? (allCorrect ? "Traced correctly" : "Check the coloured strokes, then try from memory") : revealed ? "Answer shown" : again ? (allCorrect ? "Correct this time" : "Still some red strokes") : drill ? (allCorrect ? "Correct" : "Not quite, check the coloured strokes") : { good: "Correct", close: allCorrect ? `Correct, with ${st.hints} hint${st.hints === 1 ? "" : "s"}` : "Nearly, check the red strokes", miss: "Not quite, this one comes back soon" }[result];
+    // a short list of fixes replaces "check the strokes"; a long one stays under the boxes
+    const tell = tells.length && tells.length <= 2 ? tells.join(" · ") : "";
+    const label = tracing ? (allCorrect ? "Traced correctly" : "Check the coloured strokes, then try from memory") : revealed ? "Answer shown" : again ? (allCorrect ? "Correct this time" : tell ? "Still red: " + tell : "Still some red strokes") : drill ? (allCorrect ? "Correct" : tell ? "Not quite: " + tell : "Not quite, check the coloured strokes") : { good: "Correct", close: allCorrect ? `Correct, with ${st.hints} hint${st.hints === 1 ? "" : "s"}` : tell ? "Nearly: " + tell : "Nearly, check the red strokes", miss: "Not quite, this one comes back soon" }[result];
     const cls = revealed ? "shown" : { good: "good", close: "warn", miss: "bad" }[result];
     // translation names the answer it marked against; the others it accepts are listed after it
     const shown = tr && st.answer !== w.t ? st.answer : w.d;
     const others = tr ? [w.d, ...w.altD].filter(a => hanOnly(a) !== st.answer) : [];
     // the verdict and its overrule ride in the bottom dock with Next, so they're on screen however tall the card is;
     // the longer notes (other accepted answers, the colour key) sit under the boxes
-    $("#fb").innerHTML = `<div class="verdict"><span class="pill ${cls}${tr ? " long" : ""}"><span class="han">${esc(shown)}</span>${esc(label)}</span>` +
+    $("#fb").innerHTML = `<div class="verdict"><span class="pill ${cls}${tr || tell ? " long" : ""}"><span class="han">${esc(shown)}</span>${esc(label)}</span>` +
       (graded && !allCorrect && !revealed ? `<button class="btn small" id="overrideBtn" type="button">It was right</button>` : "") + `</div>`;
     $("#fbx").innerHTML = (others.length ? `<p class="note legend">Also accepted: <span class="han-inline">${others.map(esc).join("　")}</span></p>` : "") +
       (!st.marks.some(m => m.marks.some(x => x === "order" || x === "backwards")) ? "" /* the key is for amber; red speaks for itself */ : `<p class="note legend key"><b class="lg-warn">Amber</b> strokes are out of order or backwards. <b class="lg-bad">Red</b> strokes are the wrong shape or in the wrong place.</p>`);
