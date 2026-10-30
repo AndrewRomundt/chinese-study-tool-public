@@ -346,7 +346,7 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
 </style>
 
 <header class="bar"><div class="wrap">
-  <button class="brand" id="brand" type="button" aria-label="Home"><span class="seal">字</span><b>Zìtiè</b><span>Unofficial study companion</span></button>
+  <button class="brand" id="brand" type="button" aria-label="Home"><span class="seal">字</span><b>Zìtiè</b><span>Unofficial study companion · Demo</span></button>
   <div class="sync" id="sync"><i></i><span>Loading</span></div>
   <button class="iconbtn themebtn" id="themeBtn" type="button" aria-label="Switch to dark mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="moon" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/><g class="sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></svg></button>
   <button class="iconbtn" id="settingsBtn" type="button">Settings</button>
@@ -580,6 +580,7 @@ function renderHome() {
 
     <section class="view" style="padding-top:0;gap:12px">
       <div class="sechead"><h2>Lessons</h2><p>Tap a lesson to see its words. Green bars show words you have mastered.</p></div>
+      <p class="note">This demo has the first two lessons. The full app covers all 39 lessons of the course, 702 words.</p>
       <div class="lessons">${LESSONS.map(l => {
         const s = lessonStats(l), pct = s.total ? Math.round(100 * s.mastered / s.total) : 0;
         return `<button class="lesson${l === cur ? " cur" : ""}" type="button" data-l="${l}">
