@@ -5,7 +5,7 @@
 set -e
 cd "$(dirname "$0")/.."
 rm -rf dist && mkdir dist
-cp app/words.json app/strokes.json app/lessons.json app/manifest.webmanifest app/icon-180.png app/icon-512.png app/demo.mp4 app/demo-poster.jpg app/og.png dist/
+cp app/words.json app/strokes.json app/lessons.json app/manifest.webmanifest app/icon-180.png app/icon-512.png app/og.png dist/
 cp -r app/exercises app/fonts app/vendor dist/
 {
   printf '%s\n' '<!doctype html><html lang="en"><head><meta charset="utf-8">' \

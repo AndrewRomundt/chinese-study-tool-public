@@ -68,7 +68,7 @@ tools/translation/                     sources and builder for translation.json
 tools/card.js, learn.js         standalone copies of the marking and Learn-mode code
 tools/subset_fonts.py           subsets the fonts in app/fonts/ to the characters the app uses
 app/vendor/hanzi-writer.min.js  Hanzi Writer 3.7.2, served locally
-app/demo.mp4, og.png            the clip on the welcome screen and the link-preview image
+app/og.png                      the link-preview image
 tests/                          Playwright scripts that simulate Pencil strokes; sim.js measures marking acceptance
 ```
 
