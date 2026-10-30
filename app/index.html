@@ -580,7 +580,7 @@ function renderHome() {
 
     <section class="view" style="padding-top:0;gap:12px">
       <div class="sechead"><h2>Lessons</h2><p>Tap a lesson to see its words. Green bars show words you have mastered.</p></div>
-      <p class="note">This demo has the first two lessons. The full app covers all 39 lessons of the course, 702 words.</p>
+      <p class="note">This demo has the first two lessons. The full app covers all 39 lessons of the course, 702 words. <button class="btn" id="aboutDemo" type="button" style="min-height:0;padding:4px 10px;font-size:14px">About this demo</button></p>
       <div class="lessons">${LESSONS.map(l => {
         const s = lessonStats(l), pct = s.total ? Math.round(100 * s.mastered / s.total) : 0;
         return `<button class="lesson${l === cur ? " cur" : ""}" type="button" data-l="${l}">
@@ -605,6 +605,37 @@ function renderHome() {
   $("#modeRead").onclick = () => renderRead(cur);
   $("#modeGrammar").onclick = () => renderGrammar(cur);
   main.querySelectorAll(".lesson").forEach(b => b.onclick = () => renderWordList(b.dataset.l, "home"));
+  $("#aboutDemo").onclick = renderWelcome;
+}
+
+/* ---------------- Demo welcome (first visit, and About this demo on Home) ---------------- */
+const WELCOME_KEY = "zitie-demo-welcomed";
+function renderWelcome() {
+  route = "welcome"; session = null;
+  main.innerHTML = `
+  <div class="view">
+    <section class="today" style="display:block">
+      <div class="eyebrow">Welcome · Demo</div>
+      <h1>Zìtiè 字帖 <span class="han">a handwriting&#8209;first Chinese trainer</span></h1>
+      <p>You write every answer by hand, and the app checks your strokes against each character's real stroke order. It follows the lesson order of <i>Contemporary Chinese for Beginners</i>.</p>
+    </section>
+    <section class="view" style="padding-top:0;gap:12px">
+      <div class="sechead"><h2>This is a demo</h2></div>
+      <ul class="note" style="font-size:16px;line-height:1.6;padding-left:20px">
+        <li>It has <b>lessons 1.1 and 1.2 only</b>: 41 words with their reading passages, translation sentences and grammar. The full app covers all 39 lessons, 702 words.</li>
+        <li>Every study mode works on those two lessons.</li>
+        <li>Your progress is saved in this browser only. Nothing is sent anywhere.</li>
+        <li>It works best on an iPad with an Apple Pencil. A finger or mouse works too.</li>
+      </ul>
+      <p class="note">An independent, unofficial project. It is not affiliated with the publishers or authors of the textbook and contains none of its text.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn primary" id="startDemo" type="button">Start studying</button>
+        <a class="btn" href="https://github.com/AndrewRomundt/chinese-study-tool-public" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:inline-flex;align-items:center">Source on GitHub</a>
+      </div>
+    </section>
+  </div>`;
+  $("#startDemo").onclick = () => { try { localStorage.setItem(WELCOME_KEY, "1"); } catch (e) {} go("home"); };
+  window.scrollTo(0, 0);
 }
 
 /* ---------------- Review queue ---------------- */
@@ -2086,7 +2117,8 @@ async function boot() {
     main.innerHTML = `<div class="loading">The handwriting engine did not load. Check your connection and reload the page.</div>`;
     return;
   }
-  go("home");
+  let welcomed = false; try { welcomed = !!localStorage.getItem(WELCOME_KEY); } catch (e) {}
+  if (welcomed) go("home"); else renderWelcome();
 }
 boot();
 })();

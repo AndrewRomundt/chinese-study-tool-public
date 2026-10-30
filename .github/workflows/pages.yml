@@ -15,8 +15,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      # app/index.html is a page body; the build wraps it with the doctype and viewport tags phones need
+      - run: sh tools/standalone.sh
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: app
+          path: dist
       - id: deployment
         uses: actions/deploy-pages@v4
