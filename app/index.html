@@ -1,8 +1,12 @@
 <title>Zìtiè Chinese Trainer</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Source+Sans+3:wght@400;600;700&display=swap">
 <style>
+/* fonts are served from this folder (subsets made by tools/subset_fonts.py), so the app also loads where Google Fonts is blocked */
+@font-face { font-family: "Noto Serif SC"; font-weight: 500; font-display: swap; src: url(fonts/NotoSerifSC-500.woff2) format("woff2"); }
+@font-face { font-family: "Noto Serif SC"; font-weight: 700; font-display: swap; src: url(fonts/NotoSerifSC-700.woff2) format("woff2"); }
+@font-face { font-family: "Source Sans 3"; font-weight: 400; font-display: swap; src: url(fonts/SourceSans3-400.woff2) format("woff2"); }
+@font-face { font-family: "Source Sans 3"; font-weight: 600; font-display: swap; src: url(fonts/SourceSans3-600.woff2) format("woff2"); }
+@font-face { font-family: "Source Sans 3"; font-weight: 700; font-display: swap; src: url(fonts/SourceSans3-700.woff2) format("woff2"); }
 /* Layout: a calm study desk. Header bar, then one working view at a time; practice paper (田字格) is the hero object. */
 :root {
   --paper: #f3f6f4;
@@ -89,6 +93,7 @@ h2 { font-size: 22px; }
 .today { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
 .today { box-shadow: var(--lift); }
 .today h1 { font-size: 26px; }
+.democlip { width: 100%; max-width: 380px; aspect-ratio: 4 / 5; border-radius: 14px; border: 1px solid var(--line); background: var(--card); }
 .today h1 .han { font-family: var(--f-han); display: block; font-size: 20px; font-weight: 500; color: var(--muted); margin-top: 4px; }
 .today h1 .han .w { white-space: nowrap; }
 .today p { margin: 4px 0 0; color: var(--muted); text-wrap: pretty; }
@@ -354,7 +359,7 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
 
 <main class="wrap" id="main"><div class="loading">Loading your lessons and stroke data…</div></main>
 
-<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.7.2/dist/hanzi-writer.min.js"></script>
+<script src="vendor/hanzi-writer.min.js"></script>
 <script>
 (() => {
 "use strict";
@@ -627,11 +632,23 @@ function renderWelcome() {
         <li>Your progress is saved in this browser only. Nothing is sent anywhere.</li>
         <li>It works best on an iPad with an Apple Pencil. A finger or mouse works too.</li>
       </ul>
-      <p class="note">An independent, unofficial project. It is not affiliated with the publishers or authors of the textbook and contains none of its text.</p>
+    </section>
+    <section class="view" style="padding-top:0;gap:12px">
+      <div class="sechead"><h2>Try this first</h2></div>
+      <ol class="note" style="font-size:16px;line-height:1.6;padding-left:22px;margin:0">
+        <li><b>Write lesson 1.1</b>: write the word shown by pinyin and English in the boxes, then press <b>Check</b>. Your strokes are marked for shape and order.</li>
+        <li><b>听写 lesson 1.1</b>: a class-style dictation. Listen to each word and write it with no pinyin shown.</li>
+        <li><b>Translation</b>: write a whole English sentence in Chinese characters.</li>
+      </ol>
+    </section>
+    <section class="view" style="padding-top:0;gap:12px">
+      <p class="note">Built by Andrew Romundt, a learner using <i>Contemporary Chinese for Beginners</i>. An independent, unofficial project: it is not affiliated with the publishers or authors of the textbook and contains none of its text.</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn primary" id="startDemo" type="button">Start studying</button>
         <a class="btn" href="https://github.com/AndrewRomundt/chinese-study-tool-public" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:inline-flex;align-items:center">Source on GitHub</a>
       </div>
+      <p class="note">Or watch a 25-second clip first (no sound):</p>
+      <video class="democlip" src="demo.mp4" poster="demo-poster.jpg" controls playsinline muted preload="none" aria-label="A short clip of writing two words and having them marked"></video>
     </section>
   </div>`;
   $("#startDemo").onclick = () => { try { localStorage.setItem(WELCOME_KEY, "1"); } catch (e) {} go("home"); };
