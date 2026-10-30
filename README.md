@@ -44,9 +44,9 @@ cd app
 python3 -m http.server 8765
 ```
 
-Open http://localhost:8765/ (or your computer's LAN address from an iPad on the same Wi-Fi). Hanzi Writer loads from jsDelivr, so you need a connection.
+Open http://localhost:8765/ (or your computer's LAN address from an iPad on the same Wi-Fi). Hanzi Writer and the fonts are served from `app/` itself, so the app needs no CDN (it also loads where jsDelivr and Google Fonts are blocked).
 
-`app/index.html` is written as a page body. `sh tools/standalone.sh` wraps it into a full page in `dist/` with a web app manifest and icon, so it can be added to the iPad home screen and open full screen. The live demo is that `dist/` folder on Cloudflare Workers.
+`app/index.html` is written as a page body. `sh tools/standalone.sh` wraps it into a full page in `dist/` with a web app manifest and icon, so it can be added to the iPad home screen and open full screen. The live demo is that `dist/` folder on GitHub Pages, built by `.github/workflows/pages.yml` on every push to `main`.
 
 Progress is stored in `localStorage`. When the page runs as a claude.ai Artifact it also syncs across devices through the Artifact database; to sync elsewhere, replace `connectDb()` / `flush()` in `index.html` with Firebase, Supabase or your own server.
 
@@ -66,6 +66,9 @@ tools/overrides.py              hand-picked pinyin, hints and display forms per 
 tools/reading/, reading_build.py       sources and builder for reading.json (rejects vocab from later lessons)
 tools/translation/                     sources and builder for translation.json
 tools/card.js, learn.js         standalone copies of the marking and Learn-mode code
+tools/subset_fonts.py           subsets the fonts in app/fonts/ to the characters the app uses
+app/vendor/hanzi-writer.min.js  Hanzi Writer 3.7.2, served locally
+app/demo.mp4, og.png            the clip on the welcome screen and the link-preview image
 tests/                          Playwright scripts that simulate Pencil strokes; sim.js measures marking acceptance
 ```
 
@@ -79,12 +82,15 @@ gunzip -c cedict_1_0_ts_utf-8_mdbg.txt.gz > pkgs/cedict_1_0_ts_utf-8_mdbg.txt
 cd app && python3 ../tools/make.py
 ```
 
+After adding lessons or UI text, rerun `python3 tools/subset_fonts.py` (needs `pip install fonttools brotli` and the full Noto Serif SC and Source Sans 3 TTFs in `pkgs/fonts/`, see the script) so the fonts cover the new characters.
+
 To fix a word's pinyin or hint, add an entry to `tools/overrides.py` keyed by its id. After editing `app/lessons.json`, run `node tests/lessons-check.js`. The other tests need Playwright with Chromium and a local Hanzi Writer at `pkgs/hw/package/dist/hanzi-writer.min.js` (`npm pack hanzi-writer@3.7.2`).
 
 ## Credits and licenses
 
 - **Code and original content** (app, exercises, reading texts, grammar notes, tools, tests): MIT, see [LICENSE](LICENSE).
-- **[Hanzi Writer](https://hanziwriter.org/)** by David Chanin (MIT): renders hints, answers and stroke-order animations; the stroke matcher is ported from it.
+- **[Hanzi Writer](https://hanziwriter.org/)** by David Chanin (MIT, [license](licenses/hanzi-writer-MIT.txt)): renders hints, answers and stroke-order animations; the stroke matcher is ported from it. A copy is in `app/vendor/`.
+- **[Noto Serif SC](https://github.com/notofonts/noto-cjk)** and **[Source Sans 3](https://github.com/adobe-fonts/source-sans)** (SIL Open Font License 1.1, [Noto](licenses/OFL-NotoSerifSC.txt), [Source Sans](licenses/OFL-SourceSans3.txt)): subsets in `app/fonts/`.
 - **[hanzi-writer-data](https://github.com/chanind/hanzi-writer-data)** (`app/strokes.json`): derived from [Make Me a Hanzi](https://github.com/skishore/makemeahanzi) and the Arphic PL fonts, under the [Arphic Public License](licenses/ARPHICPL.TXT).
 - **[CC-CEDICT](https://cc-cedict.org/)** (MDBG and contributors): pinyin and English hints in `app/words.json` are derived from it under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), so `app/words.json` is shared under the same license.
 - **[pypinyin](https://github.com/mozillazg/python-pinyin)** (MIT): pinyin for words not in CC-CEDICT and for the reading and translation texts.
