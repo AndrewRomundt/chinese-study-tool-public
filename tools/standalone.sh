@@ -12,6 +12,7 @@ cp -r app/exercises dist/
     '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' \
     '<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">' \
     '<meta name="apple-mobile-web-app-title" content="Zìtiè"><meta name="apple-mobile-web-app-status-bar-style" content="default">' \
+    '<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f3f6f4"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111a1c">' \
     '<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png">' \
     '</head><body>'
   cat app/index.html

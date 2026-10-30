@@ -13,43 +13,49 @@
   --jade: #1d6b58;
   --jade-soft: #dcefe8;
   --grid: #d9534f;
-  --grid-soft: rgba(217, 83, 79, .28);
+  --grid-soft: rgba(217, 83, 79, .45); /* the 田字格 guides stay visible in bright light */
+  --frame: rgba(217, 83, 79, .5); /* a blank box: copybook red, softer than the red of a mistake */
   --good: #237a3b;
-  --warn: #a86400;
+  --warn: #8f5500;
   --bad: #b3261e;
   --good-bg: #e2f3e6;
   --warn-bg: #fbefd9;
   --bad-bg: #fbe3e1;
   --stroke: #17252a;
+  --lift: 0 1px 2px rgba(23, 37, 42, .06), 0 6px 18px rgba(23, 37, 42, .05);
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
   --f-han: "Noto Serif SC", "Songti SC", "STSong", serif;
   --f-ui: "Source Sans 3", -apple-system, "Segoe UI", system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --paper: #111a1c; --card: #182427; --ink: #e5eeec; --muted: #9db0b1; --line: #2c3c3f;
-  --jade: #5fc4a6; --jade-soft: #1d3a33; --grid: #e57b74; --grid-soft: rgba(229, 123, 116, .3);
+  --jade: #5fc4a6; --jade-soft: #1d3a33; --grid: #e57b74; --grid-soft: rgba(229, 123, 116, .3); --frame: rgba(229, 123, 116, .42);
   --good: #6fd08a; --warn: #f0b45a; --bad: #ff8a80; --good-bg: #183424; --warn-bg: #3a2c12; --bad-bg: #3d1d1b;
-  --stroke: #e5eeec; color-scheme: dark;
+  --stroke: #e5eeec; --lift: 0 1px 2px rgba(0, 0, 0, .35), 0 6px 18px rgba(0, 0, 0, .18); color-scheme: dark;
 } }
 :root[data-theme="dark"] {
   --paper: #111a1c; --card: #182427; --ink: #e5eeec; --muted: #9db0b1; --line: #2c3c3f;
-  --jade: #5fc4a6; --jade-soft: #1d3a33; --grid: #e57b74; --grid-soft: rgba(229, 123, 116, .3);
+  --jade: #5fc4a6; --jade-soft: #1d3a33; --grid: #e57b74; --grid-soft: rgba(229, 123, 116, .3); --frame: rgba(229, 123, 116, .42);
   --good: #6fd08a; --warn: #f0b45a; --bad: #ff8a80; --good-bg: #183424; --warn-bg: #3a2c12; --bad-bg: #3d1d1b;
-  --stroke: #e5eeec; color-scheme: dark;
+  --stroke: #e5eeec; --lift: 0 1px 2px rgba(0, 0, 0, .35), 0 6px 18px rgba(0, 0, 0, .18); color-scheme: dark;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html, body { height: 100%; }
+/* no grey tap flash and no pull-to-refresh: a stray swipe mid-session must not reload the page */
+html { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; accent-color: var(--jade); }
 body {
-  background: var(--paper); color: var(--ink); font-family: var(--f-ui); font-size: 17px; line-height: 1.45;
-  -webkit-text-size-adjust: 100%;
+  background: var(--paper); color: var(--ink); font-family: var(--f-ui); font-size: 17px; line-height: 1.5;
+  -webkit-text-size-adjust: 100%; overscroll-behavior-y: none;
 }
-button { font: inherit; color: inherit; cursor: pointer; }
+::selection { background: var(--jade-soft); color: var(--ink); }
+button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
 button:focus-visible, select:focus-visible { outline: 3px solid var(--jade); outline-offset: 2px; }
 .wrap {
   max-width: 1040px; margin: 0 auto;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 0 32px;
+  padding-block: 0 calc(32px + env(safe-area-inset-bottom, 0px));
 }
 header.bar {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper);
@@ -57,9 +63,9 @@ header.bar {
 }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
 header.bar .wrap { display: flex; align-items: center; gap: 12px; padding-block: 10px; }
-.brand { display: flex; align-items: baseline; gap: 10px; background: none; border: 0; padding: 0; }
+.brand { display: flex; gap: 10px; background: none; border: 0; padding: 0; min-height: 44px; align-items: center; }
 .brand .seal {
-  font-family: var(--f-han); font-weight: 700; font-size: 20px; color: #fff; background: var(--grid);
+  font-family: var(--f-han); font-weight: 700; font-size: 20px; color: var(--card); background: var(--grid);
   width: 38px; height: 38px; display: grid; place-items: center; border-radius: 6px; align-self: center;
 }
 .brand b { font-size: 19px; letter-spacing: .01em; }
@@ -68,31 +74,47 @@ header.bar .wrap { display: flex; align-items: center; gap: 12px; padding-block:
 .sync i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); display: inline-block; }
 .sync.ok i { background: var(--good); }
 .sync.local i { background: var(--warn); }
-.iconbtn { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 15px; }
+.iconbtn { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 15px; min-height: 44px; }
+.themebtn { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; }
+/* the button shows what a tap switches to: a moon in light mode, a sun in dark mode */
+.themebtn .sun, .themebtn[data-dark] .moon { display: none; }
+.themebtn[data-dark] .sun { display: inline; }
 
 h1, h2, h3 { text-wrap: balance; margin: 0; }
 h2 { font-size: 22px; }
-.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.eyebrow { font-size: 14px; color: var(--muted); margin-bottom: 2px; }
 .view { display: flex; flex-direction: column; gap: 22px; padding-top: 22px; }
 
 /* Home */
 .today { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
+.today { box-shadow: var(--lift); }
 .today h1 { font-size: 26px; }
-.today h1 .han { font-family: var(--f-han); }
-.today p { margin: 4px 0 0; color: var(--muted); }
+.today h1 .han { font-family: var(--f-han); display: block; font-size: 20px; font-weight: 500; color: var(--muted); margin-top: 4px; }
+.today h1 .han .w { white-space: nowrap; }
+.today p { margin: 4px 0 0; color: var(--muted); text-wrap: pretty; }
 .today .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
 .btn { border: 1px solid var(--line); background: var(--card); border-radius: 12px; padding: 12px 18px; font-weight: 600; min-height: 48px; }
 .btn.primary { background: var(--jade); border-color: var(--jade); color: var(--paper); }
 .btn:disabled { opacity: .45; cursor: default; }
+/* "This is your current lesson" is a status, not a dead button */
+#setCur:disabled, #wlCur:disabled { opacity: 1; background: none; border-color: transparent; color: var(--muted); font-weight: 400; }
+/* press feedback lands on touch-down, as native buttons do; hover only where there's a real pointer */
+/* press feedback is transform only; colours change instantly so a theme switch never shows text and background out of step */
+.btn, .iconbtn, .mode, .lesson, .tile, .tbtn, .seg button, .whead { transition: transform 120ms var(--ease-out); }
+.btn:active:not(:disabled), .iconbtn:active, .mode:active, .lesson:active, .tile:active, .tbtn:active:not(:disabled), .seg button:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover:not(:disabled):not(.primary), .iconbtn:hover, .mode:hover, .lesson:hover, .tile:hover, .tbtn:hover:not(:disabled):not([aria-pressed="true"]), .seg button:hover:not([aria-pressed="true"]) { border-color: var(--jade); }
+  .btn.primary:hover:not(:disabled) { filter: brightness(1.06); }
+}
 .modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
-.mode { text-align: left; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 6px; min-height: 132px; }
+.mode { text-align: left; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 6px; min-height: 132px; box-shadow: var(--lift); }
 .mode .glyph { font-family: var(--f-han); font-size: 30px; line-height: 1; color: var(--jade); }
 .mode b { font-size: 17px; }
 .mode small { color: var(--muted); font-size: 14px; }
 .tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: var(--jade-soft); color: var(--jade); align-self: flex-start; }
 .lessons { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-.lesson { text-align: left; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
-.lesson.cur { border-color: var(--jade); box-shadow: inset 0 0 0 1px var(--jade); }
+.lesson { text-align: left; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--lift); }
+.lesson.cur { border-color: var(--jade); box-shadow: inset 0 0 0 1px var(--jade), var(--lift); }
 .lesson .top { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
 .lesson .num { font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; }
 .lesson .sample { font-family: var(--f-han); color: var(--muted); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -103,21 +125,22 @@ h2 { font-size: 22px; }
 .sechead p { margin: 0; color: var(--muted); font-size: 14px; }
 
 /* Setup sheet */
-.sheet { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 18px; }
+.sheet { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 18px; box-shadow: var(--lift); }
 .field { display: flex; flex-direction: column; gap: 8px; }
 .field > label, .field > .lbl { font-weight: 600; font-size: 15px; }
 .seg { display: flex; flex-wrap: wrap; gap: 8px; }
 .seg button { border: 1px solid var(--line); background: var(--paper); border-radius: 10px; padding: 10px 14px; min-height: 44px; }
-.seg button[aria-pressed="true"] { background: var(--jade); color: var(--paper); border-color: var(--jade); font-weight: 600; }
+/* a chosen option is tinted, so it never looks like the solid jade of the action button (Start, Check) */
+.seg button[aria-pressed="true"] { background: var(--jade-soft); color: var(--jade); border-color: var(--jade); font-weight: 600; }
 select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); min-height: 44px; max-width: 100%; }
-.note { color: var(--muted); font-size: 14px; margin: 0; }
+.note { color: var(--muted); font-size: 14px; margin: 0; text-wrap: pretty; }
 
 /* Practice */
 .practice { display: flex; flex-direction: column; gap: 18px; align-items: center; padding-top: 18px; }
 .ptop { width: 100%; display: flex; align-items: center; gap: 12px; }
 .ptop .count { font-variant-numeric: tabular-nums; color: var(--muted); font-weight: 600; }
 .ptop .track { flex: 1; height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
-.ptop .track i { display: block; height: 100%; background: var(--jade); transition: width .3s; }
+.ptop .track i { display: block; height: 100%; background: var(--jade); }
 .prompt { text-align: center; display: flex; flex-direction: column; gap: 4px; align-items: center; }
 .prompt .py { font-size: clamp(34px, 6vw, 52px); font-weight: 700; letter-spacing: .02em; line-height: 1.1; }
 .prompt .hint { font-size: 19px; color: var(--muted); }
@@ -126,45 +149,76 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
   display: flex; gap: 12px; justify-content: center; flex-wrap: nowrap; touch-action: none;
   -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; max-width: 100%;
 }
-.box { position: relative; background: var(--card); border: 2px solid var(--grid); border-radius: 4px; flex: none; }
+.box { position: relative; background: var(--card); border: 2px solid var(--frame); border-radius: 4px; flex: 0 1 auto; max-width: 100%; aspect-ratio: 1; box-shadow: var(--lift); } /* shrinks if the screen narrows mid-card (an iPad turned to portrait); ink and pen input scale with it */
 .box svg.grid { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .box .hw { position: absolute; inset: 0; }
 .box.done { border-color: var(--good); }
 .col { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; }
 .box canvas.ink { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
-.box.wrongbox { border-color: var(--bad); }
-.model { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
-.model .mw { width: 64px; height: 64px; background: var(--card); border: 1px solid var(--line); border-radius: 4px; }
-.mnote { font-size: 13px; font-weight: 600; max-width: 180px; }
+.box.wrongbox { border-color: var(--bad); box-shadow: inset 0 0 0 1px var(--bad), var(--lift); } /* a wrong box is unmistakable next to the soft red of blank paper */
+.model { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; max-width: 100%; min-width: 0; }
+.prompt .py.small { font-size: 22px; font-weight: 600; } /* in translation the pinyin is a hint, smaller than the English it answers */
+.model .mw { width: var(--mw, 64px); height: var(--mw, 64px); max-width: 100%; background: var(--card); border: 1px solid var(--line); border-radius: 4px; }
+.mnote { font-size: 14px; font-weight: 600; max-width: 100%; overflow-wrap: anywhere; color: var(--muted); }
 .legend { margin-top: 8px; font-weight: 400; } .lg-warn { color: var(--warn); } .lg-bad { color: var(--bad); }
 .mnote.good { color: var(--good); } .mnote.bad { color: var(--bad); }
 .boxes { align-items: flex-start; }
-.boxes.wrapping { flex-wrap: wrap; row-gap: 14px; }
+.boxes.wrapping { flex-wrap: wrap; row-gap: 14px; justify-content: flex-start; } /* rows start at the left, so adding a box never moves the one being written in */
+.rule { margin: 10px auto 0; max-width: 34em; text-wrap: pretty; font-size: 17px; color: var(--ink); text-align: left; font-weight: 400; } /* the rule a grammar miss teaches, at reading size */
+.verdict { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; align-items: center; }
 .feedback { min-height: 30px; font-weight: 600; text-align: center; }
 .pill { display: inline-flex; font-size: 15px; white-space: nowrap; font-weight: 600; gap: 8px; align-items: center; padding: 6px 14px; border-radius: 99px; }
+/* the feedback line can carry a whole translated sentence, so it wraps instead of running off a phone screen */
+.feedback .pill { white-space: normal; flex-wrap: wrap; justify-content: center; max-width: 100%; border-radius: 18px; }
 .pill.good { background: var(--good-bg); color: var(--good); }
 .pill.warn { background: var(--warn-bg); color: var(--warn); }
 .pill.bad { background: var(--bad-bg); color: var(--bad); }
 .pill .han { font-family: var(--f-han); font-size: 20px; }
+.pill.bad .han { color: var(--ink); } /* the right answer is shown in ink, not in the colour of the mistake */
 .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 .controls .btn { min-width: 110px; }
+.inktools { display: flex; gap: 8px; justify-content: center; }
+.btn.small { min-height: 44px; padding: 8px 14px; font-size: 15px; }
+.btn.quiet { background: none; border-color: transparent; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; min-width: 0; }
+/* Check stays on screen while the boxes scroll, however many there are */
+.peek summary { cursor: pointer; color: var(--muted); font-size: 15px; padding: 11px 0; }
+.peek[open] summary { margin-bottom: 10px; }
+/* the dock holds the verdict and the actions; it stays at the bottom of the screen while the card scrolls */
+.dock { z-index: 3; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; background: var(--paper); padding: 10px 0 calc(10px + env(safe-area-inset-bottom, 0px)); }
+.dock .feedback:empty { display: none; }
+.notes { text-align: center; }
+.notes:empty { display: none; }
+/* pinned only when the screen is tall enough; on a short landscape phone it would cover the top bar */
+@media (min-height: 520px) { .dock { position: sticky; bottom: 0; } }
+.stepper { display: inline-flex; align-items: center; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 4px; }
+.stepper .btn { border: 0; min-width: 48px; padding: 8px; font-size: 22px; line-height: 1; }
+.stepper span { min-width: 76px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+.gq.en { font-family: var(--f-ui); font-weight: 600; font-size: clamp(24px, 4.5vw, 34px); line-height: 1.3; }
 .prompt .listen { margin-top: 10px; }
 .prompt .note { margin-top: 4px; }
 
 /* Summary */
 .score { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
 .score .big { font-size: 56px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
-.results { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.results { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: var(--lift); }
 .results .row { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.4fr) auto; gap: 12px; padding: 12px 16px; align-items: center; border-top: 1px solid var(--line); }
 .results .row:first-child { border-top: 0; }
 .results .han { font-family: var(--f-han); font-size: 24px; }
 .results .muted { color: var(--muted); font-size: 15px; min-width: 0; overflow-wrap: anywhere; }
+/* the round ends like a corrected copybook page: your own characters, red and amber marks included, in small 田字格 */
+.results .inkrow { grid-column: 1 / -1; display: flex; gap: 6px; flex-wrap: wrap; }
+.results .inkrow img { width: 52px; height: 52px; border: 1.5px solid var(--frame); border-radius: 3px;
+  background: linear-gradient(var(--grid-soft), var(--grid-soft)) center / 100% 1px no-repeat, linear-gradient(var(--grid-soft), var(--grid-soft)) center / 1px 100% no-repeat, var(--card); }
+/* translation results: the sentence gets the full width, its pinyin and English underneath */
+.results.tr .row { grid-template-columns: minmax(0, 1fr) auto; row-gap: 4px; }
+.results.tr .row > :nth-child(2), .results.tr .row .muted { grid-column: 1 / -1; }
+.results.tr .row .pill { grid-row: 1; grid-column: 2; }
 .loading { padding: 60px 0; text-align: center; color: var(--muted); }
 .settings-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 
 
 /* Learn */
-.wlist { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.wlist { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: var(--lift); }
 .wrow + .wrow { border-top: 1px solid var(--line); }
 .whead { width: 100%; background: none; border: 0; text-align: left; display: grid; grid-template-columns: minmax(90px, auto) minmax(90px, .8fr) minmax(0, 1.6fr) auto; gap: 12px; align-items: center; padding: 12px 16px; min-height: 56px; }
 .whead .han { font-family: var(--f-han); font-size: 26px; }
@@ -181,7 +235,10 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
 .rel .han { font-family: var(--f-han); font-size: 18px; }
 .rel em { font-style: normal; color: var(--muted); font-size: 13px; }
 .pill.small { font-size: 13px; padding: 3px 10px; }
-.pill.new { background: var(--line); color: var(--muted); }
+.pill.new { background: var(--line); color: var(--ink); }
+.pill.learn { background: var(--jade-soft); color: var(--jade); }
+/* a shown answer is a study choice, so it gets a calm mark instead of the red of a mistake */
+.pill.shown { background: var(--line); color: var(--ink); }
 .flash { width: min(560px, 100%); min-height: 330px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; display: grid; place-items: center; padding: 24px; box-shadow: 0 1px 0 var(--line), 0 10px 30px rgba(0,0,0,.06); }
 .flash.flipped { border-color: var(--jade); }
 .fc-front, .fc-back { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
@@ -195,7 +252,7 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
 .han-inline { font-family: var(--f-han); font-size: 20px; color: var(--ink); }
 .match { width: 100%; max-width: 760px; display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); gap: 14px; }
 .mcol { display: flex; flex-direction: column; gap: 10px; }
-.tile { background: var(--card); border: 1px solid var(--line); border-radius: 12px; min-height: 58px; padding: 10px 14px; font-size: 17px; text-align: center; transition: opacity .25s, transform .15s; }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: 12px; min-height: 58px; padding: 10px 14px; font-size: 17px; text-align: center; transition: opacity 200ms var(--ease-out), transform 150ms var(--ease-out); }
 .tile.han-tile { font-family: var(--f-han); font-size: 28px; }
 .tile.picked { border-color: var(--jade); box-shadow: 0 0 0 3px var(--jade-soft); }
 .tile.bad { border-color: var(--bad); background: var(--bad-bg); transform: translateX(3px); }
@@ -204,9 +261,16 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
 .tcol { display: flex; flex-direction: column; gap: 8px; align-items: stretch; min-width: 110px; }
 .tcol .han { font-family: var(--f-han); font-size: 40px; text-align: center; }
 .tbtn { border: 1px solid var(--line); background: var(--card); border-radius: 10px; min-height: 44px; padding: 8px 12px; }
-.tbtn[aria-pressed="true"] { background: var(--jade); border-color: var(--jade); color: var(--paper); font-weight: 600; }
+.tbtn[aria-pressed="true"] { background: var(--jade-soft); border-color: var(--jade); color: var(--jade); font-weight: 600; }
 .tbtn.right { background: var(--good-bg); border-color: var(--good); color: var(--good); font-weight: 700; }
 .tbtn.wrong { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
+.tones .tbtn.right::after { content: " · right"; } .tones .tbtn.wrong::after { content: " · yours"; } /* not colour alone */
+/* results outrank the jade "selected" fill of options inside .seg, and say right / wrong in words too, not only colour */
+.seg .tbtn.right { background: var(--good-bg); border-color: var(--good); color: var(--good); font-weight: 700; }
+.seg .tbtn.wrong { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
+.seg .tbtn.right::after { content: " · right"; font-weight: 600; }
+.seg .tbtn.right::after, .seg .tbtn.wrong::after, .tones .tbtn::after { font-family: var(--f-ui); font-size: 15px; } /* the verdict word is UI text, even on a 汉字 tile */
+.seg .tbtn.wrong::after { content: " · your answer"; font-weight: 600; }
 .passage, .zh { font-family: var(--f-han); font-size: clamp(22px, 3.4vw, 28px); line-height: 1.8; margin: 0; }
 .gq { font-family: var(--f-han); font-size: clamp(26px, 4.5vw, 38px); line-height: 1.4; min-height: 1.4em; }
 .gex { display: flex; gap: 14px; align-items: center; }
@@ -218,36 +282,73 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
 .line .lpy { display: block; font-weight: 600; }
 .ptitle .zh { font-weight: 700; }
 .qhead { display: flex; gap: 8px; align-items: baseline; }
-.wd { border-bottom: 1.5px dotted var(--muted); cursor: pointer; }
+.wd { border-bottom: 1px dotted color-mix(in srgb, var(--muted) 55%, transparent); cursor: pointer; padding: 8px 2px; margin: 0 -2px; } /* padding widens the tap area of one-character words without moving the text */
+.wd.active { background: var(--jade-soft); border-radius: 3px; }
 .wd.flagged { background: var(--warn-bg); border-bottom-color: var(--warn); }
 .wpop { position: fixed; left: 16px; right: 16px; bottom: max(16px, env(safe-area-inset-bottom, 0px)); max-width: 640px; margin: 0 auto; z-index: 20;
   background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
-  box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+  box-shadow: 0 10px 30px rgba(0,0,0,.18); transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out); }
+/* the word card rises a few pixels into place instead of popping in; it opens a few times per passage, so it stays short */
+@starting-style { .wpop { opacity: 0; transform: translateY(8px); } }
 .wpop .han { font-family: var(--f-han); font-size: 32px; }
+#wpClose { min-width: 44px; }
 .wpop-txt { display: flex; flex-direction: column; flex: 1; min-width: 140px; }
 #fcFlag[aria-pressed="true"], #wpFlag[aria-pressed="true"], .wflag[aria-pressed="true"] { color: var(--warn); border-color: var(--warn); }
 .wline { display: flex; align-items: center; gap: 8px; padding-right: 12px; }
 .wline .whead { flex: 1; min-width: 0; }
-.wflag { min-height: 40px; padding: 6px 12px; white-space: nowrap; }
-.qhead .line { padding: 0; }
+.wflag { min-height: 44px; padding: 6px 12px; white-space: nowrap; }
+.qhead .line { padding: 6px 0; min-height: 44px; }
 .tones .tbtn.word { font-family: var(--f-han); font-size: 24px; min-width: 56px; }
 .tbtn:disabled { opacity: .3; cursor: default; }
 @media (max-width: 760px) {
   .modes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .whead { grid-template-columns: auto minmax(0, 1fr) auto; }
-  .whead .muted { grid-column: 1 / -1; grid-row: 2; }
+  /* the pinyin gets the rest of the top row; meaning and status share the second */
+  .whead .wpy { grid-column: 2 / -1; }
+  .whead .muted { grid-column: 1 / 3; grid-row: 2; }
+  .whead .pill { grid-row: 2; grid-column: 3; }
   .today { grid-template-columns: 1fr; }
-  .today .actions { justify-content: flex-start; }
+  .today .actions { justify-content: flex-start; flex-direction: column-reverse; } /* phone: the main action first, both full width */
+  .today .actions .btn { width: 100%; }
   .brand span { display: none; }
   .results .row { grid-template-columns: minmax(0, 1fr) auto; }
   .results .row .muted { grid-column: 1 / -1; }
+  /* practice buttons sit on an even two-column grid, with the main action full width at the end */
+  .practice .controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; max-width: 420px; }
+  .practice .controls .btn { min-width: 0; }
+  .practice .controls .btn.primary { grid-column: 1 / -1; order: 9; }
+  /* before Check: Hint, Hear and Check on one row, Show answer underneath as a quiet link */
+  .practice .controls.pinned { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1.25fr); max-width: none; }
+  .practice .controls.pinned .btn { padding-inline: 8px; white-space: nowrap; }
+  .practice .controls.pinned .btn.primary { grid-column: auto; order: 0; }
+  .practice .controls.pinned .btn.quiet { grid-column: 1 / -1; }
+  /* after Check: three study actions on one row, Next full width under them */
+  .practice .controls.pinned.after { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .practice .controls.pinned.after .btn.primary { grid-column: 1 / -1; order: 9; }
+  /* keep the dock compact on a phone: shorter secondary buttons and a tighter verdict, so it stays near a fifth of the screen */
+  .practice .controls.pinned.after .btn:not(.primary) { min-height: 44px; padding-block: 6px; font-size: 15px; }
+  .dock { gap: 8px; padding-top: 8px; }
+  .dock .verdict { flex-wrap: nowrap; }
+  .dock .verdict .pill { font-size: 14px; padding: 6px 10px; text-align: left; justify-content: flex-start; min-width: 0; flex-wrap: nowrap; line-height: 1.3; }
+  .dock .verdict .pill .han { font-size: 18px; white-space: nowrap; }
+  .dock .verdict .pill.long { flex-wrap: wrap; } .dock .verdict .pill.long .han { white-space: normal; } /* a whole sentence wraps */
+  .dock .verdict .btn { flex: none; }
+  .practice .prompt .controls { display: flex; }
+  .practice .prompt .controls .btn.primary { grid-column: auto; order: 0; } /* Play again stays first, as on the iPad */
 }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+/* iPad portrait: the hero line gets the full width, with its buttons underneath */
+@media (max-width: 900px) { .today { grid-template-columns: 1fr; } .today .actions { justify-content: flex-start; } }
+@media (max-width: 420px) {
+  .sync span { display: none; }
+}
+/* reduced motion: nothing moves or scales, but fades and colour changes that carry meaning stay */
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-property: opacity, color, background-color, border-color !important; animation: none !important; } }
 </style>
 
 <header class="bar"><div class="wrap">
   <button class="brand" id="brand" type="button" aria-label="Home"><span class="seal">字</span><b>Zìtiè</b><span>Unofficial study companion</span></button>
   <div class="sync" id="sync"><i></i><span>Loading</span></div>
+  <button class="iconbtn themebtn" id="themeBtn" type="button" aria-label="Switch to dark mode"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="moon" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/><g class="sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></svg></button>
   <button class="iconbtn" id="settingsBtn" type="button">Settings</button>
 </div></header>
 
@@ -258,6 +359,7 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
 (() => {
 "use strict";
 const $ = (s, el = document) => el.querySelector(s);
+const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const main = $("#main");
 const DAY = 864e5;
@@ -267,12 +369,12 @@ let WORDS = [], STROKES = {}, LESSONS = [], byLesson = {};
 
 /* ---------------- Progress store (synced via db, mirrored locally) ---------------- */
 const LS_KEY = "zitie-progress-v1";
-function blank() { return { v: 1, cur: "2.1", settings: { input: "auto", marking: "standard", sawPencil: false }, w: {}, tr: {}, rd: {}, flag: {}, hist: [], updatedAt: 0 }; }
+function blank() { return { v: 1, cur: "1.1", settings: { input: "auto", marking: "standard", sawPencil: false }, w: {}, tr: {}, rd: {}, flag: {}, hist: [], updatedAt: 0 }; }
 let P = blank();
 let dbRef = null, saveTimer = null, saving = false, dirty = false;
 
 function setSync(state, text) {
-  const s = $("#sync"); s.className = "sync " + state; s.querySelector("span").textContent = text;
+  const s = $("#sync"); s.className = "sync " + state; s.title = text; s.querySelector("span").textContent = text;
 }
 function loadLocal() {
   try { const raw = localStorage.getItem(LS_KEY); if (raw) return JSON.parse(raw); } catch (e) {}
@@ -359,7 +461,10 @@ const wireFlag = (btn, w, after) => {
 let zhVoice = null;
 function pickVoice() {
   const vs = (window.speechSynthesis && speechSynthesis.getVoices()) || [];
-  zhVoice = vs.find(v => /zh[-_]CN/i.test(v.lang)) || vs.find(v => /^zh/i.test(v.lang)) || null;
+  // the most natural Mandarin voice installed: iPad marks downloaded voices "Premium" or "Enhanced" (in name or voiceURI);
+  // mainland voices (zh-CN) beat Taiwan / Hong Kong ones, and the compact default is the last resort
+  const score = v => (/premium/i.test(v.name + v.voiceURI) ? 4 : /enhanced/i.test(v.name + v.voiceURI) ? 2 : 0) + (/zh[-_]CN/i.test(v.lang) ? 1 : 0);
+  zhVoice = vs.filter(v => /^zh/i.test(v.lang)).sort((a, b) => score(b) - score(a))[0] || null;
 }
 if (window.speechSynthesis) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 function speak(text, rate = 0.85) {
@@ -374,6 +479,19 @@ function speak(text, rate = 0.85) {
 let route = "home", session = null;
 function go(r) { route = r; if (r === "home") { session = null; renderHome(); } window.scrollTo(0, 0); }
 $("#brand").onclick = () => go("home");
+// a keyboard (an iPad with a Magic Keyboard): Enter does the card's main action (Check, then Next), Esc closes the word card
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && $("#wpClose")) return $("#wpClose").click();
+  if (e.target.closest("input, select, textarea")) return;
+  // flashcards: Space flips, 1–4 rate Again / Hard / Good / Easy
+  if ($("#flash") && ((e.key === " " && !e.target.closest("button")) || /^[1-4]$/.test(e.key))) {
+    const r = e.key === " " ? $("#flash") : $(`[data-r="${["again", "hard", "good", "easy"][e.key - 1]}"]`);
+    if (r) { e.preventDefault(); r.click(); } return;
+  }
+  if (e.key !== "Enter" || e.target.closest("button, summary, a")) return;
+  const b = $("#ctl .btn.primary");
+  if (b && !b.disabled) { e.preventDefault(); b.click(); }
+});
 // Settings sets the current page aside, nodes and all, so Done returns to it exactly as it was (half-written ink included)
 let behindSettings = null;
 $("#settingsBtn").onclick = () => {
@@ -387,6 +505,43 @@ function closeSettings() {
   route = b.route; main.replaceChildren(...b.nodes); window.scrollTo(0, b.y);
 }
 
+/* ---------------- Light / dark ---------------- */
+// follows the device until you tap the toggle; the choice is kept on this device only
+const THEME_KEY = "zitie-theme", darkQuery = matchMedia("(prefers-color-scheme: dark)");
+let onTheme = null; // set by an open Write card so its ink is redrawn in the new colours
+function applyTheme(t) {
+  if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
+  const dark = t ? t === "dark" : darkQuery.matches;
+  $("#themeBtn").toggleAttribute("data-dark", dark); // the label says what a tap does; no pressed state to contradict it
+  $("#themeBtn").setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+  const paper = getComputedStyle(document.documentElement).getPropertyValue("--paper").trim();
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.content = paper);
+  if (onTheme) onTheme();
+}
+let savedTheme = null;
+try { savedTheme = localStorage.getItem(THEME_KEY); } catch (e) {}
+applyTheme(savedTheme);
+darkQuery.addEventListener("change", () => { if (!document.documentElement.dataset.theme) applyTheme(null); });
+$("#themeBtn").onclick = () => {
+  const next = $("#themeBtn").hasAttribute("data-dark") ? "light" : "dark";
+  // switching back to what the device uses anyway drops the choice, so the app follows the device again
+  const follow = next === (darkQuery.matches ? "dark" : "light");
+  try { if (follow) localStorage.removeItem(THEME_KEY); else localStorage.setItem(THEME_KEY, next); } catch (e) {}
+  applyTheme(follow ? null : next);
+};
+
+// a turned iPad or a resized window lays a fresh card out again for its new size, while nothing is written on it yet
+let resizeT = 0, lastW = innerWidth, lastH = innerHeight;
+addEventListener("resize", () => {
+  clearTimeout(resizeT);
+  resizeT = setTimeout(() => {
+    if (innerWidth === lastW && Math.abs(innerHeight - lastH) < 120) return; // the Safari toolbar showing or hiding is not a new layout
+    lastW = innerWidth; lastH = innerHeight;
+    const st = session && session.cur;
+    if (st && !st.done && !st.order.length && main.querySelector("#boxes")) renderCard();
+  }, 200);
+});
+
 /* ---------------- Home ---------------- */
 function lessonStats(l) {
   const ws = byLesson[l] || [];
@@ -396,29 +551,31 @@ function dueWords() { const now = Date.now(); return uniqueWords(WORDS.filter(w 
 
 function renderHome() {
   const cur = P.cur, cs = lessonStats(cur), due = dueWords().length;
-  const curSample = (byLesson[cur] || []).slice(0, 6).map(w => w.d).join(" ");
+  // each word is kept whole when the sample wraps, so 大学 never splits across lines
+  const curSample = (byLesson[cur] || []).slice(0, 6).map(w => `<span class="w">${esc(w.d)}</span>`).join(" ");
   main.innerHTML = `
   <div class="view">
     <section class="today">
       <div>
         <div class="eyebrow">You are on</div>
-        <h1>Lesson ${esc(cur)} <span class="han">${esc(curSample)}</span></h1>
-        <p>${cs.mastered} of ${cs.total} words mastered${due ? ` · ${due} word${due === 1 ? "" : "s"} due for review` : ""}</p>
+        <h1>Lesson ${esc(cur)} <span class="han">${curSample}</span></h1>
+        <p>${cs.seen} of ${cs.total} words practised · ${cs.mastered} mastered${due ? ` · ${due} word${due === 1 ? "" : "s"} due for review` : ""}</p>
       </div>
       <div class="actions">
-        ${due ? `<button class="btn" id="reviewBtn" type="button">Review ${due} due</button>` : ""}
+        ${due ? `<button class="btn" id="reviewBtn" type="button">复习 ${due} due</button>` : ""}
+        <button class="btn" id="dictCur" type="button">听写 lesson ${esc(cur)}</button>
         <button class="btn primary" id="startCur" type="button">Write lesson ${esc(cur)}</button>
       </div>
     </section>
 
     <section class="modes" aria-label="Practice modes">
-      <button class="mode" id="modeLearn" type="button"><span class="glyph">学</span><b>Learn</b><small>Word list, flashcards, trace and copy, match game and tones.</small><span class="tag">Ready</span></button>
-      <button class="mode" id="modeWrite" type="button"><span class="glyph">写</span><b>Write</b><small>See the pinyin, write the characters in your own hand, then check them.</small><span class="tag">Ready</span></button>
-      <button class="mode" id="modeDict" type="button"><span class="glyph">听写</span><b>Dictation</b><small>Hear a word in Mandarin and write it down, no pinyin shown.</small><span class="tag">Ready</span></button>
-      <button class="mode" id="modeTrans" type="button"><span class="glyph">译</span><b>Translation</b><small>Read an English sentence and write it in Chinese by hand.</small><span class="tag">Ready</span></button>
+      <button class="mode" id="modeLearn" type="button"><span class="glyph">学</span><b>Learn</b><small>Word list, flashcards, trace and copy, match game and tones.</small></button>
+      <button class="mode" id="modeWrite" type="button"><span class="glyph">写</span><b>Write</b><small>See the pinyin, write the characters in your own hand, then check them.</small></button>
+      <button class="mode" id="modeDict" type="button"><span class="glyph">听写</span><b>Dictation</b><small>Hear a word in Mandarin and write it down, no pinyin shown.</small></button>
+      <button class="mode" id="modeTrans" type="button"><span class="glyph">译</span><b>Translation</b><small>Read an English sentence and write it in Chinese by hand.</small></button>
       <button class="mode" id="modeReview" type="button"><span class="glyph">复习</span><b>Review</b><small>Words that are due again, from every lesson, oldest first.</small><span class="tag">${due ? `${due} due` : "Up to date"}</span></button>
-      <button class="mode" id="modeRead" type="button"><span class="glyph">读</span><b>Reading &amp; listening</b><small>A dialogue, a story and a short text for each lesson, with questions. Read them or just listen.</small><span class="tag">Ready</span></button>
-      <button class="mode" id="modeGrammar" type="button"><span class="glyph">语法</span><b>Grammar</b><small>Each lesson's grammar points, then gap-fill and word-order quizzes.</small><span class="tag">Ready</span></button>
+      <button class="mode" id="modeRead" type="button"><span class="glyph">读</span><b>Reading &amp; listening</b><small>A dialogue, a story and a short text for each lesson, with questions. Read them or just listen.</small></button>
+      <button class="mode" id="modeGrammar" type="button"><span class="glyph">语法</span><b>Grammar</b><small>Each lesson's grammar points, then gap-fill and word-order quizzes.</small></button>
     </section>
 
     <section class="view" style="padding-top:0;gap:12px">
@@ -434,7 +591,11 @@ function renderHome() {
       }).join("")}</div>
     </section>
   </div>`;
-  $("#startCur").onclick = () => renderSetup(cur);
+  // starts straight away with the Write settings last used (Write on the mode grid opens them)
+  $("#startCur").onclick = () => { let pool = buildPool(cur); if (setup.order === "shuffle") pool = shuffle(pool); if (setup.count) pool = pool.slice(0, setup.count); if (pool.length) startWrite(pool, "Lesson " + cur); else renderSetup(cur); };
+  if (due) $("#reviewBtn").onclick = renderReview; // the daily queue is one tap from the top
+  // one tap to a real 听写: every word of the current lesson, shuffled, with the clue setting from Dictation (sound only by default)
+  $("#dictCur").onclick = () => !zhVoice ? renderSetup(cur, "dict") /* no voice: the setup screen says how to add one */ : startWrite(shuffle((byLesson[cur] || []).filter(dictable)), "Lesson " + cur, { dict: true, clue: setup.clue });
   $("#modeWrite").onclick = () => renderSetup(cur);
   $("#modeLearn").onclick = () => renderLearn(cur);
   $("#modeDict").onclick = () => renderSetup(cur, "dict");
@@ -442,7 +603,6 @@ function renderHome() {
   $("#modeTrans").onclick = () => renderTranslate(cur);
   $("#modeRead").onclick = () => renderRead(cur);
   $("#modeGrammar").onclick = () => renderGrammar(cur);
-  const rb = $("#reviewBtn"); if (rb) rb.onclick = renderReview;
   main.querySelectorAll(".lesson").forEach(b => b.onclick = () => renderWordList(b.dataset.l, "home"));
 }
 
@@ -461,17 +621,20 @@ function renderReview() {
     <div class="sechead"><div><div class="eyebrow">Review · 复习</div><h2>${due.length ? `${due.length} word${due.length === 1 ? "" : "s"} due` : "Nothing due right now"}</h2></div>
       <button class="btn" id="back" type="button">Back</button></div>
     <p class="note">${due.length ? "Oldest first, up to 20 a round. " : soon.length ? `Next word comes back ${when(rec(soon[0].id).due)}. ` : "Words you practise show up here when they are due again."}${due.length || soon.length ? `${within(DAY)} more due in the next 24 hours, ${within(7 * DAY)} in the next 7 days.` : ""}</p>
-    ${due.length ? `<div class="settings-row"><button class="btn primary" id="revWrite" type="button">Write ${writeBatch.length}</button>${dictBatch.length ? `<button class="btn" id="revDict" type="button">Dictation ${dictBatch.length}</button>` : ""}</div>
-    <div class="results">${due.map(w => `<div class="row"><span class="han">${esc(w.d)}</span><span>${esc(w.p)}</span><span class="muted">${esc(w.h)}</span><span class="pill small ${stageLabel(w.id).cls}">${esc(w.l)}</span></div>`).join("")}</div>` : ""}
+    ${due.length ? `<div class="settings-row"><button class="btn primary" id="revWrite" type="button">Write ${plural(writeBatch.length, "word")}</button>${dictBatch.length ? `<button class="btn" id="revDict" type="button">Dictate ${plural(dictBatch.length, "word")}</button>${dictBatch.length < writeBatch.length ? `<span class="note">Grammar patterns such as 太……了 are left out of dictation.</span>` : ""}` : ""}</div>
+    <details class="peek"><summary>The ${due.length} word${due.length === 1 ? "" : "s"} (gives away the answers)</summary>
+    <div class="results">${due.map(w => `<div class="row"><span class="han">${esc(w.d)}</span><span>${esc(w.p)}</span><span class="muted">${esc(w.h)}</span><span class="pill small ${stageLabel(w.id).cls}">${esc(w.l)}</span></div>`).join("")}</div></details>` :`<div class="settings-row"><button class="btn primary" id="revCur" type="button">Write lesson ${esc(P.cur)}</button></div>`}
   </div>`;
   $("#back").onclick = () => go("home");
+  if (!due.length) $("#revCur").onclick = () => renderSetup(P.cur); // nothing due: carry on with the current lesson
   if (due.length) $("#revWrite").onclick = () => startWrite(shuffle(writeBatch), "Review");
   if (dictBatch.length) $("#revDict").onclick = () => startWrite(shuffle(dictBatch), "Review", { dict: true, clue: setup.clue });
   window.scrollTo(0, 0);
 }
 
 /* ---------------- Setup ---------------- */
-const setup = { scope: "this", count: 10, order: "shuffle", clue: "meaning" };
+// a class 听写 covers the whole lesson, so Dictation keeps its own count and starts at All
+const setup = { scope: "this", count: 10, dcount: 0, order: "shuffle", clue: "sound" };
 // kind "write" shows pinyin; kind "dict" (听写) plays the word and hides the pinyin
 function renderSetup(lesson, kind = "write") {
   route = "setup";
@@ -521,7 +684,7 @@ function renderSetup(lesson, kind = "write") {
     $("#setCur").disabled = isCur;
   };
   bindSeg("#segScope", "scope", String);
-  bindSeg("#segCount", "count", Number);
+  bindSeg("#segCount", dict ? "dcount" : "count", Number);
   bindSeg("#segOrder", "order", String);
   if (dict) bindSeg("#segClue", "clue", String);
   sel.onchange = note;
@@ -530,7 +693,8 @@ function renderSetup(lesson, kind = "write") {
   $("#go").onclick = () => {
     let pool = pick();
     if (setup.order === "shuffle") pool = shuffle(pool);
-    if (setup.count) pool = pool.slice(0, setup.count);
+    const count = dict ? setup.dcount : setup.count;
+    if (count) pool = pool.slice(0, count);
     startWrite(pool, "Lesson " + sel.value, dict ? { dict: true, clue: setup.clue } : {});
   };
   note();
@@ -717,21 +881,43 @@ function markingMode() {
 /* ---------------- Write card ---------------- */
 function renderCard() {
   const s = session, w = s.words[s.i], tr = s.tr;
-  // translation: you choose the number of boxes, since accepted answers can differ in length
-  const n = tr ? (s.nbox = s.nbox || [...w.t].length) : w.t.length, perRow = tr ? Math.min(n, 6) : n;
+  // translation: a sentence starts with one row of boxes, whatever the answer's length (so the count gives nothing away),
+  // grows a box whenever you write in the last one, and drops empty boxes at the end when checked.
+  // The row length is fixed per screen, so boxes keep their size as they're added; a phone gets three to a row
+  // a long word on a phone would give boxes too small to write in with a finger, so it wraps two to a row instead
+  const oneRow = Math.floor((Math.min(main.clientWidth, 1040) - 32 - (w.t.length - 1) * 12) / w.t.length);
+  const perRow = tr ? (main.clientWidth < 560 ? 3 : main.clientWidth < 900 ? 4 : 6) : w.t.length > 2 && oneRow < 120 ? 2 : w.t.length;
+  const n = tr ? (s.nbox = s.nbox || perRow) : w.t.length;
   const tracing = s.trace && s.phase === "trace";
   const dict = s.dict, clue = dict && (s.clue !== "sound" || homophone(w));
   // drill: one chosen word, shown at the top, written as often as you like and never graded
   const drill = s.drill;
-  const nextLabel = tracing ? "Now write it from memory" : drill ? "Write it again" : s.i + 1 < s.words.length ? "Next word" : "See results";
-  const goNext = () => { if (tracing) { s.phase = "copy"; renderCard(); } else if (drill) { s.reps++; renderCard(); } else nextWord(); };
+  // again: a practice try at the same word after it was graded; it starts fresh, with the answer hidden, and isn't graded
+  const again = s.again;
+  const nextLabel = tracing ? "Now write it from memory" : drill ? "Write it again" : s.i + 1 < s.words.length ? (tr ? "Next sentence" : "Next word") : "See results";
+  const goNext = () => { s.again = false; if (tracing) { s.phase = "copy"; renderCard(); } else if (drill) { s.reps++; renderCard(); } else nextWord(); };
   const nextWord = () => { s.phase = s.trace ? "trace" : "copy"; s.nbox = 0; s.i++; if (s.i < s.words.length) renderCard(); else finish(); };
   const avail = Math.min(main.clientWidth, 1040) - 32;
-  const size = Math.max(70, Math.min(260, Math.floor((avail - (perRow - 1) * 12) / perRow)));
+  // also capped by screen height, so on a short landscape screen the boxes never run under the bottom dock
+  const size = Math.max(70, Math.min(n <= 2 && !tr ? 400 : 300, Math.max(150, innerHeight - 500), Math.floor((avail - (perRow - 1) * 12) / perRow)));
   const pad = Math.round(size * 0.06);
-  const css = getComputedStyle(document.documentElement);
-  const tok = (k, d) => css.getPropertyValue(k).trim() || d;
-  const C = { ink: tok("--stroke", "#17252a"), jade: tok("--jade", "#1d6b58"), bad: tok("--bad", "#b3261e"), warn: tok("--warn", "#a86400") };
+  const boxHtml = k => `
+      <div class="col" style="width:${size}px">
+        <div class="box" style="width:${size}px" data-k="${k}">${gridSvg()}<div class="hw" id="hw${k}"></div><canvas class="ink" width="${size}" height="${size}" role="img" aria-label="Writing box ${k + 1}"></canvas></div>
+        <div class="model" hidden><div class="mw" id="mw${k}"></div><span class="mnote"></span></div>
+      </div>`;
+  const colours = () => {
+    const css = getComputedStyle(document.documentElement), tok = (k, d) => css.getPropertyValue(k).trim() || d;
+    return { ink: tok("--stroke", "#17252a"), jade: tok("--jade", "#1d6b58"), bad: tok("--bad", "#b3261e"), warn: tok("--warn", "#a86400") };
+  };
+  const C = colours();
+  onTheme = () => {
+    if (!main.contains(boxes[0])) return (onTheme = null);
+    Object.assign(C, colours()); canvases.forEach((_, k) => redraw(k));
+    // the model and answer characters are drawn once in SVG, so they are recoloured too
+    if (st.modelFor) st.models.forEach((_, k) => st.modelFor(k, st.ms)); // redrawn in the new ink
+    st.writers.forEach(wr => wr && wr.updateColor("strokeColor", C.jade));
+  };
   main.innerHTML = `
   <div class="practice">
     <div class="ptop">
@@ -740,57 +926,92 @@ function renderCard() {
       <span class="count">${s.i + 1} / ${s.words.length}${drill ? ` · ${s.reps} written` : ""}</span>
     </div>
     <div class="prompt">
-      <div class="eyebrow">${esc(s.label)} · ${s.trace ? (tracing ? "step 1: trace over the outline" : "step 2: now from memory") : dict ? "听写 · listen and write" : drill ? "copy it as often as you like" : tr ? "译 · write it in Chinese" : "from lesson " + esc(w.l)}</div>
+      <div class="eyebrow">${esc(s.label)}${s.trace ? (tracing ? " · step 1: trace over the outline" : " · step 2: now from memory") : dict ? " · 听写 · listen and write" : drill ? " · copy it as often as you like" : tr ? " · 译 · write it in Chinese" : s.label === "Lesson " + w.l ? "" : " · from lesson " + esc(w.l)}</div>
       ${drill ? `<div class="fc-han small" id="drillWord"${drillHide ? " hidden" : ""}>${esc(w.d)}</div><button class="btn" id="hideBtn" type="button">${drillHide ? "Show the word" : "Hide the word"}</button>` : ""}
-      ${tr ? `<div class="gq">${esc(w.h)}</div>${w.note ? `<div class="hint"><em>${esc(w.note)}</em></div>` : ""}` : ""}
-      <div class="py" id="py"${dict || tr ? " hidden" : ""}>${esc(w.p)}</div>
-      <div class="hint" id="hint"${(dict && !clue) || tr ? " hidden" : ""}>${esc(w.h)}${w.pos ? `<em>${esc(w.pos)}</em>` : ""}</div>
-      ${tr ? `<div class="controls listen"><button class="btn" id="boxLess" type="button">− box</button><span class="note">${n} box${n === 1 ? "" : "es"}</span><button class="btn" id="boxMore" type="button">+ box</button></div>` : ""}
+      ${tr ? `<div class="gq en">${esc(w.h)}</div>${w.note ? `<div class="hint"><em>${esc(w.note)}</em></div>` : ""}` : ""}
+      <div class="py${tr ? " small" : ""}" id="py"${dict || tr ? " hidden" : ""}>${esc(w.p)}</div>
+      <div class="hint" id="hint"${(dict && !clue) || tr ? " hidden" : ""}>${esc(w.h)}${w.pos ? ` <em>${esc(w.pos)}</em>` : ""}</div>
+      ${tr ? `<div class="stepper listen" role="group" aria-label="Number of boxes"><button class="btn" id="boxLess" type="button" aria-label="One box fewer">−</button><span id="boxCount"></span><button class="btn" id="boxMore" type="button" aria-label="One more box">+</button></div>` : ""}
       ${dict && clue && s.clue === "sound" ? `<p class="note">Sounds the same as another course word, so here is its meaning.</p>` : ""}
-      ${dict ? `<div class="controls listen"><button class="btn primary" id="playBtn" type="button">Play again</button><button class="btn" id="slowBtn" type="button">Play slowly</button></div>` : ""}
+      ${dict ? `<div class="controls listen"><button class="btn" id="playBtn" type="button">Play again</button><button class="btn" id="slowBtn" type="button">Play slowly</button></div>` : ""}
+      ${dict && !zhVoice ? `<p class="note"><b>No Mandarin voice found</b>, so nothing will play. On iPad, add one in Settings > Accessibility > Spoken Content > Voices > Chinese (China).</p>` : ""}
     </div>
-    <div class="boxes${tr ? " wrapping" : ""}" id="boxes">${Array.from({ length: n }, (_, k) => `
-      <div class="col">
-        <div class="box" style="width:${size}px;height:${size}px" data-k="${k}">${gridSvg()}<div class="hw" id="hw${k}"></div><canvas class="ink" width="${size}" height="${size}"></canvas></div>
-        <div class="model" hidden><div class="mw" id="mw${k}"></div><span class="mnote"></span></div>
-      </div>`).join("")}</div>
-    <div class="feedback" id="fb" aria-live="polite"></div>
-    <div class="controls" id="ctl">
-      <button class="btn" id="undoBtn" type="button">Undo stroke</button>
-      <button class="btn" id="clearBtn" type="button">Clear box</button>
+    <div class="boxes${tr || perRow < n ? " wrapping" : ""}" id="boxes"${tr || perRow < n ? ` style="width:${perRow * size + (perRow - 1) * 12}px"` : ""}>${Array.from({ length: n }, (_, k) => boxHtml(k)).join("")}</div>
+    <div class="notes" id="fbx"></div>
+    <div class="dock" id="dock">
+    <div class="inktools" id="tools"><!-- in the dock, so Undo is always within reach of the Pencil -->
+      <button class="btn small" id="undoBtn" type="button">Undo stroke</button>
+      <button class="btn small" id="clearBtn" type="button">Clear box</button>
+    </div>
+    <div class="feedback" id="fb" aria-live="polite">${again ? `<span class="pill warn">Practice try, your first one is already scored</span>` : ""}</div>
+    <div class="controls pinned" id="ctl">
       <button class="btn" id="hintBtn" type="button">Hint</button>
       ${dict || tr ? `<button class="btn" id="pyBtn" type="button">Show pinyin</button>` : `<button class="btn" id="hearBtn" type="button">Hear it</button>`}
-      <button class="btn" id="revealBtn" type="button">Show answer</button>
       <button class="btn primary" id="checkBtn" type="button">Check</button>
+      <button class="btn quiet" id="revealBtn" type="button"${drill && !drillHide ? " hidden" : ""}>Show answer</button>
+    </div>
     </div>
   </div>`;
-  $("#quit").onclick = () => drill ? renderPicker(s.lesson) : finish();
-  if (drill) $("#hideBtn").onclick = () => { drillHide = !drillHide; $("#drillWord").hidden = drillHide; $("#hideBtn").textContent = drillHide ? "Show the word" : "Hide the word"; };
+  // End sits where a resting palm lands, so a graded round asks for a second tap before it stops
+  let ending = 0;
+  $("#quit").onclick = () => {
+    if (drill) return renderPicker(s.lesson);
+    if (!s.results.length && !st.order.length) return go("home"); // nothing written or scored: nothing to lose
+    if (Date.now() - ending < 5000) return finish();
+    ending = Date.now();
+    $("#quit").textContent = `End now? ${s.results.length} of ${s.words.length} done`;
+    setTimeout(() => { if ($("#quit")) $("#quit").textContent = "End"; }, 5000);
+  };
+  if (drill) $("#hideBtn").onclick = () => { drillHide = !drillHide; $("#drillWord").hidden = drillHide; $("#hideBtn").textContent = drillHide ? "Show the word" : "Hide the word"; $("#revealBtn").hidden = !drillHide; }; // with the word on screen, Show answer has nothing to show
   if (dict) {
     $("#playBtn").onclick = () => speak(w.t);
     $("#slowBtn").onclick = () => speak(w.t, 0.5);
     speak(w.t); // runs inside the tap that opened this card, so iPad Safari allows it
   } else if (!tr) $("#hearBtn").onclick = () => speak(w.t);
-  if (tr) {
-    // changing the number of boxes keeps what's written (the removed last box's ink goes with it)
-    const resize = to => { if (to < 1 || to > 24 || st.done) return; s.keep = { ink: st.ink, size }; s.nbox = to; renderCard(); };
-    $("#boxLess").onclick = () => resize(n - 1);
-    $("#boxMore").onclick = () => resize(n + 1);
-  }
 
   const st = { ink: Array.from({ length: n }, () => []), order: [], hints: 0, revealed: false, done: false, marks: null, writers: [], models: [] };
   s.cur = st;
   const boxes = [...main.querySelectorAll(".box")];
   const canvases = boxes.map(b => b.querySelector("canvas.ink"));
   const dpr = Math.min(window.devicePixelRatio || 1, 3);
-  canvases.forEach(cv => { cv.width = size * dpr; cv.height = size * dpr; cv.getContext("2d").setTransform(dpr, 0, 0, dpr, 0, 0); });
   const loader = (ch, onLoad, onErr) => STROKES[ch] ? onLoad(STROKES[ch]) : onErr(new Error("no data for " + ch));
-  [...w.t].slice(0, n).forEach((c, k) => {
-    st.writers[k] = HanziWriter.create("hw" + k, c, {
-      width: size, height: size, padding: pad, showCharacter: false, showOutline: tracing,
+  const writerFor = (k, c, show) => {
+    const wr = HanziWriter.create("hw" + k, c, {
+      width: size, height: size, padding: pad, showCharacter: show, showOutline: tracing,
       strokeColor: C.jade, outlineColor: "rgba(127,127,127,.28)", renderer: "svg", charDataLoader: loader,
     });
-  });
+    // a viewBox lets the model and outline scale with the box if it shrinks
+    const svg = $("#hw" + k + " svg");
+    if (svg) { svg.setAttribute("viewBox", `0 0 ${size} ${size}`); svg.style.width = svg.style.height = "100%"; }
+    return wr;
+  };
+  const sizeCanvas = cv => { cv.width = size * dpr; cv.height = size * dpr; cv.getContext("2d").setTransform(dpr, 0, 0, dpr, 0, 0); };
+  canvases.forEach(sizeCanvas);
+  [...w.t].slice(0, n).forEach((c, k) => { st.writers[k] = writerFor(k, c, false); });
+  // translation adds and removes boxes in place, so what's written, hints and shown pinyin all stay
+  const setCount = m => {
+    m = Math.max(1, Math.min(24, m));
+    while (boxes.length < m) {
+      const k = boxes.length;
+      $("#boxes").insertAdjacentHTML("beforeend", boxHtml(k));
+      const b = $("#boxes").lastElementChild.querySelector(".box"), cv = b.querySelector("canvas.ink");
+      boxes.push(b); canvases.push(cv); sizeCanvas(cv); st.ink.push([]);
+      if ([...w.t][k]) st.writers[k] = writerFor(k, [...w.t][k], false);
+    }
+    while (boxes.length > m) {
+      const k = boxes.length - 1;
+      boxes.pop().parentElement.remove(); canvases.pop(); st.ink.pop(); st.writers.length = Math.min(st.writers.length, k);
+      st.order = st.order.filter(x => x !== k);
+    }
+    s.nbox = m;
+    $("#boxCount").textContent = `${m} box${m === 1 ? "" : "es"}`;
+  };
+  if (tr) {
+    setCount(n);
+    // − only takes away an empty last box, so it can never throw away writing
+    $("#boxLess").onclick = () => { if (st.done) return; if (st.ink[boxes.length - 1].length) { $("#fb").innerHTML = `<span class="pill warn">Clear the last box first to remove it</span>`; return; } setCount(boxes.length - 1); };
+    $("#boxMore").onclick = () => { if (!st.done) setCount(boxes.length + 1); };
+  }
 
   // ink: each stroke is a list of {x, y, w} points in box pixels, drawn with Pencil pressure
   const base = Math.max(4, size / 26);
@@ -820,7 +1041,7 @@ function renderCard() {
   ["touchstart", "touchmove"].forEach(t => container.addEventListener(t, block, { passive: false }));
   let active = null;
   const lastTap = { k: -1, t: 0 };
-  const ptIn = (e, cv) => { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top, w: widthFor(e) }; };
+  const ptIn = (e, cv) => { const r = cv.getBoundingClientRect(), f = size / r.width; return { x: (e.clientX - r.left) * f, y: (e.clientY - r.top) * f, w: widthFor(e) }; };
   container.addEventListener("pointerdown", e => {
     if (st.done) return;
     if (e.pointerType === "pen" && !P.settings.sawPencil) { P.settings.sawPencil = true; save(); }
@@ -856,15 +1077,13 @@ function renderCard() {
       drawSeg(ctx, prev, p, C.ink);
     }
   });
-  const end = e => { if (active && e.pointerId === active.id) active = null; };
+  const end = e => {
+    if (!active || e.pointerId !== active.id) return;
+    if (tr && active.k === boxes.length - 1) setCount(boxes.length + 1); // writing in the last box opens the next one
+    active = null;
+  };
   container.addEventListener("pointerup", end);
   container.addEventListener("pointercancel", end);
-  // ink carried over from before the box count changed, scaled to the new box size
-  if (s.keep) {
-    const f = size / s.keep.size;
-    s.keep.ink.slice(0, n).forEach((strokes, k) => { st.ink[k] = strokes.map(stroke => stroke.map(p => ({ x: p.x * f, y: p.y * f, w: p.w * f }))); strokes.forEach(() => st.order.push(k)); redraw(k); });
-    s.keep = null;
-  }
 
   $("#undoBtn").onclick = () => { if (st.done || !st.order.length) return; const k = st.order.pop(); st.ink[k].pop(); redraw(k); };
   // Clear empties the box written in most recently; a finger double-tap empties the tapped box
@@ -880,22 +1099,25 @@ function renderCard() {
   // the accepted answers that fit this many boxes; in translation 你 and 您 count as the same,
   // except when the note asks for polite speech, and 你们 never becomes 您们
   const swap = tr && !/polite/.test(w.note || "");
-  const answers = [...new Set([w.t, ...(w.alts || [])].filter(a => [...a].length === n)
+  const answersFor = m => [...new Set([w.t, ...(w.alts || [])].filter(a => [...a].length === m)
     .flatMap(a => swap ? [a, a.replace(/您/g, "你"), a.replace(/你(?!们)/g, "您")] : [a]))];
   const toChar = p => { const scale = (size - 2 * pad) / 1024; return { x: (p.x - pad) / scale, y: (size - 124 * scale - pad - p.y) / scale }; };
   // marks the ink against every accepted answer and keeps the one it matches best;
   // answers share most characters, so each box is marked once per distinct character (99 calls → 13 at worst)
   const markInk = () => {
     const mode = markingMode(), ink = st.ink.map(strokes => strokes.map(stroke => stroke.map(toChar))), seen = new Map();
-    const markBox = (k, c) => seen.get(k + c) || seen.set(k + c, Mark.character(ink[k], STROKES[c], mode)).get(k + c);
+    // an empty box is simply "not written", so the stroke matcher never sees an empty attempt
+    const markBox = (k, c) => seen.get(k + c) || seen.set(k + c, ink[k].length ? Mark.character(ink[k], STROKES[c], mode) : { marks: [], good: 0, expected: STROKES[c].medians.length, drawn: 0, correct: false }).get(k + c);
     let best = null;
-    for (const a of answers) {
+    for (const a of answersFor(st.ink.length)) {
       const marks = [...a].map((c, k) => markBox(k, c)), good = marks.reduce((x, m) => x + m.good, 0);
       if (!best || good > best.good) best = { a, marks, good };
     }
     st.answer = best.a; st.marks = best.marks;
   };
-  const noFit = () => tr && !answers.length;
+  const noFit = () => tr && !answersFor(boxes.length).length;
+  // empty boxes after the last one written in don't count (they're dropped, keeping at least one)
+  const trim = () => { let u = st.ink.length; while (u > 1 && !st.ink[u - 1].length) u--; setCount(u); };
   // seeing the pinyin counts as a hint, like the outline
   if (dict || tr) $("#pyBtn").onclick = () => {
     if (st.done || !$("#py").hidden) return;
@@ -903,17 +1125,21 @@ function renderCard() {
   };
   $("#revealBtn").onclick = () => {
     if (st.done) return;
-    if (noFit()) { s.nbox = [...w.t].length; renderCard(); return $("#revealBtn").click(); } // show the model answer in its own number of boxes
+    if (tr) { trim(); if (noFit() || !st.order.length) setCount([...w.t].length); } // nothing that fits: show the main answer in its own number of boxes
     st.revealed = true; check(true);
   };
   $("#checkBtn").onclick = () => {
     if (st.done) return;
-    if (noFit()) { $("#fb").innerHTML = `<span class="pill warn">No accepted answer has ${n} characters. Change the number of boxes.</span>`; return; }
+    if (tr) trim();
+    const m = st.ink.length;
+    // Write and 听写 can be checked with some boxes empty (a half-remembered word is still worth marking);
+    // a translation needs every box it is checked with
     const empty = st.ink.findIndex(a => !a.length);
-    if (empty >= 0) {
-      $("#fb").innerHTML = `<span class="pill warn">${n > 1 ? `Box ${empty + 1} is still empty` : "Write the character first"}</span>`;
+    if (empty >= 0 && (tr || st.ink.every(a => !a.length))) {
+      $("#fb").innerHTML = `<span class="pill warn">${m > 1 && tr ? `Box ${empty + 1} is still empty` : "Write something first"}</span>`;
       return;
     }
+    if (noFit()) { $("#fb").innerHTML = `<span class="pill warn">No accepted answer has ${m} character${m === 1 ? "" : "s"}. Check the number of boxes.</span>`; return; }
     check(false);
   };
 
@@ -921,7 +1147,14 @@ function renderCard() {
     st.done = true;
     markInk();
     canvases.forEach((_, k) => redraw(k));
-    if (revealed) st.writers.forEach(wr => wr.showCharacter());
+    // the boxes show the same accepted answer as the reference row below (in translation it can differ from the main one)
+    if (revealed) canvases.forEach(cv => { cv.style.opacity = ".3"; }); // your strokes fade so the shown answer reads clearly
+    if (revealed) [...st.answer].forEach((c, k) => {
+      const wr = st.writers[k];
+      if (!wr) st.writers[k] = writerFor(k, c, true);
+      else if (c === [...w.t][k]) wr.showCharacter();
+      else wr.setCharacter(c).then(() => wr.showCharacter());
+    });
     if (dict || tr) $("#py").hidden = false;
     if (dict) $("#hint").hidden = false;
     const allCorrect = st.marks.every(m => m.correct);
@@ -931,96 +1164,109 @@ function renderCard() {
     else if (allCorrect && !st.hints) result = "good";
     else if (allCorrect || strokesOk / strokesExp >= 0.75) result = "close";
     else result = "miss";
-    const graded = !tracing && !drill, store = tr ? P.tr : P.w;
+    const graded = !tracing && !drill && !again, store = tr ? P.tr : P.w;
     const before = graded && store[w.id] ? { ...store[w.id] } : null; // kept so "It was right" can undo this grade
     const record = r => {
       if (tr) { const x = P.tr[w.id] = P.tr[w.id] || { n: 0, c: 0 }; x.n++; if (r !== "miss") x.c++; x.last = Date.now(); }
       else grade(w.id, r);
     };
     const res = { w, result, hints: st.hints, revealed, bad: strokesExp - strokesOk };
+    // your own writing, with its stroke marks, for the copybook page at the end of the round
+    const snap = () => { res.ink = st.ink.some(a => a.length) ? canvases.map(cv => cv.toDataURL()) : null; };
+    snap();
     if (graded) { record(result); s.results.push(res); save(); }
 
-    // model characters under each box, with a note on what went wrong
+    // model characters under each box, with a note on what went wrong; bigger under big iPad boxes
+    const ms = size >= 200 ? 88 : 64;
+    $("#boxes").style.setProperty("--mw", ms + "px");
     boxes.forEach((b, k) => {
       const m = st.marks[k], col = b.parentElement, note = col.querySelector(".mnote");
-      b.classList.add(m.correct ? "done" : "wrongbox");
-      col.querySelector(".model").hidden = false;
-      st.models[k] = HanziWriter.create("mw" + k, [...st.answer][k], { width: 64, height: 64, padding: 3, strokeColor: C.ink, renderer: "svg", charDataLoader: loader, strokeAnimationSpeed: 1.4, delayBetweenStrokes: 150 });
+      if (!revealed) b.classList.add(m.correct ? "done" : "wrongbox"); // a shown answer is a study aid, not a mistake
+      col.querySelector(".model").hidden = revealed; // a shown answer is already in the boxes; no second copy underneath
+      st.modelFor = (k, ms) => { $("#mw" + k).innerHTML = ""; st.models[k] = HanziWriter.create("mw" + k, [...st.answer][k], { width: ms, height: ms, padding: 3, strokeColor: C.ink, renderer: "svg", charDataLoader: loader, strokeAnimationSpeed: 1.4, delayBetweenStrokes: 150 }); };
+      st.modelFor(k, ms); st.ms = ms;
       const order = m.marks.filter(x => x === "order").length, back = m.marks.filter(x => x === "backwards").length;
       const msgs = [];
       if (m.correct) msgs.push("All strokes right");
       else {
-        if (m.drawn !== m.expected) msgs.push(`${m.drawn} strokes, should be ${m.expected}`);
+        if (m.drawn !== m.expected) msgs.push(`${m.drawn} stroke${m.drawn === 1 ? "" : "s"}, should be ${m.expected}`);
         if (order) msgs.push(`${order} out of order`);
         if (back) msgs.push(`${back} written backwards`);
         const wrong = m.marks.filter(x => x === "wrong" || x === "extra").length;
         if (wrong) msgs.push(`${wrong} wrong shape or place`);
         if (!msgs.length) msgs.push(`${m.good} of ${m.expected} strokes right`);
       }
-      note.textContent = msgs.join(" · ");
-      note.className = "mnote " + (m.correct ? "good" : "bad");
+      note.textContent = revealed ? "" : m.drawn ? msgs.join(" · ") : "Not written"; // a shown answer is for studying, so the attempt is not graded
+      // a box far from the character (a word not known yet) gets a quiet note; red is for a real attempt that went wrong
+      note.className = "mnote " + (m.correct ? "good" : Math.abs(m.drawn - m.expected) > 2 ? "" : "bad");
     });
 
-    const label = tracing ? (allCorrect ? "Traced correctly" : "Check the coloured strokes, then try from memory") : revealed ? "Answer shown" : drill ? (allCorrect ? "Correct" : "Not quite, check the coloured strokes") : { good: "Correct", close: allCorrect ? `Correct, with ${st.hints} hint${st.hints === 1 ? "" : "s"}` : "Nearly, check the red strokes", miss: "Not quite, this one comes back soon" }[result];
-    const cls = { good: "good", close: "warn", miss: "bad" }[result];
-    $("#fb").innerHTML = `<span class="pill ${cls}"><span class="han">${esc(w.d)}</span>${esc(label)}</span>` +
-      (tr && w.altD.length ? `<p class="note legend">Also accepted: <span class="han-inline">${w.altD.map(esc).join("　")}</span></p>` : "") +
-      (allCorrect ? "" : `<p class="note legend"><b class="lg-warn">Amber</b> strokes are out of order or backwards. <b class="lg-bad">Red</b> strokes are the wrong shape or in the wrong place.</p>`);
-    const say = () => speak(tr ? w.d : w.t);
+    const label = tracing ? (allCorrect ? "Traced correctly" : "Check the coloured strokes, then try from memory") : revealed ? "Answer shown" : again ? (allCorrect ? "Correct this time" : "Still some red strokes") : drill ? (allCorrect ? "Correct" : "Not quite, check the coloured strokes") : { good: "Correct", close: allCorrect ? `Correct, with ${st.hints} hint${st.hints === 1 ? "" : "s"}` : "Nearly, check the red strokes", miss: "Not quite, this one comes back soon" }[result];
+    const cls = revealed ? "shown" : { good: "good", close: "warn", miss: "bad" }[result];
+    // translation names the answer it marked against; the others it accepts are listed after it
+    const shown = tr && st.answer !== w.t ? st.answer : w.d;
+    const others = tr ? [w.d, ...w.altD].filter(a => hanOnly(a) !== st.answer) : [];
+    // the verdict and its overrule ride in the bottom dock with Next, so they're on screen however tall the card is;
+    // the longer notes (other accepted answers, the colour key) sit under the boxes
+    $("#fb").innerHTML = `<div class="verdict"><span class="pill ${cls}${tr ? " long" : ""}"><span class="han">${esc(shown)}</span>${esc(label)}</span>` +
+      (graded && !allCorrect && !revealed ? `<button class="btn small" id="overrideBtn" type="button">It was right</button>` : "") + `</div>`;
+    $("#fbx").innerHTML = (others.length ? `<p class="note legend">Also accepted: <span class="han-inline">${others.map(esc).join("　")}</span></p>` : "") +
+      (!st.marks.some(m => m.marks.some(x => x === "order" || x === "backwards")) ? "" /* the key is for amber; red speaks for itself */ : `<p class="note legend key"><b class="lg-warn">Amber</b> strokes are out of order or backwards. <b class="lg-bad">Red</b> strokes are the wrong shape or in the wrong place.</p>`);
+    const say = () => speak(tr ? shown : w.t);
     say();
+    $("#tools").hidden = true;
+    if (tr) $(".stepper").hidden = true; // the count is settled once marked
+    $("#ctl").classList.add("after"); // still pinned, so Next stays on screen however tall the marked card is
     $("#ctl").innerHTML = `
-      <button class="btn" id="animBtn" type="button">Watch stroke order</button>
-      <button class="btn" id="hearBtn2" type="button">Hear it</button>
-      ${graded && !allCorrect && !revealed ? `<button class="btn" id="overrideBtn" type="button">It was right</button>` : ""}
-      ${drill ? `<button class="btn" id="drillNext" type="button">${s.i + 1 < s.words.length ? "Next word" : "Finish"}</button>` : `<button class="btn" id="againBtn" type="button">Write it again</button>`}
+      <button class="btn" id="animBtn" type="button">Stroke order</button>
+      ${dict ? "" : `<button class="btn" id="hearBtn2" type="button">Hear it</button>`}
+      ${drill ? `<button class="btn" id="drillNext" type="button">${s.i + 1 < s.words.length ? "Next word" : "Finish"}</button>` : `<button class="btn" id="againBtn" type="button">Write again</button>`}
       <button class="btn primary" id="nextBtn" type="button">${nextLabel}</button>`;
-    $("#hearBtn2").onclick = say;
+    if ($("#hearBtn2")) $("#hearBtn2").onclick = say; // 听写 keeps its own Play again above
     // the marker can be wrong about good handwriting: put the record back as it was, then grade it as right
-    if ($("#overrideBtn")) $("#overrideBtn").onclick = () => {
-      if (before) store[w.id] = before; else delete store[w.id];
-      res.result = st.hints ? "close" : "good"; res.bad = 0; res.overridden = true;
-      record(res.result); save();
-      boxes.forEach(b => { b.classList.remove("wrongbox"); b.classList.add("done"); });
-      $("#fb").innerHTML = `<span class="pill good"><span class="han">${esc(w.d)}</span>Marked correct by you</span>`;
-      $("#overrideBtn").remove();
-    };
+    // once overruled the strokes go back to plain ink and the notes clear; Undo puts the marker's verdict back
+    if ($("#overrideBtn")) {
+      const marked = { rec: store[w.id] ? { ...store[w.id] } : null, res: { ...res }, marks: st.marks, pill: $("#fb .pill").outerHTML };
+      const notes = boxes.map(b => b.parentElement.querySelector(".mnote"));
+      const noteWas = notes.map(x => [x.textContent, x.className]);
+      const overrule = () => {
+        if (before) store[w.id] = { ...before }; else delete store[w.id];
+        Object.assign(res, { result: st.hints ? "close" : "good", bad: 0, overridden: true });
+        record(res.result); save();
+        st.marks = null; canvases.forEach((_, k) => redraw(k)); snap();
+        boxes.forEach(b => { b.classList.remove("wrongbox"); b.classList.add("done"); });
+        notes.forEach(x => { x.textContent = ""; });
+        $("#fb .pill").outerHTML = `<span class="pill good"><span class="han">${esc(shown)}</span>Marked correct by you</span>`;
+        if ($("#fbx .key")) $("#fbx .key").hidden = true;
+        $("#overrideBtn").textContent = "Undo"; $("#overrideBtn").onclick = undo;
+      };
+      const undo = () => {
+        if (marked.rec) store[w.id] = { ...marked.rec }; else delete store[w.id];
+        for (const k in res) delete res[k];
+        Object.assign(res, marked.res); save();
+        st.marks = marked.marks; canvases.forEach((_, k) => redraw(k)); snap();
+        boxes.forEach((b, k) => { b.classList.remove("done"); b.classList.add(st.marks[k].correct ? "done" : "wrongbox"); });
+        notes.forEach((x, k) => { [x.textContent, x.className] = noteWas[k]; });
+        $("#fb .pill").outerHTML = marked.pill;
+        if ($("#fbx .key")) $("#fbx .key").hidden = false;
+        $("#overrideBtn").textContent = "It was right"; $("#overrideBtn").onclick = overrule;
+      };
+      $("#overrideBtn").onclick = overrule;
+    }
     if (drill) $("#drillNext").onclick = () => { s.reps = 0; s.i++; if (s.i < s.words.length) renderCard(); else renderPicker(s.lesson); };
-    $("#animBtn").onclick = async () => { for (const m of st.models) await m.animateCharacter(); };
+    // plays in the small model under each box, or in the box itself where the answer was shown there
+    $("#animBtn").onclick = async () => { for (const [k, m] of st.models.entries()) await (boxes[k].parentElement.querySelector(".model").hidden && st.writers[k] ? st.writers[k] : m).animateCharacter(); };
     if (!drill) $("#againBtn").onclick = () => practiseAgain();
     $("#nextBtn").onclick = goNext;
     $("#nextBtn").focus({ preventScroll: true });
+    const model0 = boxes[0].parentElement.querySelector(".model"); // the first stroke note clears the dock, however tall the dock is
+    // the notes under the boxes (other accepted answers, the colour key) come into view too when there are any
+    const clear = $("#fbx").textContent ? $("#fbx") : model0;
+    clear.style.scrollMarginBottom = $("#dock").offsetHeight + 16 + "px"; clear.scrollIntoView({ block: "nearest" });
   }
 
-  // extra practice on the same word; the first attempt's grade stands
-  function practiseAgain() {
-    st.done = false; st.marks = null; st.ink.forEach(a => a.length = 0); st.order = [];
-    canvases.forEach((_, k) => redraw(k));
-    st.writers.forEach(wr => wr.hideCharacter());
-    boxes.forEach(b => b.classList.remove("done", "wrongbox"));
-    $("#fb").innerHTML = `<span class="pill warn">Practice round, your first try is already scored</span>`;
-    $("#ctl").innerHTML = `
-      <button class="btn" id="undo2" type="button">Undo stroke</button>
-      <button class="btn" id="clear2" type="button">Clear box</button>
-      <button class="btn primary" id="check2" type="button">Check</button>`;
-    $("#undo2").onclick = () => { if (st.done || !st.order.length) return; const k = st.order.pop(); st.ink[k].pop(); redraw(k); };
-    $("#clear2").onclick = () => st.clearBox(st.order[st.order.length - 1]);
-    $("#check2").onclick = () => {
-      if (st.ink.some(a => !a.length)) return;
-      st.done = true;
-      markInk();
-      canvases.forEach((_, k) => redraw(k));
-      boxes.forEach((b, k) => b.classList.add(st.marks[k].correct ? "done" : "wrongbox"));
-      const ok = st.marks.every(m => m.correct);
-      $("#fb").innerHTML = `<span class="pill ${ok ? "good" : "bad"}"><span class="han">${esc(w.d)}</span>${ok ? "Correct this time" : "Still some red strokes"}</span>`;
-      $("#ctl").innerHTML = `
-        <button class="btn" id="animBtn" type="button">Watch stroke order</button>
-        ${drill ? "" : `<button class="btn" id="againBtn" type="button">Write it again</button>`}
-        <button class="btn primary" id="nextBtn" type="button">${nextLabel}</button>`;
-      $("#animBtn").onclick = async () => { for (const m of st.models) await m.animateCharacter(); };
-      if (!drill) $("#againBtn").onclick = () => practiseAgain();
-      $("#nextBtn").onclick = goNext;
-    };
-  }
+  // extra practice on the same word: a fresh card with the answer hidden again; the first attempt's grade stands
+  function practiseAgain() { s.again = true; renderCard(); }
 }
 
 /* ---------------- Translation (exercises/translation.json) ---------------- */
@@ -1072,7 +1318,7 @@ function renderTranslate(lesson) {
       <div class="field"><span class="lbl">How many</span><div class="seg" id="segTr">
         <button type="button" data-v="10">10</button><button type="button" data-v="25">25</button><button type="button" data-v="0">All</button>
       </div></div>
-      <p class="note">${items.length} sentences in lesson ${esc(lesson)}, ${items.filter(right).length} you've already got right. Ones you haven't got right yet come first. If your answer has a different number of characters, change the number of boxes before you write.</p>
+      <p class="note">${items.length} sentences in lesson ${esc(lesson)}, ${items.filter(right).length} you've already got right. Ones you haven't got right yet come first. Boxes are added as you write; − and + change the count if you need to.</p>
       <div class="settings-row"><button class="btn primary" id="trGo" type="button"${items.length ? "" : " disabled"}>Start</button><button class="btn" id="back" type="button">Back</button></div>
     </section>
   </div>`;
@@ -1099,17 +1345,17 @@ function finish() {
   main.innerHTML = `
   <div class="view">
     <div><div class="eyebrow">${esc(s.label)} · ${modeName}</div><h2>Results</h2></div>
-    <div class="score"><span class="big">${good}/${res.length}</span><span>correct${close ? `, plus ${close} nearly right` : ""}</span></div>
-    ${res.length ? `<div class="results">${res.map(r => `
+    <div class="score"><span class="big">${good}/${res.length}</span><span>correct${close ? `, plus ${close} nearly right` : ""}${res.length < s.words.length ? ` · ${s.words.length - res.length} not reached` : ""}</span></div>
+    ${res.length ? `<div class="results${s.tr ? " tr" : ""}">${res.map(r => `
       <div class="row"><span class="han">${esc(r.w.d)}</span><span>${esc(r.w.p)}</span><span class="muted">${esc(r.w.h)}</span>
-      <span class="pill ${{ good: "good", close: "warn", miss: "bad" }[r.result]}">${r.overridden ? "Your call" : r.result === "good" ? "Perfect" : r.result === "close" ? (r.bad ? `${r.bad} stroke${r.bad === 1 ? "" : "s"} off` : `${r.hints} hint${r.hints === 1 ? "" : "s"}`) : r.revealed ? "Shown" : "Missed"}</span></div>`).join("")}</div>` : `<p class="note">No words finished in this round.</p>`}
+      <span class="pill ${r.revealed && !r.overridden ? "shown" : { good: "good", close: "warn", miss: "bad" }[r.result]}">${r.overridden ? "Your call" : r.result === "good" ? "Perfect" : r.result === "close" ? (r.bad ? `${r.bad} stroke${r.bad === 1 ? "" : "s"} off` : `${r.hints} hint${r.hints === 1 ? "" : "s"}`) : r.revealed ? "Shown" : "Missed"}</span>${r.ink ? `<span class="inkrow" role="img" aria-label="Your writing">${r.ink.map(src => `<img src="${src}" alt="">`).join("")}</span>` : ""}</div>`).join("")}</div>` : `<p class="note">No ${s.tr ? "sentences" : "words"} finished in this round.</p>`}
     <div class="settings-row">
       ${missed.length ? `<button class="btn primary" id="retry" type="button">Practise the ${missed.length} again</button>` : ""}
-      <button class="btn" id="home" type="button">Back to lessons</button>
+      <button class="btn" id="home" type="button">Home</button>
     </div>
   </div>`;
   $("#home").onclick = () => go("home");
-  const rt = $("#retry"); if (rt) rt.onclick = () => startWrite(shuffle(missed), s.label + " (retry)", { dict: s.dict, clue: s.clue, tr: s.tr });
+  const rt = $("#retry"); if (rt) rt.onclick = () => startWrite(shuffle(missed), s.label.replace(/ \(retry\)$/, "") + " (retry)", { dict: s.dict, clue: s.clue, tr: s.tr });
   session = null;
 }
 
@@ -1128,7 +1374,7 @@ function stageLabel(id) {
   const r = rec(id);
   if (!r) return { cls: "new", text: "New" };
   if (r.st >= 3) return { cls: "good", text: "Mastered" };
-  return { cls: "warn", text: "Learning" };
+  return { cls: "learn", text: "Learning" }; // in progress is normal, not a warning
 }
 
 function renderLearn(lesson) {
@@ -1140,7 +1386,7 @@ function renderLearn(lesson) {
   <div class="view">
     <div class="sechead"><div><div class="eyebrow">Learn mode</div><h2>Learn the words of a lesson</h2></div>
       <div class="field" style="min-width:200px"><label for="learnSel" class="lbl">Lesson</label><select id="learnSel">${lessonOptions(learnLesson)}</select></div></div>
-    <p class="note">${ws.length} words in lesson ${esc(learnLesson)}, ${fresh} you haven't practised yet. A good order: word list, flashcards, trace and copy, then the match game and tones.</p>
+    <p class="note">${ws.length} words in lesson ${esc(learnLesson)}, ${fresh ? `${fresh} you haven't practised yet` : "all practised"}. A good order: word list, flashcards, trace and copy, then the match game and tones.</p>
     <section class="modes tools">
       <button class="mode" type="button" data-t="list"><span class="glyph">词</span><b>Word list</b><small>Every word with audio, stroke order, the radical and related course words.</small></button>
       <button class="mode" type="button" data-t="cards"><span class="glyph">卡</span><b>Flashcards</b><small>Flip, then rate how well you knew it. Ratings set when each card returns.</small></button>
@@ -1148,10 +1394,12 @@ function renderLearn(lesson) {
       <button class="mode" type="button" data-t="match"><span class="glyph">配</span><b>Match game</b><small>Pair characters with their meaning or pinyin, against the clock.</small></button>
       <button class="mode" type="button" data-t="tones"><span class="glyph">声</span><b>Tone trainer</b><small>Hear the word and pick the tone of each syllable.</small></button>
       <button class="mode" type="button" data-t="drill"><span class="glyph">练</span><b>Practise words</b><small>Pick words from any lessons and write each one again and again.</small></button>
-      <button class="mode" type="button" data-t="flagged"><span class="glyph">旗</span><b>Flagged words</b><small>${flaggedWords().length || "No"} flagged word${flaggedWords().length === 1 ? "" : "s"}. Practise them with flashcards or Write mode, or unflag them.</small></button>
+      <button class="mode" type="button" data-t="flagged"><span class="glyph">旗</span><b>Flagged words</b><small>${flaggedWords().length ? `${flaggedWords().length} flagged word${flaggedWords().length === 1 ? "" : "s"}. Practise them with flashcards or Write mode, or unflag them.` : "None yet. Flag a word from the word list, a flashcard or a reading passage."}</small></button>
     </section>
+    <div class="settings-row"><button class="btn" id="back" type="button">Back</button></div>
   </div>`;
   $("#learnSel").onchange = e => renderLearn(e.target.value);
+  $("#back").onclick = () => go("home");
   main.querySelectorAll(".tools .mode").forEach(b => b.onclick = () => {
     const t = b.dataset.t;
     if (t === "list") renderWordList(learnLesson);
@@ -1177,7 +1425,7 @@ function renderWordList(lesson, from = "learn") {
       <button class="btn" id="backLearn" type="button">${from === "home" ? "Back" : "Back to Learn"}</button></div>
     <div class="settings-row"><button class="btn primary" id="wlWrite" type="button">Write these words</button><button class="btn" id="wlCards" type="button">Flashcards</button>
       <button class="btn" id="wlCur" type="button"${lesson === P.cur ? " disabled" : ""}>${lesson === P.cur ? "This is your current lesson" : `Make ${esc(lesson)} my current lesson`}</button></div>
-    <p class="note">Tap a word to see its stroke order. The radical, the part that hints at meaning, is shown in red.</p>
+    <p class="note">Tap a word to see its stroke order, with the radical (the part that hints at meaning) in green. Red is kept for marking.</p>
     <div class="wlist">${ws.map(w => {
       const s = stageLabel(w.id);
       return `<div class="wrow" data-id="${w.id}">
@@ -1210,12 +1458,12 @@ function renderWordList(lesson, from = "learn") {
         ${w.pos ? `<span class="note">Part of speech: ${esc(w.pos)}</span>` : ""}<span class="note">Lesson ${esc(w.l)}</span></div>
         ${relU.length ? `<div><div class="eyebrow">Course words that share a character</div><div class="related">${relU.map(o => `<span class="rel"><span class="han">${esc(o.d)}</span> ${esc(o.p)} · ${esc(o.h)} <em>${esc(o.l)}</em></span>`).join("")}</div></div>` : ""}`;
       const writers = [...w.t].map((c, k) => HanziWriter.create(`an${w.id}_${k}`, c, {
-        width: 120, height: 120, padding: 6, strokeColor: C.ink, radicalColor: C.grid, renderer: "svg",
+        width: 120, height: 120, padding: 6, strokeColor: C.ink, radicalColor: C.jade, renderer: "svg",
         charDataLoader: charLoader, strokeAnimationSpeed: 1.2, delayBetweenStrokes: 180,
       }));
       const play = async () => { for (const wr of writers) await wr.animateCharacter(); };
       body.querySelector('[data-a="play"]').onclick = () => speak(w.t);
-      body.querySelector('[data-a="anim"]').onclick = play;      speak(w.t); play();
+      body.querySelector('[data-a="anim"]').onclick = play;      speak(w.t); if (!matchMedia("(prefers-reduced-motion: reduce)").matches) play(); // stroke order plays on open unless motion is reduced
     };
   });
 }
@@ -1319,7 +1567,7 @@ function showCard() {
     <div class="ptop">
       <button class="iconbtn" id="quit" type="button">End</button>
       <div class="track"><i style="width:${100 * s.done / s.total}%"></i></div>
-      <span class="count">${s.done} / ${s.total}</span>
+      <span class="count">${Math.min(s.done + 1, s.total)} / ${s.total}</span>
       <button class="iconbtn" id="fcFlag" type="button"></button>
     </div>
     <button class="flash" id="flash" type="button" aria-live="polite">
@@ -1342,9 +1590,10 @@ function showCard() {
         <div class="fc-en">${esc(w.h)}</div>
         <div class="note">${w.pos ? esc(w.pos) + " · " : ""}Lesson ${esc(w.l)} · tap the card to hear it again</div>
       </div>`;
-    const size = Math.min(130, Math.floor((Math.min(main.clientWidth, 640) - 80) / w.t.length));
-    const ws = [...w.t].map((c, k) => HanziWriter.create("fa" + k, c, { width: size, height: size, padding: 4, strokeColor: C.ink, renderer: "svg", charDataLoader: charLoader, strokeAnimationSpeed: 1.5, delayBetweenStrokes: 120 }));
-    (async () => { for (const x of ws) await x.animateCharacter(); })();
+    // fits the card: its width less padding and the gaps between tiles, so a four-character word never spills out
+    const inner = Math.min(560, main.clientWidth - 32) - 52, size = Math.min(130, Math.floor((inner - (w.t.length - 1) * 10) / w.t.length));
+    // flipped many times a session, so the back shows the characters still; the word list has Replay strokes
+    [...w.t].forEach((c, k) => HanziWriter.create("fa" + k, c, { width: size, height: size, padding: 4, strokeColor: C.ink, renderer: "svg", charDataLoader: charLoader, strokeAnimationSpeed: 1.5, delayBetweenStrokes: 120 }));
     speak(w.t);
     $("#rate").innerHTML = `
       <button class="btn rate-again" data-r="again" type="button">Again</button>
@@ -1377,7 +1626,7 @@ function cardsDone() {
   main.innerHTML = `
   <div class="view">
     <div><div class="eyebrow">Learn · ${esc(s.label)}</div><h2>Flashcards done</h2></div>
-    <div class="score"><span class="big">${f.length}</span><span>cards: ${count("easy")} easy, ${count("good")} good, ${count("hard")} hard, ${count("again")} again</span></div>
+    <div class="score"><span class="big">${f.length}</span><span>${f.length === 1 ? "card" : "cards"}: ${count("easy")} easy, ${count("good")} good, ${count("hard")} hard, ${count("again")} again</span></div>
     ${weak.length ? `<p class="note">Still shaky: <span class="han-inline">${weak.map(w => esc(w.d)).join("、")}</span></p>` : ""}
     <div class="settings-row">
       ${weak.length ? `<button class="btn primary" id="weakCards" type="button">Flashcards for the ${weak.length} shaky words</button><button class="btn" id="weakTrace" type="button">Trace and copy them</button>` : ""}
@@ -1496,10 +1745,11 @@ function showTone() {
     </div>
     <div class="settings-row" style="justify-content:center">
       <button class="btn" id="tPlay" type="button">Play</button><button class="btn" id="tSlow" type="button">Play slowly</button>
+      ${zhVoice ? "" : `<p class="note"><b>No Mandarin voice found</b>, so nothing will play. On iPad, add one in Settings > Accessibility > Spoken Content > Voices > Chinese (China).</p>`}
       <button class="btn" id="tHide" type="button">${toneHide ? "Show characters" : "Hide characters"}</button>
     </div>
     <div class="tones">${w.tn.map((t, k) => `
-      <div class="tcol" data-k="${k}"><div class="han">${toneHide ? "·" : esc(w.t[k])}</div>
+      <div class="tcol" data-k="${k}" role="group" aria-label="Tone of syllable ${k + 1}"><div class="han">${toneHide ? "·" : esc(w.t[k])}</div>
         ${[1, 2, 3, 4, 5].map(n => `<button class="tbtn" type="button" data-n="${n}">${TONE_NAMES[n]}</button>`).join("")}
       </div>`).join("")}</div>
     <div class="feedback" id="fb"></div>
@@ -1526,7 +1776,7 @@ function showTone() {
       if (n === w.tn[k]) b.classList.add("right"); else if (n === picks[k]) b.classList.add("wrong");
     }));
     const sandhi = /[一不]/.test(w.t) ? " Note: 一 and 不 change tone in speech; the book's citation tone is marked here." : (w.tn.filter((t, k) => t === 3 && w.tn[k + 1] === 3).length ? " Note: two 3rd tones in a row: the first is spoken like a 2nd tone." : "");
-    $("#fb").innerHTML = `<span class="pill ${ok ? "good" : "bad"}"><span class="han">${esc(w.d)}</span>${esc(w.p)}</span>${sandhi ? `<p class="note legend">${esc(sandhi.trim())}</p>` : ""}`;
+    $("#fb").innerHTML = `<span class="pill ${ok ? "good" : "bad"}">${ok ? "Right" : "Not quite"}<span class="han">${esc(w.d)}</span>${esc(w.p)}</span>${sandhi ? `<p class="note legend">${esc(sandhi.trim())}</p>` : ""}`;
     speak(w.t, 0.8);
     $("#ctl").innerHTML = `<button class="btn primary" id="tNext" type="button">${s.i + 1 < s.words.length ? "Next" : "See results"}</button>`;
     $("#tNext").onclick = () => { s.i++; showTone(); };
@@ -1534,7 +1784,8 @@ function showTone() {
 }
 function tonesDone() {
   const s = session; if (!s) return renderLearn();
-  const n = s.i;
+  const n = s.right + s.missed.length; // words answered, even if End came before moving on
+  if (!n) { session = null; return renderLearn(s.lesson); } // nothing answered: no empty 0/0 page
   route = "summary";
   main.innerHTML = `
   <div class="view">
@@ -1586,7 +1837,11 @@ const revealLine = (zh, py, en, speaker) => `<button type="button" class="line" 
 // the panel for a tapped word: pinyin, meaning, hear it, flag it
 function wordPop(w) {
   let pop = $("#wordPop");
-  if (!pop) { pop = document.createElement("div"); pop.id = "wordPop"; pop.className = "wpop"; main.append(pop); }
+  if (!pop) { pop = document.createElement("div"); pop.id = "wordPop"; pop.className = "wpop"; pop.setAttribute("role", "dialog"); main.append(pop); }
+  pop.setAttribute("aria-label", w.d);
+  // focus moves into the card and back to where it came from when it closes
+  const opener = pop.isConnected && pop.opener ? pop.opener : document.activeElement;
+  pop.opener = opener;
   pop.innerHTML = `<span class="han">${esc(w.d)}</span><div class="wpop-txt"><b>${esc(w.p)}</b><span class="note">${esc(w.h)} · lesson ${esc(w.l)}</span></div>
     <button class="btn" id="wpHear" type="button">Hear</button><button class="btn" id="wpFlag" type="button"></button><button class="iconbtn" id="wpClose" type="button" aria-label="Close">✕</button>`;
   $("#wpHear").onclick = () => speak(w.t);
@@ -1594,7 +1849,8 @@ function wordPop(w) {
   // room under the page so the panel never hides the last question
   const view = main.firstElementChild;
   view.style.paddingBottom = pop.offsetHeight + 32 + "px";
-  $("#wpClose").onclick = () => { pop.remove(); view.style.paddingBottom = ""; };
+  $("#wpClose").onclick = () => { pop.remove(); view.style.paddingBottom = ""; if (opener && opener.isConnected) opener.focus({ preventScroll: true }); };
+  $("#wpHear").focus({ preventScroll: true });
   speak(w.t);
 }
 const paintFlagged = () => main.querySelectorAll(".wd").forEach(sp => sp.classList.toggle("flagged", isFlagged(WORDS[+sp.dataset.id])));
@@ -1616,19 +1872,25 @@ function renderRead(lesson, pi = 0) {
     <section class="sheet">
       <div id="passage"${listen ? " hidden" : ""}>
         ${p.lines ? `<div class="ptitle">${revealLine(p.title.zh, p.title.py, p.title.en)}</div>${p.lines.map(x => revealLine(x.zh, x.py, x.en, x.speaker)).join("")}
-        <p class="note">Tap a sentence to see its pinyin and English, or an underlined word to see it on its own and flag it.</p>` : `<p class="passage">${linkWords(text)}</p><p class="note">Tap an underlined word to see it on its own and flag it.</p>`}
+        <p class="note">Tap any word to see it on its own (to hear it or flag it) along with its sentence's pinyin and English. Tap the sentence again to hide them.</p>` : `<p class="passage">${linkWords(text)}</p><p class="note">Tap an underlined word to see it on its own and flag it.</p>`}
       </div>
       <div class="settings-row"><button class="btn${listen ? " primary" : ""}" id="rPlay" type="button">${listen ? "Play again" : "Hear it"}</button><button class="btn" id="rSlow" type="button">Play slowly</button>${listen ? `<button class="btn" id="rShow" type="button">Show the text</button>` : ""}</div>
     </section>
     ${items.map((it, i) => `<section class="sheet qblock" data-i="${i}"><div class="qhead"><b>${i + 1}.</b> ${it.zh ? revealLine(it.zh, it.py, it.en) : esc(it.en)}</div><div class="seg">${it.opts.map((o, k) => `<button type="button" class="tbtn" data-k="${k}">${esc(o.t)}</button>`).join("")}</div></section>`).join("")}
     <div class="feedback" id="fb" aria-live="polite"></div>
-    <div class="settings-row" id="rCtl"><button class="btn primary" id="rCheck" type="button" disabled>Check answers</button><button class="btn" id="back" type="button">Back</button></div>
+    <div class="settings-row" id="rCtl"><button class="btn primary" id="rCheck" type="button" disabled>Answer all ${items.length} to check</button><button class="btn" id="back" type="button">Back</button></div>
   </div>`;
   $("#readSel").onchange = e => renderRead(e.target.value);
   $("#segPass").querySelectorAll("button").forEach(b => b.onclick = () => renderRead(lesson, +b.dataset.k));
   $("#segRead").querySelectorAll("button").forEach(b => b.onclick = () => { readListen = b.dataset.v === "listen"; renderRead(lesson, pi); });
   main.querySelectorAll(".line").forEach(b => b.onclick = () => { const g = b.querySelector(".gloss"); g.hidden = !g.hidden; b.setAttribute("aria-expanded", String(!g.hidden)); });
-  main.querySelectorAll(".wd").forEach(sp => sp.onclick = e => { e.stopPropagation(); wordPop(WORDS[+sp.dataset.id]); });
+  // a word tap opens the word card and also shows its sentence's pinyin and English, since the words fill almost every line
+  main.querySelectorAll(".wd").forEach(sp => sp.onclick = e => {
+    e.stopPropagation();
+    const b = sp.closest(".line"); if (b) { b.querySelector(".gloss").hidden = false; b.setAttribute("aria-expanded", "true"); }
+    main.querySelectorAll(".wd.active").forEach(x => x.classList.remove("active")); sp.classList.add("active"); // the tapped word stands out from its sentence
+    wordPop(WORDS[+sp.dataset.id]);
+  });
   paintFlagged();
   $("#rPlay").onclick = () => speak(text);
   $("#rSlow").onclick = () => speak(text, 0.55);
@@ -1640,6 +1902,7 @@ function renderRead(lesson, pi = 0) {
     picks[+blk.dataset.i] = +b.dataset.k;
     blk.querySelectorAll(".tbtn").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
     $("#rCheck").disabled = picks.includes(-1);
+    $("#rCheck").textContent = picks.includes(-1) ? `Answer all ${picks.length} to check` : "Check answers"; // says why it is not ready yet
   }));
   $("#rCheck").onclick = () => {
     checked = true;
@@ -1654,6 +1917,8 @@ function renderRead(lesson, pi = 0) {
     r.n++; r.best = Math.max(r.best, right); r.last = Date.now();
     logHist(listen ? "listening" : "reading", `Lesson ${lesson} · ${p.name}`, items.length, right);
     $("#fb").innerHTML = `<span class="pill ${right === items.length ? "good" : right ? "warn" : "bad"}">${right} of ${items.length} right</span>`;
+    if ($("#wpClose")) $("#wpClose").click(); // the word card would cover the score
+    $("#fb").scrollIntoView({ block: "center" }); // the score is at the end of a long page
     $("#rCtl").innerHTML = `${next ? `<button class="btn primary" id="rNext" type="button">${pi + 1 < ps.length ? "Next passage" : `Lesson ${esc(nextLesson)}`}</button>` : ""}<button class="btn" id="rAgain" type="button">Try this one again</button><button class="btn" id="back" type="button">Back</button>`;
     if (next) $("#rNext").onclick = next;
     $("#rAgain").onclick = () => renderRead(lesson, pi);
@@ -1670,7 +1935,7 @@ function renderGrammar(lesson) {
   <div class="view">
     <div class="sechead"><div><div class="eyebrow">Grammar · 语法</div><h2>Lesson ${esc(lesson)}</h2></div>${textSelect("gramSel", lesson)}</div>
     ${TEXTS[lesson].g.map(([t, e, ex]) => `<section class="sheet"><h3>${esc(t)}</h3><p class="note">${esc(e)}</p>
-      ${ex.map(([zh, en]) => `<div class="gex"><button class="btn" type="button" data-say="${esc(plain(zh))}">Hear</button><div><div class="zh">${esc(plain(zh))}</div><div class="note">${esc(en)}</div></div></div>`).join("")}</section>`).join("")}
+      ${ex.map(([zh, en]) => `<div class="gex"><button class="btn" type="button" data-say="${esc(plain(zh))}" aria-label="Hear ${esc(plain(zh))}">Hear</button><div><div class="zh">${esc(plain(zh))}</div><div class="note">${esc(en)}</div></div></div>`).join("")}</section>`).join("")}
     <div class="settings-row"><button class="btn primary" id="gQuiz" type="button">Quiz on lesson ${esc(lesson)}</button><button class="btn" id="back" type="button">Back</button></div>
   </div>`;
   $("#gramSel").onchange = e => renderGrammar(e.target.value);
@@ -1684,10 +1949,10 @@ function startGrammarQuiz(lesson) {
   // gap-fills as written, plus a word-order item from every example of three or more words;
   // an example may list other correct orders after "|"
   const items = shuffle([
-    ...pts.flatMap(p => p[3].map(q => ({ kind: "gap", q: q[0], answer: q[1][0], opts: options(q) }))),
+    ...pts.flatMap(p => p[3].map(q => ({ kind: "gap", q: q[0], answer: q[1][0], opts: options(q), rule: [p[0], p[1]] }))),
     ...pts.flatMap(p => p[2].filter(([zh]) => zh.split("|")[0].split(" ").length > 2).map(([zh, en]) => {
       const orders = zh.split("|");
-      return { kind: "order", words: orders[0].split(" "), accept: orders.map(o => o.replace(/ /g, "")), en };
+      return { kind: "order", words: orders[0].split(" "), accept: orders.map(o => o.replace(/ /g, "")), en, rule: [p[0], p[1]] };
     })),
   ]);
   session = { kind: "grammar", lesson, items, i: 0, right: 0, missed: 0 };
@@ -1731,7 +1996,12 @@ function showGrammarItem() {
     const sentence = gap ? it.q.replace("＿", it.answer) : ok ? mine : it.words.join("");
     if (ok) s.right++; else s.missed++;
     if (gap) btns.forEach((b, k) => { if (it.opts[k].ok) b.classList.add("right"); else if (k === pick) b.classList.add("wrong"); });
-    $("#fb").innerHTML = `<span class="pill ${ok ? "good" : "bad"}">${ok ? "Right" : "Not quite"}<span class="han">${esc(sentence)}</span></span>`;
+    // the correct sentence takes the big slot (the eye should remember the right pattern), what you wrote is the small
+    // note in the pill, and a miss names its grammar point and rule at reading size
+    $(".practice .gq").textContent = sentence;
+    $("#fb").innerHTML = ok ? `<span class="pill good">Right</span>`
+      : `<span class="pill bad">${gap ? "Not quite" : `Not quite · you wrote <span class="han">${esc(mine)}</span>`}</span>` + /* a gap pick is already marked "yours" on its tile */
+        `<p class="rule">${it.rule[1].includes(it.rule[0]) ? esc(it.rule[1]) : `<b>${esc(it.rule[0])}</b>: ${esc(it.rule[1])}`}</p>`;
     speak(sentence.replace(/^.*= /, ""));
     $("#ctl").innerHTML = `<button class="btn" id="gHear" type="button">Hear it</button><button class="btn primary" id="gNext" type="button">${s.i + 1 < s.items.length ? "Next" : "See results"}</button>`;
     $("#gHear").onclick = () => speak(sentence.replace(/^.*= /, ""));
@@ -1768,7 +2038,8 @@ function renderSettings() {
         <button type="button" data-v="standard">Standard</button><button type="button" data-v="lenient">Lenient</button><button type="button" data-v="free">Any stroke order</button>
       </div><p class="note">Your writing is marked when you tap Check. Standard checks stroke order and shape. Lenient accepts much looser stroke shapes. Neither minds if the character is big, small or off-centre in the box. Any stroke order checks only that every stroke is there, in the right shape and direction.</p></div>
       <div class="field"><span class="lbl">Audio</span><p class="note" id="voiceNote"></p><div><button class="btn" id="testVoice" type="button">Test voice: 你好，我叫王小明。</button></div></div>
-      <div class="field"><span class="lbl">Progress</span><p class="note">${Object.keys(P.w).length} words practised, ${WORDS.filter(w => mastered(w.id)).length} mastered, ${flaggedWords().length} flagged. ${Object.values(P.tr).filter(r => r.c).length} translation sentences right, ${Object.keys(P.rd).length} reading passages done. ${dbRef ? "Progress syncs to every device where you open this page signed in to Claude." : "Progress is saved in this browser only right now."}</p>
+      <div class="field"><span class="lbl">Keyboard</span><p class="note">With a keyboard attached, Enter checks your writing and then moves on, Esc closes a word card, and in flashcards Space flips the card and 1–4 rate it (Again, Hard, Good, Easy).</p></div>
+      <div class="field"><span class="lbl">Progress</span><p class="note">${Object.keys(P.w).length} words practised, ${WORDS.filter(w => mastered(w.id)).length} mastered, ${flaggedWords().length} flagged. ${plural(Object.values(P.tr).filter(r => r.c).length, "translation sentence")} right, ${plural(Object.keys(P.rd).length, "reading passage")} done. ${dbRef ? "Progress syncs to every device where you open this page signed in to Claude." : "Progress is saved in this browser only right now."}</p>
         <div class="settings-row"><button class="btn" id="resetBtn" type="button">Reset all progress</button><span class="note" id="resetNote"></span></div></div>
       <div><button class="btn primary" id="done" type="button">Done</button></div>
     </section>
@@ -1781,11 +2052,13 @@ function renderSettings() {
   };
   seg("#segInput", "input", String);
   markingMode(); seg("#segMark", "marking", String);
-  $("#voiceNote").textContent = zhVoice ? `Using the ${zhVoice.name} voice.` : "No Mandarin voice found yet. On iPad, add one in Settings > Accessibility > Spoken Content > Voices > Chinese (China).";
+  $("#voiceNote").textContent = zhVoice ? `Using the ${zhVoice.name} voice.` +
+    (/premium|enhanced/i.test(zhVoice.name + zhVoice.voiceURI) ? "" : " For a more natural one, download a Premium or Enhanced Chinese (China) voice in Settings > Accessibility > Spoken Content > Voices.") :"No Mandarin voice found yet. On iPad, add one in Settings > Accessibility > Spoken Content > Voices > Chinese (China).";
   $("#testVoice").onclick = () => speak("你好，我叫王小明。");
   let armed = false;
   $("#resetBtn").onclick = () => {
-    if (!armed) { armed = true; $("#resetBtn").textContent = "Tap again to erase everything"; $("#resetNote").textContent = "This cannot be undone."; return; }
+    // armed for 4 s only, like End, so a stray tap minutes later can never erase everything
+    if (!armed) { const was = [$("#resetBtn").textContent, $("#resetNote").textContent]; armed = true; $("#resetBtn").textContent = "Tap again to erase everything"; $("#resetNote").textContent = "This cannot be undone."; setTimeout(() => { if (!$("#resetBtn")) return; armed = false; [$("#resetBtn").textContent, $("#resetNote").textContent] = was; }, 4000); return; }
     const keep = P.settings, cur = P.cur; adopt(blank()); P.settings = keep; P.cur = cur; save(); renderSettings();
   };
   $("#done").onclick = closeSettings;
@@ -1807,7 +2080,7 @@ async function boot() {
   const num = l => l.split(".").map(Number);
   LESSONS = [...new Set(WORDS.map(w => w.l))].sort((a, b) => { const [a1, a2] = num(a), [b1, b2] = num(b); return a1 - b1 || a2 - b2; });
   LESSONS.forEach(l => byLesson[l] = WORDS.filter(w => w.l === l));
-  if (!byLesson[P.cur]) P.cur = "2.1";
+  if (!byLesson[P.cur]) P.cur = "1.1";
   if (typeof HanziWriter === "undefined") {
     main.innerHTML = `<div class="loading">The handwriting engine did not load. Check your connection and reload the page.</div>`;
     return;
