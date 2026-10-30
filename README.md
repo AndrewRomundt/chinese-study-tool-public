@@ -6,7 +6,7 @@ Zìtiè is a study tool for English speakers learning Mandarin, built for an **i
 
 | Home | Write mode |
 | --- | --- |
-| ![Home screen with study modes and lessons](docs/home.png) | ![Write mode showing 我们的 with the answer](docs/answer.png) |
+| ![Home screen with study modes and lessons](docs/home.png) | ![Write mode showing 什么 with the answer](docs/answer.png) |
 
 > This is an independent, unofficial project. It is not affiliated with, endorsed by, or connected to the publishers or authors of *Contemporary Chinese for Beginners*, and it contains none of the textbook's text, dialogues or exercises. You need your own copy of the book to follow the course.
 
@@ -15,17 +15,21 @@ Zìtiè is a study tool for English speakers learning Mandarin, built for an **i
 - **Your own handwriting, marked fairly.** Each box is a pressure-sensitive canvas with palm rejection. Nothing is judged while you write; on **Check**, your strokes are normalised for size and position and compared with the character's stroke medians using a port of Hanzi Writer's stroke matcher. Strokes out of order or backwards show in amber, wrong shapes in red.
 - **Three marking levels** (Standard, Lenient, Any stroke order), tuned with a simulator (`tests/sim.js`) that writes thousands of noisy characters: Standard passes about 93% of correct, wobbly characters while still catching every out-of-order or backwards stroke.
 - **Spaced repetition** across every mode: misses come back in 10 minutes, hits climb an interval ladder.
+- **Made for long sessions on the iPad.** Check, Next, Undo stroke and Clear box sit in a dock pinned to the bottom of the screen, so they stay in reach in either orientation and on a phone. Results show your own handwriting with the marks on it, like a corrected copybook page.
 - **No build step, no framework.** The whole app is one HTML file plus a few JSON data files.
 
 ## Study modes
 
 - **Learn**: word list, flashcards, trace and copy, a match game, a tone trainer, and free practice.
-- **Write**: see pinyin and an English hint, write the characters.
-- **Dictation (听写)**: hear the word (Mandarin speech synthesis) and write it with no pinyin shown.
+- **Write**: see pinyin and an English hint, write the characters. **Write again** gives a fresh, ungraded try with the answer hidden, and **It was right** overrules a wrong mark (with Undo).
+- **Dictation (听写)**: hear the word and write it with no pinyin shown. The clue is sound only by default, as in a class 听写, or sound and meaning; course homophones such as 他/她 always show their meaning. **听写 lesson** on Home starts a dictation of the whole current lesson in one tap. Speech uses the best Mandarin voice installed on the device (on iPad, a downloaded Premium or Enhanced voice if there is one).
 - **Translation (译)**: about 25 English sentences per lesson to write in Chinese by hand, each using only vocabulary taught so far. Common equivalent wordings are accepted (for example 但是/可是/不过, optional 很, time phrases before or after the subject).
 - **Reading & listening**: a dialogue, a story and a short text for every lesson, with comprehension questions in Chinese. Tap any sentence for pinyin and English, or listen with the text hidden.
 - **Grammar**: each lesson's grammar points with spoken examples, then gap-fill and word-order quizzes.
-- **Review**: every due word from all lessons, oldest first.
+- **Review**: every due word from all lessons, oldest first, in rounds of up to 20.
+- **Flagged words**: flag a word from the word list, a flashcard or a reading passage, then practise just those.
+
+Also: lessons on Home open their word list; Write and 听写 can be checked with boxes left empty; Translation starts with one row of boxes and adds more as you write, so the box count never gives the answer away; a light/dark toggle; and keyboard shortcuts (Enter checks and moves on, Space and 1 to 4 run flashcards).
 
 All reading passages, translation sentences, grammar explanations and quizzes in this repository were written for this project. The reading and translation builders reject any sentence that uses vocabulary from a later lesson.
 
