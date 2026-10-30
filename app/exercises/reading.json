@@ -1,0 +1,479 @@
+{
+ "title": "Reading practice",
+ "course": "Contemporary Chinese for Beginners",
+ "script": "simplified",
+ "version": 1,
+ "passage_count": 4,
+ "question_count": 14,
+ "format": {
+  "lessons": "one entry per lesson, in course order; lesson matches 'l' in app/words.json (1.1 to 20.2, no 11.2)",
+  "passages": "two per lesson: a dialogue and a short story (kind: 'dialogue' or 'story')",
+  "id": "lesson-number, e.g. '2.1-1'",
+  "title": "{zh, py, en}",
+  "lines": "one per sentence or speaking turn: {speaker?, speaker_py?, zh, py, en}; speaker is only on dialogue lines",
+  "text": "all line zh joined, for listening mode (read it aloud with zh-CN speech, text hidden)",
+  "words": "this lesson's own vocab (words.json 'd') that the passage uses, in order of first use",
+  "questions": "{zh, py, en, options}: asked in Chinese, with pinyin and English available; options are in English and the FIRST option is always the right answer, so shuffle before showing (same convention as lessons.json)",
+  "py": "pinyin with dictionary tones, like words.json (no 一/不 tone-change marks), erhua written as -r, words separated by spaces"
+ },
+ "vocab_rule": "Every Chinese character in a lesson's passages, titles and questions comes from that lesson's vocab or an earlier lesson's, plus 你, 中, the numbers 一 to 十 and the cast's names (王小明, 李文, 马克, 安娜). No multi-character vocab item is used before the lesson that teaches it (except 中国, 英国, 哪国人 and 分钟, whose characters are already known). tools/reading_build.py checks this on every build.",
+ "lessons": [
+  {
+   "lesson": "1.1",
+   "count": 2,
+   "passages": [
+    {
+     "id": "1.1-1",
+     "kind": "dialogue",
+     "title": {
+      "zh": "您贵姓？",
+      "py": "Nín guìxìng?",
+      "en": "What's your surname?"
+     },
+     "lines": [
+      {
+       "speaker": "王小明",
+       "speaker_py": "Wáng Xiǎomíng",
+       "zh": "您好！",
+       "py": "Nín hǎo!",
+       "en": "Hello!"
+      },
+      {
+       "speaker": "李文",
+       "speaker_py": "Lǐ Wén",
+       "zh": "你好！",
+       "py": "Nǐ hǎo!",
+       "en": "Hi!"
+      },
+      {
+       "speaker": "王小明",
+       "speaker_py": "Wáng Xiǎomíng",
+       "zh": "您贵姓？",
+       "py": "Nín guìxìng?",
+       "en": "What's your surname?"
+      },
+      {
+       "speaker": "李文",
+       "speaker_py": "Lǐ Wén",
+       "zh": "我姓李，叫李文。你呢？你叫什么名字？",
+       "py": "Wǒ xìng Lǐ, jiào Lǐ Wén. Nǐ ne? Nǐ jiào shénme míngzi?",
+       "en": "My surname is Li, and my name is Li Wen. And you? What's your name?"
+      },
+      {
+       "speaker": "王小明",
+       "speaker_py": "Wáng Xiǎomíng",
+       "zh": "我叫王小明。",
+       "py": "Wǒ jiào Wáng Xiǎomíng.",
+       "en": "I'm Wang Xiaoming."
+      },
+      {
+       "speaker": "李文",
+       "speaker_py": "Lǐ Wén",
+       "zh": "你是中国人吗？",
+       "py": "Nǐ shì Zhōngguó rén ma?",
+       "en": "Are you Chinese?"
+      },
+      {
+       "speaker": "王小明",
+       "speaker_py": "Wáng Xiǎomíng",
+       "zh": "是，我是中国人。你也是中国人吗？",
+       "py": "Shì, wǒ shì Zhōngguó rén. Nǐ yě shì Zhōngguó rén ma?",
+       "en": "Yes, I'm Chinese. Are you Chinese too?"
+      },
+      {
+       "speaker": "李文",
+       "speaker_py": "Lǐ Wén",
+       "zh": "是，我也是中国人。",
+       "py": "Shì, wǒ yě shì Zhōngguó rén.",
+       "en": "Yes, I'm Chinese too."
+      }
+     ],
+     "questions": [
+      {
+       "zh": "她姓什么？",
+       "py": "Tā xìng shénme?",
+       "en": "What is her surname?",
+       "options": [
+        "Li",
+        "Wang",
+        "Ma"
+       ]
+      },
+      {
+       "zh": "王小明是哪国人？",
+       "py": "Wáng Xiǎomíng shì nǎ guó rén?",
+       "en": "Which country is Wang Xiaoming from?",
+       "options": [
+        "China",
+        "America",
+        "It doesn't say"
+       ]
+      },
+      {
+       "zh": "李文是中国人吗？",
+       "py": "Lǐ Wén shì Zhōngguó rén ma?",
+       "en": "Is Li Wen Chinese?",
+       "options": [
+        "Yes",
+        "No",
+        "It doesn't say"
+       ]
+      }
+     ],
+     "text": "您好！你好！您贵姓？我姓李，叫李文。你呢？你叫什么名字？我叫王小明。你是中国人吗？是，我是中国人。你也是中国人吗？是，我也是中国人。",
+     "words": [
+      "您贵姓",
+      "您",
+      "姓",
+      "好",
+      "我",
+      "叫",
+      "呢",
+      "什么",
+      "名字",
+      "是",
+      "国",
+      "人",
+      "吗",
+      "也",
+      "她",
+      "哪"
+     ]
+    },
+    {
+     "id": "1.1-2",
+     "kind": "story",
+     "title": {
+      "zh": "他们是哪国人？",
+      "py": "Tāmen shì nǎ guó rén?",
+      "en": "Where are they from?"
+     },
+     "lines": [
+      {
+       "zh": "我叫安娜，我不是中国人。",
+       "py": "Wǒ jiào Ānnà, wǒ bù shì Zhōngguó rén.",
+       "en": "My name is Anna. I'm not Chinese."
+      },
+      {
+       "zh": "他叫马克，他也不是中国人。",
+       "py": "Tā jiào Mǎkè, tā yě bù shì Zhōngguó rén.",
+       "en": "He's called Mark. He isn't Chinese either."
+      },
+      {
+       "zh": "她姓李，叫李文。她是中国人。",
+       "py": "Tā xìng Lǐ, jiào Lǐ Wén. Tā shì Zhōngguó rén.",
+       "en": "Her surname is Li and her name is Li Wen. She's Chinese."
+      },
+      {
+       "zh": "他呢？他姓王，名字是小明。",
+       "py": "Tā ne? Tā xìng Wáng, míngzi shì Xiǎomíng.",
+       "en": "And him? His surname is Wang and his given name is Xiaoming."
+      },
+      {
+       "zh": "他也是中国人。",
+       "py": "Tā yě shì Zhōngguó rén.",
+       "en": "He's Chinese too."
+      }
+     ],
+     "questions": [
+      {
+       "zh": "安娜是中国人吗？",
+       "py": "Ānnà shì Zhōngguó rén ma?",
+       "en": "Is Anna Chinese?",
+       "options": [
+        "No",
+        "Yes",
+        "It doesn't say"
+       ]
+      },
+      {
+       "zh": "马克是中国人吗？",
+       "py": "Mǎkè shì Zhōngguó rén ma?",
+       "en": "Is Mark Chinese?",
+       "options": [
+        "No",
+        "Yes",
+        "It doesn't say"
+       ]
+      },
+      {
+       "zh": "小明姓什么？",
+       "py": "Xiǎomíng xìng shénme?",
+       "en": "What is Xiaoming's surname?",
+       "options": [
+        "Wang",
+        "Li",
+        "Ma"
+       ]
+      }
+     ],
+     "text": "我叫安娜，我不是中国人。他叫马克，他也不是中国人。她姓李，叫李文。她是中国人。他呢？他姓王，名字是小明。他也是中国人。",
+     "words": [
+      "他",
+      "们",
+      "是",
+      "哪",
+      "国",
+      "人",
+      "我",
+      "叫",
+      "不",
+      "也",
+      "她",
+      "姓",
+      "呢",
+      "名字",
+      "吗",
+      "什么"
+     ]
+    }
+   ]
+  },
+  {
+   "lesson": "1.2",
+   "count": 2,
+   "passages": [
+    {
+     "id": "1.2-1",
+     "kind": "dialogue",
+     "title": {
+      "zh": "你说汉语吗？",
+      "py": "Nǐ shuō Hànyǔ ma?",
+      "en": "Do you speak Chinese?"
+     },
+     "lines": [
+      {
+       "speaker": "马克",
+       "speaker_py": "Mǎkè",
+       "zh": "你好！你是老师吗？",
+       "py": "Nǐ hǎo! Nǐ shì lǎoshī ma?",
+       "en": "Hi! Are you the teacher?"
+      },
+      {
+       "speaker": "王小明",
+       "speaker_py": "Wáng Xiǎomíng",
+       "zh": "不是，我们是同学！",
+       "py": "Bù shì, wǒmen shì tóngxué!",
+       "en": "No, we're classmates!"
+      },
+      {
+       "speaker": "马克",
+       "speaker_py": "Mǎkè",
+       "zh": "你好，同学！我叫马克。你叫什么名字？",
+       "py": "Nǐ hǎo, tóngxué! Wǒ jiào Mǎkè. Nǐ jiào shénme míngzi?",
+       "en": "Hello, classmate! I'm Mark. What's your name?"
+      },
+      {
+       "speaker": "王小明",
+       "speaker_py": "Wáng Xiǎomíng",
+       "zh": "我叫王小明。你是哪国人？",
+       "py": "Wǒ jiào Wáng Xiǎomíng. Nǐ shì nǎ guó rén?",
+       "en": "I'm Wang Xiaoming. Where are you from?"
+      },
+      {
+       "speaker": "马克",
+       "speaker_py": "Mǎkè",
+       "zh": "我是美国人。你呢？",
+       "py": "Wǒ shì Měiguó rén. Nǐ ne?",
+       "en": "I'm American. And you?"
+      },
+      {
+       "speaker": "王小明",
+       "speaker_py": "Wáng Xiǎomíng",
+       "zh": "我是中国人。你说汉语吗？",
+       "py": "Wǒ shì Zhōngguó rén. Nǐ shuō Hànyǔ ma?",
+       "en": "I'm Chinese. Do you speak Chinese?"
+      },
+      {
+       "speaker": "马克",
+       "speaker_py": "Mǎkè",
+       "zh": "我说英语，也说汉语。你说英语还是法语？",
+       "py": "Wǒ shuō Yīngyǔ, yě shuō Hànyǔ. Nǐ shuō Yīngyǔ háishi Fǎyǔ?",
+       "en": "I speak English, and Chinese too. Do you speak English or French?"
+      },
+      {
+       "speaker": "王小明",
+       "speaker_py": "Wáng Xiǎomíng",
+       "zh": "我只说汉语。",
+       "py": "Wǒ zhǐ shuō Hànyǔ.",
+       "en": "I only speak Chinese."
+      },
+      {
+       "speaker": "马克",
+       "speaker_py": "Mǎkè",
+       "zh": "好，我们都说汉语！",
+       "py": "Hǎo, wǒmen dōu shuō Hànyǔ!",
+       "en": "Fine, we'll both speak Chinese!"
+      }
+     ],
+     "questions": [
+      {
+       "zh": "王小明是老师吗？",
+       "py": "Wáng Xiǎomíng shì lǎoshī ma?",
+       "en": "Is Wang Xiaoming the teacher?",
+       "options": [
+        "No, he's a classmate",
+        "Yes, he's the teacher",
+        "It doesn't say"
+       ]
+      },
+      {
+       "zh": "马克是哪国人？",
+       "py": "Mǎkè shì nǎ guó rén?",
+       "en": "Where is Mark from?",
+       "options": [
+        "America",
+        "Canada",
+        "Australia"
+       ]
+      },
+      {
+       "zh": "王小明说英语吗？",
+       "py": "Wáng Xiǎomíng shuō Yīngyǔ ma?",
+       "en": "Does Wang Xiaoming speak English?",
+       "options": [
+        "No, only Chinese",
+        "Yes",
+        "He speaks French"
+       ]
+      },
+      {
+       "zh": "他们都说什么？",
+       "py": "Tāmen dōu shuō shénme?",
+       "en": "What language do they both speak?",
+       "options": [
+        "Chinese",
+        "English",
+        "French"
+       ]
+      }
+     ],
+     "text": "你好！你是老师吗？不是，我们是同学！你好，同学！我叫马克。你叫什么名字？我叫王小明。你是哪国人？我是美国人。你呢？我是中国人。你说汉语吗？我说英语，也说汉语。你说英语还是法语？我只说汉语。好，我们都说汉语！",
+     "words": [
+      "你",
+      "说",
+      "汉语",
+      "老师",
+      "们",
+      "同学",
+      "叫",
+      "什么",
+      "名字",
+      "哪国人",
+      "美国",
+      "中国",
+      "英语",
+      "也",
+      "还是",
+      "法语",
+      "只",
+      "都",
+      "他"
+     ]
+    },
+    {
+     "id": "1.2-2",
+     "kind": "story",
+     "title": {
+      "zh": "老师说法语",
+      "py": "Lǎoshī shuō Fǎyǔ",
+      "en": "The teacher speaks French"
+     },
+     "lines": [
+      {
+       "zh": "安娜是英国人。",
+       "py": "Ānnà shì Yīngguó rén.",
+       "en": "Anna is English."
+      },
+      {
+       "zh": "她说英语，也说法语。",
+       "py": "Tā shuō Yīngyǔ, yě shuō Fǎyǔ.",
+       "en": "She speaks English, and French too."
+      },
+      {
+       "zh": "老师姓李，是中国人。",
+       "py": "Lǎoshī xìng Lǐ, shì Zhōngguó rén.",
+       "en": "The teacher's surname is Li. She's Chinese."
+      },
+      {
+       "zh": "李老师说汉语，也说法语。",
+       "py": "Lǐ lǎoshī shuō Hànyǔ, yě shuō Fǎyǔ.",
+       "en": "Teacher Li speaks Chinese, and French too."
+      },
+      {
+       "zh": "马克是美国人，小明是中国人，他们都说汉语。",
+       "py": "Mǎkè shì Měiguó rén, Xiǎomíng shì Zhōngguó rén, tāmen dōu shuō Hànyǔ.",
+       "en": "Mark is American and Xiaoming is Chinese. They both speak Chinese."
+      },
+      {
+       "zh": "我是澳大利亚人，我只说英语。",
+       "py": "Wǒ shì Àodàlìyà rén, wǒ zhǐ shuō Yīngyǔ.",
+       "en": "I'm Australian. I only speak English."
+      }
+     ],
+     "questions": [
+      {
+       "zh": "安娜说什么？",
+       "py": "Ānnà shuō shénme?",
+       "en": "What languages does Anna speak?",
+       "options": [
+        "English and French",
+        "Only English",
+        "Chinese and French"
+       ]
+      },
+      {
+       "zh": "李老师是哪国人？",
+       "py": "Lǐ lǎoshī shì nǎ guó rén?",
+       "en": "Where is Teacher Li from?",
+       "options": [
+        "China",
+        "Canada",
+        "America"
+       ]
+      },
+      {
+       "zh": "李老师说法语吗？",
+       "py": "Lǐ lǎoshī shuō Fǎyǔ ma?",
+       "en": "Does Teacher Li speak French?",
+       "options": [
+        "Yes",
+        "No",
+        "It doesn't say"
+       ]
+      },
+      {
+       "zh": "“我”说汉语吗？",
+       "py": "“Wǒ” shuō Hànyǔ ma?",
+       "en": "Does the narrator (“I”) speak Chinese?",
+       "options": [
+        "No, only English",
+        "Yes",
+        "Yes, and French too"
+       ]
+      }
+     ],
+     "text": "安娜是英国人。她说英语，也说法语。老师姓李，是中国人。李老师说汉语，也说法语。马克是美国人，小明是中国人，他们都说汉语。我是澳大利亚人，我只说英语。",
+     "words": [
+      "老师",
+      "说",
+      "法语",
+      "她",
+      "英语",
+      "也",
+      "中国",
+      "汉语",
+      "美国",
+      "他",
+      "们",
+      "都",
+      "澳大利亚",
+      "只",
+      "什么",
+      "哪国人"
+     ]
+    }
+   ]
+  }
+ ]
+}

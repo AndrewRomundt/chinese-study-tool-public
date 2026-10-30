@@ -1,0 +1,54 @@
+// Lessons 1.1 and 1.2 (demo). Cast: 王小明 (Chinese student), 李文 (Chinese, works at an import-export company),
+// 马克 (American), 安娜 (English). See tools/reading_build.py for the format.
+
+@ 1.1
+# dialogue | 您贵姓？ | What's your surname?
+王小明: 您好！ | Hello!
+李文: 你好！ | Hi!
+王小明: 您贵姓？ | What's your surname?
+李文: 我姓李，叫李文。你呢？你叫什么名字？ | My surname is Li, and my name is Li Wen. And you? What's your name?
+王小明: 我叫王小明。 | I'm Wang Xiaoming.
+李文: 你是中国人吗？ | Are you Chinese?
+王小明: 是，我是中国人。你也是中国人吗？ | Yes, I'm Chinese. Are you Chinese too?
+李文: 是，我也是中国人。 | Yes, I'm Chinese too.
+? 她姓什么？ | What is her surname? | Li; Wang; Ma
+? 王小明是哪国人？ | Which country is Wang Xiaoming from? | China; America; It doesn't say
+? 李文是中国人吗？ | Is Li Wen Chinese? | Yes; No; It doesn't say
+
+# story | 他们是哪国人？ | Where are they from?
+我叫安娜，我不是中国人。 | My name is Anna. I'm not Chinese.
+他叫马克，他也不是中国人。 | He's called Mark. He isn't Chinese either.
+她姓李，叫李文。她是中国人。 | Her surname is Li and her name is Li Wen. She's Chinese.
+他呢？他姓王，名字是小明。 | And him? His surname is Wang and his given name is Xiaoming.
+他也是中国人。 | He's Chinese too.
+? 安娜是中国人吗？ | Is Anna Chinese? | No; Yes; It doesn't say
+? 马克是中国人吗？ | Is Mark Chinese? | No; Yes; It doesn't say
+? 小明姓什么？ | What is Xiaoming's surname? | Wang; Li; Ma
+
+@ 1.2
+# dialogue | 你说汉语吗？ | Do you speak Chinese?
+马克: 你好！你是老师吗？ | Hi! Are you the teacher?
+王小明: 不是，我们是同学！ | No, we're classmates!
+马克: 你好，同学！我叫马克。你叫什么名字？ | Hello, classmate! I'm Mark. What's your name?
+王小明: 我叫王小明。你是哪国人？ | I'm Wang Xiaoming. Where are you from?
+马克: 我是美国人。你呢？ | I'm American. And you?
+王小明: 我是中国人。你说汉语吗？ | I'm Chinese. Do you speak Chinese?
+马克: 我说英语，也说汉语。你说英语还是法语？ | I speak English, and Chinese too. Do you speak English or French?
+王小明: 我只说汉语。 | I only speak Chinese.
+马克: 好，我们都说汉语！ | Fine, we'll both speak Chinese!
+? 王小明是老师吗？ | Is Wang Xiaoming the teacher? | No, he's a classmate; Yes, he's the teacher; It doesn't say
+? 马克是哪国人？ | Where is Mark from? | America; Canada; Australia
+? 王小明说英语吗？ | Does Wang Xiaoming speak English? | No, only Chinese; Yes; He speaks French
+? 他们都说什么？ | What language do they both speak? | Chinese; English; French
+
+# story | 老师说法语 | The teacher speaks French
+安娜是英国人。 | Anna is English.
+她说英语，也说法语。 | She speaks English, and French too.
+老师姓李，是中国人。 | The teacher's surname is Li. She's Chinese.
+李老师说汉语，也说法语。 | Teacher Li speaks Chinese, and French too.
+马克是美国人，小明是中国人，他们都说汉语。 | Mark is American and Xiaoming is Chinese. They both speak Chinese.
+我是澳大利亚人，我只说英语。 | I'm Australian. I only speak English.
+? 安娜说什么？ | What languages does Anna speak? | English and French; Only English; Chinese and French
+? 李老师是哪国人？ | Where is Teacher Li from? | China; Canada; America
+? 李老师说法语吗？ | Does Teacher Li speak French? | Yes; No; It doesn't say
+? “我”说汉语吗？ | Does the narrator (“I”) speak Chinese? | No, only English; Yes; Yes, and French too

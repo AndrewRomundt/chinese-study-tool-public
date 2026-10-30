@@ -1,0 +1,54 @@
+## 1.1
+Hello! | 你好！ | 您好！ |
+What is your name? | 你叫什么名字？ | 您叫什么名字？ |
+My name is Wang Ying. | 我叫王英。 | |
+What is your surname? | 您贵姓？ | | polite
+My surname is Wang. | 我姓王。 | |
+Is she Wang Ying? | 她是王英吗？ | |
+Yes, she is Wang Ying. | 是，她是王英。 | 她是王英。 |
+He is not called Li Ming. | 他不叫李明。 | |
+What is his name? | 他叫什么名字？ | |
+Which country are you from? | 你是哪国人？ | 您是哪国人？ |
+Which country is she from? | 她是哪国人？ | |
+How are you? | 你好吗？ | 您好吗？ |
+Is his surname Li? | 他姓李吗？ | |
+Her surname is not Wang. | 她不姓王。 | |
+My surname is Li. What about you? | 我姓李，你呢？ | 我姓李，您呢？ |
+She is also called Wang Ying. | 她也叫王英。 | |
+What are their names? | 他们叫什么名字？ | |
+Is your surname Wang? | 你姓王吗？ | 您姓王吗？ |
+Are you Li Ming? | 你是李明吗？ | 您是李明吗？ |
+I am not Li Ming, I am Wang Ying. | 我不是李明，我是王英。 | |
+Hello, everyone! (to a group) | 你们好！ | |
+Is her name Wang Ying? | 她叫王英吗？ | |
+What is her surname? | 她姓什么？ | |
+His surname is also Li. | 他也姓李。 | |
+I am Li Ming. And you? | 我是李明，你呢？ | 我叫李明，你呢？ |
+## 1.2
+I am Chinese. | 我是中国人。 | |
+Are you American? | 你是美国人吗？ | 您是美国人吗？ |
+She is Australian. | 她是澳大利亚人。 | |
+He is Canadian, not American. | 他是加拿大人，不是美国人。 | |
+Are you American or Canadian? | 你是美国人还是加拿大人？ | | use 还是
+We are all Chinese. | 我们都是中国人。 | |
+They are all classmates. | 他们都是同学。 | |
+Teacher Wang is Chinese. | 王老师是中国人。 | |
+Do you speak Chinese? | 你说汉语吗？ | |
+I speak English. | 我说英语。 | |
+I only speak English. | 我只说英语。 | |
+Does she speak French or English? | 她说法语还是英语？ | | use 还是
+He also speaks French. | 他也说法语。 | |
+Do you all speak Chinese? | 你们都说汉语吗？ | |
+Not all of us speak French. | 我们不都说法语。 | | 不都 = not all
+None of us speak French. | 我们都不说法语。 | | 都不 = none
+Is your teacher Chinese? | 你们老师是中国人吗？ | 你老师是中国人吗？ |
+Hello, Teacher! | 老师好！ | 老师，您好！/ 老师，你好！ |
+Which country is your classmate from? | 你同学是哪国人？ | |
+My classmate is Australian. | 我同学是澳大利亚人。 | |
+Teacher Li only speaks Chinese. | 李老师只说汉语。 | |
+Are they all American? | 他们都是美国人吗？ | |
+Hello, classmates! | 同学们好！ | |
+Is the teacher called Wang Ying? | 老师叫王英吗？ | |
+I'm Canadian. What about you? | 我是加拿大人，你呢？ | |
+She is Australian too. | 她也是澳大利亚人。 | |
+Is Li Ming Chinese or American? | 李明是中国人还是美国人？ | | use 还是

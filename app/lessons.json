@@ -1,0 +1,23 @@
+{
+"_format": "Per lesson: r = [passage, questions], g = grammar points [title, explanation, examples [zh words separated by spaces, with other correct orders after |, English], gap questions]. In every question the first option is the right answer; the app shuffles them.",
+"1.1": {
+  "r": ["你好！我姓王，叫王小明。我是中国人。她叫李文，她也是中国人。他呢？他是哪国人？他不是中国人。", [
+    ["What is the speaker's surname?", ["Wang", "Li", "Zhang"]],
+    ["Is Li Wen Chinese?", ["Yes", "No", "It doesn't say"]],
+    ["What do we learn about 他 (him)?", ["He isn't Chinese", "He is Chinese", "He is called Wang"]]]],
+  "g": [
+    ["是: to be", "是 links two nouns: A 是 B. Make it negative with 不是. Don't put 是 before an adjective.", [["我 是 中国 人", "I'm Chinese."], ["他 不 是 中国 人", "He isn't Chinese."]], [["她＿中国人。", ["是", "很", "吗"]], ["他＿是中国人。", ["不", "没", "吗"]]]],
+    ["吗 and 呢 questions", "Put 吗 at the end of a statement to make a yes/no question. 呢 asks \"and you?\" about the same topic.", [["你 是 中国 人 吗", "Are you Chinese?"], ["我 很 好 你 呢", "I'm fine, and you?"]], [["你姓王＿？", ["吗", "呢", "的"]], ["我是中国人，你＿？", ["呢", "吗", "也"]]]]
+  ]
+},
+"1.2": {
+  "r": ["我们是同学。马克是美国人，安娜是加拿大人，我是澳大利亚人。我们都说英语，也说汉语。马克也说法语。老师是中国人，她只说汉语。", [
+    ["Where is Mark from?", ["America", "Canada", "Australia"]],
+    ["Who also speaks French?", ["Mark", "Anna", "The teacher"]],
+    ["Which language does the teacher speak?", ["Only Chinese", "Chinese and English", "French"]]]],
+  "g": [
+    ["都 and 也 go before the verb", "都 (all) and 也 (also) sit right before the verb, never before the subject. Together they are 也都.", [["我们 都 是 同学", "We're all classmates."], ["他们 也 都 说 汉语", "They all speak Chinese too."]], [["他们＿说英语。", ["都", "吗", "的"]], ["我是老师，她＿是老师。", ["也", "都是", "吗"]]]],
+    ["还是: A or B?", "A 还是 B? asks which of two. Don't add 吗.", [["你 是 美国 人 还是 加拿大 人", "Are you American or Canadian?"], ["他 说 英语 还是 法语", "Does he speak English or French?"]], [["她说汉语＿英语？", ["还是", "也", "都"]]]]
+  ]
+}
+}
