@@ -761,10 +761,30 @@ function buildPool(lesson) {
 const dictable = w => !w.d.includes("…");
 // words whose pinyin (tones included) matches a different course word, e.g. 他 / 她 / 它
 const soundKey = w => w.p.toLowerCase().replace(/[\s'’·-]/g, "");
-let SOUNDS = null;
+// ...and words that only sound alike: a neutral tone is too light to tell from a full one (吗/骂, 眼睛/眼镜),
+// and tones change as spoken (3-3 says 2-3; 一 and 不 change before other tones)
+const bareSy = w => w.sy.map(s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()).join(" ");
+function spoken(w) {
+  const t = w.tn.slice(), s = bareSy(w).split(" ");
+  for (let i = 0; i < t.length - 1; i++) {
+    if (t[i] === 3 && t[i + 1] === 3) t[i] = 2;
+    else if (s[i] === "yi" && t[i] === 1) t[i] = t[i + 1] === 4 ? 2 : 4;
+    else if (s[i] === "bu" && t[i] === 4 && t[i + 1] === 4) t[i] = 2;
+  }
+  return t;
+}
+const alike = (a, b) => a.length === b.length && a.every((t, i) => t === b[i] || t === 5 || b[i] === 5);
+let SOUNDS = null, SYLS = null;
 function homophone(w) {
-  if (!SOUNDS) { SOUNDS = {}; WORDS.forEach(o => (SOUNDS[soundKey(o)] = SOUNDS[soundKey(o)] || new Set()).add(o.t)); }
-  return SOUNDS[soundKey(w)].size > 1;
+  if (!SOUNDS) {
+    SOUNDS = {}; SYLS = {};
+    WORDS.forEach(o => {
+      (SOUNDS[soundKey(o)] = SOUNDS[soundKey(o)] || new Set()).add(o.t);
+      if (o.tn && o.sy) (SYLS[bareSy(o)] = SYLS[bareSy(o)] || []).push(o);
+    });
+  }
+  if (SOUNDS[soundKey(w)].size > 1) return true;
+  return !!(w.tn && w.sy) && SYLS[bareSy(w)].some(o => o.t !== w.t && alike(spoken(w), spoken(o)));
 }
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
@@ -853,18 +873,51 @@ const Mark = (() => {
     const sv = stroke.slice(1).map((p, i) => sub(p, stroke[i]));
     return avg(ev.map(e => Math.max(...sv.map(s => cos(s, e))))) > 0;
   };
-  // T: { pos: distance tolerance, shape: shape tolerance, near: halve the distance limit after the first stroke }
-  function matchData(pts, stroke, idx, T, checkBackwards = true) {
-    const lenc = T.pos;
-    const ad = avgDist(pts, stroke);
-    const within = ad <= 350 * (T.near && idx > 0 ? 0.5 : 1) * lenc;
-    if (!within) return { ok: false, ad, back: false };
-    const ends = dist(stroke[0], pts[0]) <= 250 * lenc && dist(last(stroke), last(pts)) <= 250 * lenc;
-    const ok = ends && dirMatch(pts, stroke) && shapeFit(pts, stroke, T.shape) && lenc * (len(pts) + 25) / (len(stroke) + 25) >= 0.35;
-    if (!ok && checkBackwards && matchData(pts.slice().reverse(), stroke, idx, T, false).ok) return { ok: false, ad, back: true };
-    return { ok, ad, back: false };
+  // which way an end has to move, relative to the rest of your (aligned) character
+  const side = (from, to) => { const dx = to.x - from.x, dy = to.y - from.y; return Math.abs(dy) >= Math.abs(dx) ? (dy > 0 ? "higher" : "lower") : (dx > 0 ? "further right" : "further left"); };
+  const mid = pts => ({ x: avg(pts.map(p => p.x)), y: avg(pts.map(p => p.y)) });
+  // T: { pos: distance tolerance, shape: shape tolerance, near: limit on the average distance after the first stroke }
+  // one version of a book stroke against your stroke; why is the first check it fails, in words
+  function fits(pts, s, idx, T) {
+    const lenc = T.pos, ad = avgDist(pts, s), no = why => ({ ok: false, ad, why });
+    // a dot or short tick: a finger or a quick flick can't make it as small as the font's, so only where it sits counts, not its ends or shape
+    const dot = len(s) < 200;
+    if (ad > 350 * (idx > 0 ? T.near : 1) * lenc) return no("in the wrong place");
+    // the ends of a long stroke may wander further: the font slants its long strokes more than handwriting does (也's 横折钩)
+    const far = [], reach = Math.max(250, 0.35 * len(s)) * lenc;
+    if (dot) { if (dist(mid(pts), mid(s)) > 200 * lenc) far.push("put it " + side(mid(pts), mid(s))); }
+    else {
+      if (dist(s[0], pts[0]) > reach) far.push("start it " + side(pts[0], s[0]));
+      if (dist(last(s), last(pts)) > reach) far.push("end it " + side(last(pts), last(s)));
+    }
+    if (far.length) return no(far.join(" and "));
+    if ((!dot || len(pts) > 60) && !dirMatch(pts, s)) return no("goes the wrong way");
+    if (!dot && !shapeFit(pts, s, T.shape)) return no("wrong shape");
+    if (!dot && lenc * (len(pts) + 25) / (len(s) + 25) < 0.35) return no("too short");
+    return { ok: true, ad, why: "" };
   }
-  const clean = pts => pts.filter((p, i) => i === 0 || p.x !== pts[i - 1].x || p.y !== pts[i - 1].y);
+  // vs: the versions of one book stroke (see versions); the closest is kept, a passing one first
+  function matchData(pts, vs, idx, T, checkBackwards = true) {
+    let best = null;
+    for (const s of vs) { const r = fits(pts, s, idx, T); if (!best || (r.ok && !best.ok) || (r.ok === best.ok && r.ad < best.ad)) best = r; }
+    if (!best.ok && checkBackwards && matchData(pts.slice().reverse(), vs, idx, T, false).ok) return { ...best, back: true };
+    return { ...best, back: false };
+  }
+  const bend = (a, b, c) => { const u = sub(b, a), v = sub(c, b); return mag(u) && mag(v) ? Math.acos(Math.max(-1, Math.min(1, cos(u, v)))) : 0; };
+  // handwriting differs from the brush font most at a stroke's ends: the font's entry kink is never written, and hooks
+  // and flicks come out short or not at all. So a stroke may also match its book stroke with those left off.
+  // Each version is filled in every 20 units, so distances are to the line and not to points that can be 700 units apart.
+  function versions(m) {
+    const L = len(m), out = [m];
+    const s = m.length > 3 && dist(m[0], m[1]) < 0.15 * L && bend(m[0], m[1], m[2]) > 0.5 ? m.slice(1) : m;
+    if (s !== m) out.push(s);
+    for (let i = s.length - 2; i >= 1 && i >= s.length - 3; i--) {
+      if (bend(s[i - 1], s[i], s[i + 1]) > 1.1 && len(s.slice(i)) < 0.35 * L) { out.push(s.slice(0, i + 1)); if (s !== m) out.push(m.slice(0, i + 2)); break; }
+    }
+    return out.map(v => subdivide(v, 20));
+  }
+  // a tap is a dot: it becomes a tiny stroke, so a finger's dot still counts
+  const clean = pts => { const c = pts.filter((p, i) => i === 0 || p.x !== pts[i - 1].x || p.y !== pts[i - 1].y); return c.length === 1 ? [c[0], { x: c[0].x + 6, y: c[0].y - 6 }] : c; };
 
   // strict: strokes are matched as in free mode, then any stroke that breaks the book's order is marked
   function strict(user, meds, lenc) {
@@ -887,24 +940,11 @@ const Mark = (() => {
       if (pts.length < 2) return;
       meds.forEach((s, j) => { const m = matchData(pts, s, j, lenc); if (m.ok) pairs.push({ i, j, ad: m.ad }); else if (m.back && marks[i] === "wrong") marks[i] = "backwards"; });
     });
-    pairs.sort((a, b) => a.ad - b.ad);
+    // a stroke that fits its own place in the book order wins a near tie, so messy writing isn't marked out of order
+    pairs.sort((a, b) => a.ad + (a.i === a.j ? 0 : 35) - b.ad - (b.i === b.j ? 0 : 35));
     const used = new Set();
     for (const p of pairs) if (assign[p.i] < 0 && !used.has(p.j)) { used.add(p.j); assign[p.i] = p.j; marks[p.i] = "ok"; }
     return { marks, assign };
-  }
-  // which way an end has to move, relative to the rest of your (aligned) character
-  const side = (from, to) => { const dx = to.x - from.x, dy = to.y - from.y; return Math.abs(dy) >= Math.abs(dx) ? (dy > 0 ? "higher" : "lower") : (dx > 0 ? "further right" : "further left"); };
-  // the first check of matchData a red stroke fails against its book stroke, in words
-  function explain(pts, s, idx, T) {
-    const lenc = T.pos;
-    if (avgDist(pts, s) > 350 * (T.near && idx > 0 ? 0.5 : 1) * lenc) return "in the wrong place";
-    const far = [];
-    if (dist(s[0], pts[0]) > 250 * lenc) far.push("start it " + side(pts[0], s[0]));
-    if (dist(last(s), last(pts)) > 250 * lenc) far.push("end it " + side(last(pts), last(s)));
-    if (far.length) return far.join(" and ");
-    if (!dirMatch(pts, s)) return "goes the wrong way";
-    if (!shapeFit(pts, s, T.shape)) return "wrong shape";
-    return "too short";
   }
   // writing the whole character smaller, bigger or off-centre in the box is not a stroke error:
   // move and scale the writing so its bounding box sits where the model character's does
@@ -918,14 +958,16 @@ const Mark = (() => {
     const uc = { x: (u.x0 + u.x1) / 2, y: (u.y0 + u.y1) / 2 }, mc = { x: (m.x0 + m.x1) / 2, y: (m.y0 + m.y1) / 2 };
     return user.map(st => st.map(p => ({ x: mc.x + (p.x - uc.x) * k, y: mc.y + (p.y - uc.y) * k })));
   }
-  // standard shape 1.3: with align, passes ~93% of correct simulated writing (80% before) and still catches
-  // every order or backwards error and about two-thirds of hooks written straight (see the README)
-  const TOL = { standard: { pos: 1, shape: 1.3, near: true }, lenient: { pos: 1.8, shape: 2.6, near: false }, free: { pos: 1.6, shape: 2, near: false } };
-  function character(user, data, mode) {
-    const meds = data.medians.map(m => m.map(([x, y]) => ({ x, y })));
-    const lenc = TOL[mode] || TOL.standard;
-    user = align(user, meds);
-    const { marks, assign } = mode === "free" ? freeMatch(user, meds, lenc) : strict(user, meds, lenc);
+  // standard, tuned with tests/sim.mjs: passes about 98-99% of correct simulated writing (messy, upright or by finger)
+  // and still catches every backwards or turned stroke, nearly every swapped one, and two in three moved a third of the box
+  const TOL = { standard: { pos: 1, shape: 1.5, near: 0.55 }, lenient: { pos: 1.8, shape: 2.6, near: 1 }, free: { pos: 1.6, shape: 2, near: 1 } };
+  // px: the box's size on screen. A finger in a small box (a phone, a long word) is coarser, so distances get more room
+  function character(user, data, mode, px) {
+    const raw = data.medians.map(m => m.map(([x, y]) => ({ x, y })));
+    const vers = raw.map(versions), meds = vers.map(v => v[0]);
+    const T = TOL[mode] || TOL.standard, lenc = { ...T, pos: T.pos * Math.min(1.4, Math.max(1, 300 / (px || 300))) };
+    user = align(user, raw);
+    const { marks, assign } = mode === "free" ? freeMatch(user, vers, lenc) : strict(user, vers, lenc);
     const good = marks.filter(m => m === "ok").length;
     // each red stroke is explained against the book stroke at its own position if that one is unmatched, else the nearest unmatched one
     const open = meds.map((_, j) => j).filter(j => !assign.includes(j));
@@ -935,7 +977,7 @@ const Mark = (() => {
       if (pts.length < 2) return "too short";
       if (!open.length) return "extra stroke";
       const j = open.includes(i) ? i : open.reduce((a, b) => avgDist(pts, meds[a]) <= avgDist(pts, meds[b]) ? a : b);
-      return explain(pts, meds[j], j, lenc);
+      return matchData(pts, vers[j], j, lenc, false).why;
     });
     return { marks, why, good, expected: meds.length, drawn: user.length, correct: good === meds.length && user.length === meds.length };
   }
@@ -1002,7 +1044,7 @@ function renderCard() {
       <div class="py${tr ? " small" : ""}" id="py"${dict || tr ? " hidden" : ""}>${esc(w.p)}</div>
       <div class="hint" id="hint"${(dict && !clue) || tr ? " hidden" : ""}>${esc(w.h)}${w.pos ? ` <em>${esc(w.pos)}</em>` : ""}</div>
       ${tr ? `<div class="stepper listen" role="group" aria-label="Number of boxes"><button class="btn" id="boxLess" type="button" aria-label="One box fewer">−</button><span id="boxCount"></span><button class="btn" id="boxMore" type="button" aria-label="One more box">+</button></div>` : ""}
-      ${dict && clue && s.clue === "sound" ? `<p class="note">Sounds the same as another course word, so here is its meaning.</p>` : ""}
+      ${dict && clue && s.clue === "sound" ? `<p class="note">Sounds like another course word, so here is its meaning.</p>` : ""}
       ${dict ? `<div class="controls listen"><button class="btn" id="playBtn" type="button">Play again</button><button class="btn" id="slowBtn" type="button">Play slowly</button></div>` : ""}
       ${dict && !zhVoice ? `<p class="note"><b>No Mandarin voice found</b>, so nothing will play. On iPad, add one in Settings > Accessibility > Spoken Content > Voices > Chinese (China).</p>` : ""}
     </div>
@@ -1177,7 +1219,7 @@ function renderCard() {
   const markInk = () => {
     const mode = markingMode(), ink = st.ink.map(strokes => strokes.map(stroke => stroke.map(toChar))), seen = new Map();
     // an empty box is simply "not written", so the stroke matcher never sees an empty attempt
-    const markBox = (k, c) => seen.get(k + c) || seen.set(k + c, ink[k].length ? Mark.character(ink[k], STROKES[c], mode) : { marks: [], good: 0, expected: STROKES[c].medians.length, drawn: 0, correct: false }).get(k + c);
+    const markBox = (k, c) => seen.get(k + c) || seen.set(k + c, ink[k].length ? Mark.character(ink[k], STROKES[c], mode, size) : { marks: [], good: 0, expected: STROKES[c].medians.length, drawn: 0, correct: false }).get(k + c);
     let best = null;
     for (const a of answersFor(st.ink.length)) {
       const marks = [...a].map((c, k) => markBox(k, c)), good = marks.reduce((x, m) => x + m.good, 0);
