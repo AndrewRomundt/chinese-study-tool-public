@@ -16,6 +16,8 @@ Zìtiè is a study tool for English speakers learning Mandarin, built for an **i
 
 - **Your own handwriting, marked fairly.** Each box is a pressure-sensitive canvas with palm rejection. Nothing is judged while you write; on **Check**, your strokes are normalised for size and position and compared with the character's stroke medians using a port of Hanzi Writer's stroke matcher. Strokes out of order or backwards show in amber, wrong shapes in red.
 - **Three marking levels** (Standard, Lenient, Any stroke order), tuned with a simulator (`tests/sim.mjs`) that writes every character neatly, messily, upright and by finger: Standard passes 98-100% of correct characters while still catching every backwards stroke or wrong character and nearly every pair of strokes written in the wrong order. It allows for how handwriting differs from the brush font (hooks and flicks short or left off, flatter long strokes, dots judged only by where they sit, a tap counts as a dot, more room in small boxes), and each red stroke says what to fix, such as "1st stroke: start it lower".
+- **Looks like a copybook.** Buff paper, ink rules and square edges, with the current lesson printed in 田字格 on Home.
+- **A short tutorial** on the welcome page walks through writing, Check and the marks, then starts a tracing round.
 - **Spaced repetition** across every mode: misses come back in 10 minutes, hits climb an interval ladder.
 - **Made for long sessions on the iPad.** Check, Next, Undo stroke and Clear box sit in a dock pinned to the bottom of the screen, so they stay in reach in either orientation and on a phone. Results show your own handwriting with the marks on it, like a corrected copybook page.
 - **No build step, no framework.** The whole app is one HTML file plus a few JSON data files.
@@ -82,7 +84,7 @@ gunzip -c cedict_1_0_ts_utf-8_mdbg.txt.gz > pkgs/cedict_1_0_ts_utf-8_mdbg.txt
 cd app && python3 ../tools/make.py
 ```
 
-After adding lessons or UI text, rerun `python3 tools/subset_fonts.py` (needs `pip install fonttools brotli` and the full Noto Serif SC and Source Sans 3 TTFs in `pkgs/fonts/`, see the script) so the fonts cover the new characters.
+After adding lessons or UI text, rerun `python3 tools/subset_fonts.py` (needs `pip install fonttools brotli` and the full Noto Serif SC and Archivo Narrow TTFs in `pkgs/fonts/`, see the script) so the fonts cover the new characters.
 
 To fix a word's pinyin or hint, add an entry to `tools/overrides.py` keyed by its id. After editing `app/lessons.json`, run `node tests/lessons-check.js`. `deno run --allow-read tests/sim.mjs` (or `node tests/sim.mjs`) checks marking on every character; `tests/sim.mjs 你叫` breaks one down by stroke. The other tests need Playwright with Chromium and a local Hanzi Writer at `pkgs/hw/package/dist/hanzi-writer.min.js` (`npm pack hanzi-writer@3.7.2`).
 
@@ -90,7 +92,7 @@ To fix a word's pinyin or hint, add an entry to `tools/overrides.py` keyed by it
 
 - **Code and original content** (app, exercises, reading texts, grammar notes, tools, tests): MIT, see [LICENSE](LICENSE).
 - **[Hanzi Writer](https://hanziwriter.org/)** by David Chanin (MIT, [license](licenses/hanzi-writer-MIT.txt)): renders hints, answers and stroke-order animations; the stroke matcher is ported from it. A copy is in `app/vendor/`.
-- **[Noto Serif SC](https://github.com/notofonts/noto-cjk)** and **[Source Sans 3](https://github.com/adobe-fonts/source-sans)** (SIL Open Font License 1.1, [Noto](licenses/OFL-NotoSerifSC.txt), [Source Sans](licenses/OFL-SourceSans3.txt)): subsets in `app/fonts/`.
+- **[Noto Serif SC](https://github.com/notofonts/noto-cjk)** and **[Archivo Narrow](https://github.com/Omnibus-Type/ArchivoNarrow)** (SIL Open Font License 1.1, [Noto](licenses/OFL-NotoSerifSC.txt), [Archivo Narrow](licenses/OFL-ArchivoNarrow.txt)): subsets in `app/fonts/`.
 - **[hanzi-writer-data](https://github.com/chanind/hanzi-writer-data)** (`app/strokes.json`): derived from [Make Me a Hanzi](https://github.com/skishore/makemeahanzi) and the Arphic PL fonts, under the [Arphic Public License](licenses/ARPHICPL.TXT).
 - **[CC-CEDICT](https://cc-cedict.org/)** (MDBG and contributors): pinyin and English hints in `app/words.json` are derived from it under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), so `app/words.json` is shared under the same license.
 - **[pypinyin](https://github.com/mozillazg/python-pinyin)** (MIT): pinyin for words not in CC-CEDICT and for the reading and translation texts.
