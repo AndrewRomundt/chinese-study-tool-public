@@ -31,6 +31,8 @@
   --warn-bg: #f1dcb4;
   --bad-bg: #f2cdc2;
   --stroke: #15100e;
+  --tour-shade: rgba(21, 16, 14, .58); /* the dimmed page around the feature the tour shows */
+  --dur-tour: 320ms;
   --shade: rgba(21, 16, 14, .2);
   --rule-hair: 1px; --rule-bar: 5px; --rule-frame: 3px;
   --ease-out: cubic-bezier(.23, 1, .32, 1);
@@ -46,13 +48,13 @@
   --paper: #130e0b; --paper-2: #27201b; --card: #1d1713; --ink: #ece4d0; --ink-2: #cfc6b4; --muted: #aca396; --line: #443b35;
   --jade: #5fc4a6; --jade-soft: #142f24; --grid: #e55033; --grid-soft: rgba(229, 80, 51, .34); --frame: rgba(229, 80, 51, .45);
   --good: #6fd08a; --warn: #f0b45a; --bad: #ff8a73; --good-bg: #17301f; --warn-bg: #3a2a10; --bad-bg: #3d1a12;
-  --stroke: #ece4d0; --shade: rgba(0, 0, 0, .5); color-scheme: dark;
+  --tour-shade: rgba(0, 0, 0, .66); --stroke: #ece4d0; --shade: rgba(0, 0, 0, .5); color-scheme: dark;
 } }
 :root[data-theme="dark"] {
   --paper: #130e0b; --paper-2: #27201b; --card: #1d1713; --ink: #ece4d0; --ink-2: #cfc6b4; --muted: #aca396; --line: #443b35;
   --jade: #5fc4a6; --jade-soft: #142f24; --grid: #e55033; --grid-soft: rgba(229, 80, 51, .34); --frame: rgba(229, 80, 51, .45);
   --good: #6fd08a; --warn: #f0b45a; --bad: #ff8a73; --good-bg: #17301f; --warn-bg: #3a2a10; --bad-bg: #3d1a12;
-  --stroke: #ece4d0; --shade: rgba(0, 0, 0, .5); color-scheme: dark;
+  --tour-shade: rgba(0, 0, 0, .66); --stroke: #ece4d0; --shade: rgba(0, 0, 0, .5); color-scheme: dark;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -438,6 +440,19 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 .tour p { flex: 1 1 320px; margin: 0; font-size: var(--t-md); line-height: 1.5; max-width: 34em; text-wrap: pretty; }
 .tourbox { width: 200px; height: 200px; flex: none; }
 .sechead .btn.quiet, .note .btn.quiet { min-height: 44px; padding-inline: var(--s2); }
+#tourShade { position: fixed; inset: 0; z-index: 30; background: var(--tour-shade); }
+#tourShade.glide { transition: clip-path var(--dur-tour) var(--ease-out); }
+#tourBox { position: fixed; z-index: 31; width: min(380px, calc(100% - 32px)); background: var(--card); color: var(--ink); border: var(--rule-hair) solid var(--ink); padding: var(--s4); box-shadow: 0 var(--s2) 0 var(--shade); transition: opacity var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out); }
+.js #tourBox.out { opacity: 0; transform: translateY(6px); } /* fading between steps, only while the tour runs */
+#tourBox h3 { font-size: var(--t-md); margin: 0 0 var(--s2); }
+#tourBox p { margin: 0 0 var(--s3); text-wrap: pretty; }
+#tourBox .settings-row { padding-top: 0; }
+#tourBox .tour-n, #tourBox .tour-credit { font-size: var(--t-xs); color: var(--muted); margin-bottom: var(--s1); }
+#tourBox::before { content: ""; position: absolute; left: calc(var(--ax, 50%) - 8px); width: 14px; height: 14px; background: var(--card); border: var(--rule-hair) solid var(--ink); transform: rotate(45deg); }
+#tourBox[data-side="below"]::before { top: -8px; border-right: 0; border-bottom: 0; }
+#tourBox[data-side="above"]::before { bottom: -8px; border-left: 0; border-top: 0; }
+#tourBox[data-side="none"]::before { display: none; }
+@media (prefers-reduced-motion: reduce) { #tourShade.glide, #tourBox { transition: none; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-property: opacity, color, background-color, border-color !important; animation: none !important; } }
 </style>
 
@@ -812,7 +827,7 @@ function renderHome() {
   $("#modeMy").onclick = renderMyWords;
   main.querySelectorAll(".lesson").forEach(b => b.onclick = () => renderWordList(b.dataset.l, "home"));
   $("#aboutDemo").onclick = renderWelcome;
-  $("#tourHome").onclick = () => renderTutorial(0);
+  $("#tourHome").onclick = startTour;
 }
 
 /* ---------------- Demo welcome (first visit, and About this demo on Home) ---------------- */
@@ -856,41 +871,83 @@ function renderWelcome() {
     </section>
   </div>`;
   $("#startDemo").onclick = () => { welcomed(); go("home"); };
-  $("#tourBtn").onclick = () => renderTutorial(0);
+  $("#tourBtn").onclick = startTour;
   window.scrollTo(0, 0);
 }
 
-/* ---------------- Tutorial: five short steps, then a real tracing round ---------------- */
+/* ---------------- Guided tour (demo): the real screens, one feature at a time ---------------- */
+// The page is dimmed except a window onto the feature, which stays usable (write, press Check, drag on the photo);
+// a card beside it explains. The window glides to the next feature and the card fades across.
+let addSample = null; // a photo the Photo tab opens by itself (the tour's)
 const TOUR = [
-  { h: "Write in the boxes", p: "Each character of a word gets its own 田字格 box. Write with an Apple Pencil, a finger or a mouse. <b>Undo stroke</b> and <b>Clear box</b> sit in the bar at the bottom of the screen.", demo: true },
-  { h: "Press Check", p: "Nothing is judged while you write. <b>Check</b> compares each of your strokes with the character's real stroke order. A stroke in the wrong order or direction turns amber; a wrong shape turns red and says what to fix, such as “2nd stroke: start it lower”." },
-  { h: "When you are stuck", p: "<b>Hint</b> shows the character's outline for a moment, <b>Hear it</b> says the word, and <b>Show answer</b> draws it. If the marking is wrong, <b>It was right</b> overrules it." },
-  { h: "Words come back", p: "A word you miss comes back in 10 minutes. One you get right comes back after 1, 3, 7, 14 and then 30 days. <b>复习</b> on Home collects every word that is due." },
-  { h: "Your turn", p: "Trace three words from lesson 1.1: first over a grey outline, then from memory, pressing <b>Check</b> each time.", go: true },
+  { go: () => startWrite(lessonWords("1.1").slice(0, 2), "Tutorial", { tour: true }), el: "#boxes",
+    h: "Write in the boxes", p: "Each character gets its own 田字格 box. Write the word for the pinyin above with an Apple Pencil, a finger or a mouse. Try it now: nothing is marked until you press Check." },
+  { el: "#dock", h: "Check, and fix", p: "<b>Undo stroke</b> and <b>Clear box</b> fix a slip. <b>Check</b> marks every stroke against the character's real stroke order: amber means right stroke, wrong order or direction; red means the wrong shape or place, with a note on what to fix. Press Check when you are ready." },
+  { el: "#ctl", h: "When you are stuck", p: "<b>Hint</b> shows the outline for a moment, <b>Hear it</b> says the word, <b>Show answer</b> draws it. After Check, <b>Stroke order</b> animates the character and <b>It was right</b> overrules the marker. This round is practice: nothing here is scored." },
+  { go: () => renderRead("1.1"), el: "#passage .line:nth-of-type(2)",
+    h: "Reading", p: "Every lesson has a dialogue, a story and a short text. Tap any underlined word to see just that word: its pinyin and meaning, to hear it or flag it." },
+  { el: "#rTrans", h: "The whole translation", p: "<b>Reveal translation</b> shows the pinyin and English of every sentence at once; tap it again to hide them. <b>Listen only</b> hides the text for a listening test." },
+  { go: () => { addSample = "tour-photo.jpg"; renderMyAdd("photo"); }, el: "#phArea", wait: 15000,
+    h: "Add words from a photo", p: "Here is a photo of handwriting. Drag over a few characters to select them, then press <b>Read the selected part</b>. It is read on this device (the first time loads the reader, about 30 MB), then you tap the words to add.",
+    credit: "Photo: Bdubbs09, CC BY-SA 4.0, Wikimedia Commons" },
+  { go: () => renderMyAdd("speech"), el: "#talk", h: "Or say it", p: "Tap, say a word or a whole sentence in Mandarin, and tap again. The words you said are listed to tap and add. Where the browser's recognition is not available, it runs on this device (about 77 MB, once)." },
+  { go: () => go("home"), el: "#modeMy", h: "My words", p: "Words you add live here, as a lesson of their own: every study mode works on them. That's the tour. Enjoy!" },
 ];
-function renderTutorial(i) {
-  route = "tutorial"; session = null;
-  const t = TOUR[i], last = i === TOUR.length - 1;
-  const demoChar = STROKES["你"] ? "你" : [...(byLesson["1.1"] || [{ t: "字" }])[0].t][0];
-  main.innerHTML = `
-  <div class="view">
-    <div><h2>${t.h}</h2><div class="sub">Tutorial, step ${i + 1} of ${TOUR.length}</div></div>
-    <div class="tour">
-      ${t.demo ? `<div class="box tourbox">${gridSvg()}<div class="hw" id="tourHw"></div></div>` : ""}
-      <p>${t.p}</p>
-    </div>
-    <div class="settings-row">
-      ${last ? `<button class="btn primary" id="tourGo" type="button">Start tracing</button>` : `<button class="btn primary" id="tourNext" type="button">Next</button>`}
-      ${i ? `<button class="btn" id="tourBack" type="button">Back</button>` : ""}
-      <button class="btn quiet" id="tourSkip" type="button">${last ? "Go to Home instead" : "Skip the tutorial"}</button>
-    </div>
-  </div>`;
-  if (t.demo) { const still = matchMedia("(prefers-reduced-motion: reduce)").matches, wr = HanziWriter.create("tourHw", demoChar, { width: 200, height: 200, padding: 12, strokeColor: getComputedStyle(document.documentElement).getPropertyValue("--stroke").trim() || "#15100e", renderer: "svg", charDataLoader: charLoader, delayBetweenLoops: 1200, showCharacter: still }); if (!still) wr.loopCharacterAnimation(); } // reduced motion: the finished character, not the animation
-  if (!last) $("#tourNext").onclick = () => renderTutorial(i + 1);
-  else $("#tourGo").onclick = () => { welcomed(); startWrite(lessonWords("1.1").slice(0, 3), "Tutorial", { trace: true }); };
-  if (i) $("#tourBack").onclick = () => renderTutorial(i - 1);
-  $("#tourSkip").onclick = () => { welcomed(); go("home"); };
-  window.scrollTo(0, 0);
+let tour = null;
+function startTour() { endTour(true); tour = { i: -1 }; welcomed(); document.documentElement.classList.add("js"); tourStep(0); }
+function endTour(quiet) {
+  if (!tour) return;
+  removeEventListener("scroll", tour.place, true); removeEventListener("resize", tour.place); removeEventListener("keydown", tour.key);
+  ["#tourShade", "#tourBox"].forEach(s => $(s) && $(s).remove());
+  document.documentElement.classList.remove("js");
+  tour = null;
+  if (!quiet) go("home");
+}
+const waitFor = (sel, ms) => new Promise(ok => { const t0 = Date.now(); const look = () => { const el = $(sel); if (el && el.offsetHeight) ok(el); else if (Date.now() - t0 > ms) ok(null); else requestAnimationFrame(look); }; look(); });
+async function tourStep(i) {
+  const s = TOUR[i]; if (!s || !tour) return;
+  const back = i < tour.i;
+  tour.i = i;
+  let shade = $("#tourShade"), box = $("#tourBox");
+  if (!shade) {
+    shade = document.createElement("div"); shade.id = "tourShade";
+    box = document.createElement("div"); box.id = "tourBox"; box.setAttribute("role", "dialog"); box.setAttribute("aria-live", "polite");
+    document.body.append(shade, box);
+    tour.place = () => place(false); tour.key = e => { if (e.key === "Escape") endTour(); };
+    addEventListener("scroll", tour.place, true); addEventListener("resize", tour.place); addEventListener("keydown", tour.key);
+  }
+  box.classList.add("out");
+  // a step that opens a screen opens it now; going back to a step on the same screen only moves the window
+  if (s.go && !(back && $(s.el))) s.go();
+  else if (!s.go && back) { let k = i; while (k > 0 && !TOUR[k].go) k--; if (!$(s.el)) TOUR[k].go(); }
+  const el = await waitFor(s.el, s.wait || 4000);
+  if (!tour || tour.i !== i) return;
+  if (el) el.scrollIntoView({ block: "center", behavior: "instant" });
+  box.innerHTML = `<p class="tour-n">${i + 1} of ${TOUR.length}</p><h3>${s.h}</h3><p>${s.p}</p>${s.credit ? `<p class="tour-credit">${esc(s.credit)}</p>` : ""}
+    <div class="settings-row"><button class="btn primary" id="tourNext" type="button">${i + 1 < TOUR.length ? "Next" : "Finish"}</button>${i ? `<button class="btn" id="tourBack" type="button">Back</button>` : ""}<button class="btn quiet" id="tourEnd" type="button">End tour</button></div>`;
+  $("#tourNext").onclick = () => i + 1 < TOUR.length ? tourStep(i + 1) : endTour();
+  if (i) $("#tourBack").onclick = () => tourStep(i - 1);
+  $("#tourEnd").onclick = () => endTour();
+  tour.el = el; tour.sel = s.el;
+  place(true);
+  requestAnimationFrame(() => { box.classList.remove("out"); $("#tourNext").focus({ preventScroll: true }); });
+}
+// the window onto the feature (a hole in the shade) and the card beside it, above or below, whichever has room
+function place(glide) {
+  if (!tour) return;
+  const shade = $("#tourShade"), box = $("#tourBox"), el = tour.el && tour.el.isConnected ? tour.el : $(tour.sel);
+  shade.classList.toggle("glide", !!glide);
+  const W = innerWidth, H = innerHeight;
+  if (!el) { shade.style.clipPath = ""; box.style.left = Math.max(16, (W - box.offsetWidth) / 2) + "px"; box.style.top = Math.max(16, (H - box.offsetHeight) / 2) + "px"; box.dataset.side = "none"; return; }
+  const r = el.getBoundingClientRect(), pad = 8;
+  const x0 = Math.max(0, r.left - pad), y0 = Math.max(0, r.top - pad), x1 = Math.min(W, r.right + pad), y1 = Math.min(H, r.bottom + pad);
+  shade.style.clipPath = `polygon(evenodd, 0 0, ${W}px 0, ${W}px ${H}px, 0 ${H}px, 0 0, ${x0}px ${y0}px, ${x1}px ${y0}px, ${x1}px ${y1}px, ${x0}px ${y1}px, ${x0}px ${y0}px)`;
+  const bw = box.offsetWidth, bh = box.offsetHeight, below = H - y1 >= bh + 24 || y0 < bh + 24 && H - y1 > y0;
+  const left = Math.min(W - bw - 16, Math.max(16, (x0 + x1) / 2 - bw / 2));
+  box.style.left = left + "px";
+  box.style.top = (below ? Math.min(H - bh - 16, y1 + 16) : Math.max(16, y0 - bh - 16)) + "px";
+  box.dataset.side = below ? "below" : "above";
+  box.style.setProperty("--ax", Math.min(bw - 24, Math.max(24, (x0 + x1) / 2 - left)) + "px"); // the pointer under the feature
 }
 
 /* ---------------- Review queue ---------------- */
@@ -1030,7 +1087,7 @@ function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { co
 
 /* ---------------- Write session ---------------- */
 function startWrite(words, label, opts = {}) {
-  session = { words, label, i: 0, results: [], trace: !!opts.trace, phase: opts.trace ? "trace" : "copy", dict: !!opts.dict, clue: opts.clue, drill: !!opts.drill, tr: !!opts.tr, lesson: opts.lesson, reps: 0, nbox: 0 };
+  session = { words, label, i: 0, results: [], tour: !!opts.tour, trace: !!opts.trace, phase: opts.trace ? "trace" : "copy", dict: !!opts.dict, clue: opts.clue, drill: !!opts.drill, tr: !!opts.tr, lesson: opts.lesson, reps: 0, nbox: 0 };
   route = "write";
   renderCard();
 }
@@ -1680,7 +1737,7 @@ function renderCard() {
     else if (allCorrect && !st.hints) result = "good";
     else if (allCorrect || strokesOk / strokesExp >= 0.75) result = "close";
     else result = "miss";
-    const graded = !tracing && !drill && !again, store = tr ? P.tr : P.w;
+    const graded = !tracing && !drill && !again && !s.tour, store = tr ? P.tr : P.w;
     const before = graded && store[w.id] ? { ...store[w.id] } : null; // kept so "It was right" can undo this grade
     const record = r => {
       if (tr) { const x = P.tr[w.id] = P.tr[w.id] || { n: 0, c: 0 }; x.n++; if (r !== "miss") x.c++; x.last = Date.now(); }
@@ -2351,8 +2408,9 @@ function linkWords(zh) {
   }
   return out;
 }
-// a sentence you tap to show its pinyin and English
-const revealLine = (zh, py, en, speaker) => `<button type="button" class="line" aria-expanded="false">${speaker ? `<b class="spk">${esc(speaker)}：</b>` : ""}<span class="zh">${linkWords(zh)}</span><span class="gloss" hidden><span class="lpy">${esc(py)}</span><span class="note">${esc(en)}</span></span></button>`;
+// a sentence with its pinyin and English hidden underneath: a question shows them when tapped; a passage line only with
+// Reveal translation (still), so tapping a word in it never gives the sentence away
+const revealLine = (zh, py, en, speaker, still) => `<${still ? "div" : "button type=\"button\""} class="line" aria-expanded="false">${speaker ? `<b class="spk">${esc(speaker)}：</b>` : ""}<span class="zh">${linkWords(zh)}</span><span class="gloss" hidden><span class="lpy">${esc(py)}</span><span class="note">${esc(en)}</span></span></${still ? "div" : "button"}>`;
 // the panel for a tapped word: pinyin, meaning, hear it, flag it
 function wordPop(w) {
   let pop = $("#wordPop");
@@ -2390,10 +2448,10 @@ function renderRead(lesson, pi = 0) {
     <div class="seg" id="segRead"><button type="button" data-v="read" aria-pressed="${!listen}">Read it</button><button type="button" data-v="listen" aria-pressed="${listen}">Listen only</button></div>
     <section class="sheet">
       <div id="passage"${listen ? " hidden" : ""}>
-        ${p.lines ? `<div class="ptitle">${revealLine(p.title.zh, p.title.py, p.title.en)}</div>${p.lines.map(x => revealLine(x.zh, x.py, x.en, x.speaker)).join("")}
-        <p class="note">Tap any word to see it on its own (to hear it or flag it) along with its sentence's pinyin and English. Tap the sentence again to hide them.</p>` : `<p class="passage">${linkWords(text)}</p><p class="note">Tap an underlined word to see it on its own and flag it.</p>`}
+        ${p.lines ? `<div class="ptitle">${revealLine(p.title.zh, p.title.py, p.title.en, "", true)}</div>${p.lines.map(x => revealLine(x.zh, x.py, x.en, x.speaker, true)).join("")}
+        <p class="note">Tap any word to see just that word: its pinyin and meaning, to hear it or flag it. Reveal translation shows the whole passage's pinyin and English.</p>` : `<p class="passage">${linkWords(text)}</p><p class="note">Tap an underlined word to see it on its own and flag it.</p>`}
       </div>
-      <div class="settings-row"><button class="btn${listen ? " primary" : ""}" id="rPlay" type="button">${listen ? "Play again" : "Hear it"}</button><button class="btn" id="rSlow" type="button">Play slowly</button>${listen ? `<button class="btn" id="rShow" type="button">Show the text</button>` : ""}</div>
+      <div class="settings-row"><button class="btn${listen ? " primary" : ""}" id="rPlay" type="button">${listen ? "Play again" : "Hear it"}</button><button class="btn" id="rSlow" type="button">Play slowly</button>${p.lines ? `<button class="btn" id="rTrans" type="button"${listen ? " hidden" : ""}>Reveal translation</button>` : ""}${listen ? `<button class="btn" id="rShow" type="button">Show the text</button>` : ""}</div>
     </section>
     ${items.map((it, i) => `<section class="sheet qblock" data-i="${i}"><div class="qhead"><b>${i + 1}.</b> ${it.zh ? revealLine(it.zh, it.py, it.en) : esc(it.en)}</div><div class="seg">${it.opts.map((o, k) => `<button type="button" class="tbtn" data-k="${k}">${esc(o.t)}</button>`).join("")}</div></section>`).join("")}
     <div class="feedback" id="fb" aria-live="polite"></div>
@@ -2402,18 +2460,23 @@ function renderRead(lesson, pi = 0) {
   $("#readSel").onchange = e => renderRead(e.target.value);
   $("#segPass").querySelectorAll("button").forEach(b => b.onclick = () => renderRead(lesson, +b.dataset.k));
   $("#segRead").querySelectorAll("button").forEach(b => b.onclick = () => { readListen = b.dataset.v === "listen"; renderRead(lesson, pi); });
-  main.querySelectorAll(".line").forEach(b => b.onclick = () => { const g = b.querySelector(".gloss"); g.hidden = !g.hidden; b.setAttribute("aria-expanded", String(!g.hidden)); });
-  // a word tap opens the word card and also shows its sentence's pinyin and English, since the words fill almost every line
+  main.querySelectorAll("button.line").forEach(b => b.onclick = () => { const g = b.querySelector(".gloss"); g.hidden = !g.hidden; b.setAttribute("aria-expanded", String(!g.hidden)); });
+  // the whole passage's pinyin and English, all at once, and away again
+  if ($("#rTrans")) $("#rTrans").onclick = () => {
+    const show = $("#rTrans").textContent.startsWith("Reveal");
+    $("#passage").querySelectorAll(".line").forEach(l => { l.querySelector(".gloss").hidden = !show; l.setAttribute("aria-expanded", String(show)); });
+    $("#rTrans").textContent = show ? "Hide translation" : "Reveal translation";
+  };
+  // a word tap opens the word card for that word only; the sentence's translation stays hidden
   main.querySelectorAll(".wd").forEach(sp => sp.onclick = e => {
     e.stopPropagation();
-    const b = sp.closest(".line"); if (b) { b.querySelector(".gloss").hidden = false; b.setAttribute("aria-expanded", "true"); }
     main.querySelectorAll(".wd.active").forEach(x => x.classList.remove("active")); sp.classList.add("active"); // the tapped word stands out from its sentence
     wordPop(byId(sp.dataset.id));
   });
   paintFlagged();
   $("#rPlay").onclick = () => speak(text);
   $("#rSlow").onclick = () => speak(text, 0.55);
-  if (listen) { $("#rShow").onclick = () => { $("#passage").hidden = false; $("#rShow").remove(); }; speak(text); }
+  if (listen) { $("#rShow").onclick = () => { $("#passage").hidden = false; $("#rShow").remove(); if ($("#rTrans")) $("#rTrans").hidden = false; }; speak(text); }
   $("#back").onclick = () => go("home");
   let checked = false;
   main.querySelectorAll(".qblock").forEach(blk => blk.querySelectorAll(".tbtn").forEach(b => b.onclick = () => {
@@ -2734,7 +2797,7 @@ function panePhoto({ status, show, firstOf }) {
     } catch (e) { status("The photo could not be read here. On iPad, use Scan Text in the Pinyin or English box instead."); }
     if ($("#phRead")) $("#phRead").disabled = false;
   };
-  const pick = async file => {
+  const pick = async (file, auto = true) => {
     if (!file) return;
     show([]); status("Opening the photo…");
     try { img = await photoImage(file); } catch (e) { status("That photo could not be opened."); return; }
@@ -2771,8 +2834,9 @@ function panePhoto({ status, show, firstOf }) {
     $("#phAll").onclick = () => { sel = null; draw(); $("#phRead").textContent = "Read the whole photo"; $("#phAll").hidden = true; };
     $("#phRead").onclick = read;
     draw(); status("");
-    read(); // a photo of just the characters needs no selecting
+    if (auto) read(); // a photo of just the characters needs no selecting
   };
+  if (addSample) { const u = addSample; addSample = null; fetch(u).then(r => r.blob()).then(b => pick(b, false)).catch(() => {}); }
   $("#phCam").onchange = e => pick(e.target.files[0]);
   $("#phPick").onchange = e => pick(e.target.files[0]);
 }
