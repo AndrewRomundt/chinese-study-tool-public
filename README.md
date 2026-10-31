@@ -15,7 +15,7 @@ Zìtiè is a study tool for English speakers learning Mandarin, built for an **i
 ## Highlights
 
 - **Your own handwriting, marked fairly.** Each box is a pressure-sensitive canvas with palm rejection. Nothing is judged while you write; on **Check**, your strokes are normalised for size and position and compared with the character's stroke medians using a port of Hanzi Writer's stroke matcher. Strokes out of order or backwards show in amber, wrong shapes in red.
-- **Three marking levels** (Standard, Lenient, Any stroke order), tuned with a simulator (`tests/sim.js`) that writes thousands of noisy characters: Standard passes about 93% of correct, wobbly characters while still catching every out-of-order or backwards stroke.
+- **Three marking levels** (Standard, Lenient, Any stroke order), tuned with a simulator (`tests/sim.mjs`) that writes every character neatly, messily, upright and by finger: Standard passes 98-100% of correct characters while still catching every backwards stroke or wrong character and nearly every pair of strokes written in the wrong order. It allows for how handwriting differs from the brush font (hooks and flicks short or left off, flatter long strokes, dots judged only by where they sit, a tap counts as a dot, more room in small boxes), and each red stroke says what to fix, such as "1st stroke: start it lower".
 - **Spaced repetition** across every mode: misses come back in 10 minutes, hits climb an interval ladder.
 - **Made for long sessions on the iPad.** Check, Next, Undo stroke and Clear box sit in a dock pinned to the bottom of the screen, so they stay in reach in either orientation and on a phone. Results show your own handwriting with the marks on it, like a corrected copybook page.
 - **No build step, no framework.** The whole app is one HTML file plus a few JSON data files.
@@ -24,7 +24,7 @@ Zìtiè is a study tool for English speakers learning Mandarin, built for an **i
 
 - **Learn**: word list, flashcards, trace and copy, a match game, a tone trainer, and free practice.
 - **Write**: see pinyin and an English hint, write the characters. **Write again** gives a fresh, ungraded try with the answer hidden, and **It was right** overrules a wrong mark (with Undo).
-- **Dictation (听写)**: hear the word and write it with no pinyin shown. The clue is sound only by default, as in a class 听写, or sound and meaning; course homophones such as 他/她 always show their meaning. **听写 lesson** on Home starts a dictation of the whole current lesson in one tap. Speech uses the best Mandarin voice installed on the device (on iPad, a downloaded Premium or Enhanced voice if there is one).
+- **Dictation (听写)**: hear the word and write it with no pinyin shown. The clue is sound only by default, as in a class 听写, or sound and meaning; words that sound like another course word always show their meaning (homophones such as 他/她, and words told apart only by a neutral tone or by tone changes in speech). **听写 lesson** on Home starts a dictation of the whole current lesson in one tap. Speech uses the best Mandarin voice installed on the device (on iPad, a downloaded Premium or Enhanced voice if there is one).
 - **Translation (译)**: about 25 English sentences per lesson to write in Chinese by hand, each using only vocabulary taught so far. Common equivalent wordings are accepted (for example 但是/可是/不过, optional 很, time phrases before or after the subject).
 - **Reading & listening**: a dialogue, a story and a short text for every lesson, with comprehension questions in Chinese. Tap any sentence for pinyin and English, or listen with the text hidden.
 - **Grammar**: each lesson's grammar points with spoken examples, then gap-fill and word-order quizzes.
@@ -69,7 +69,7 @@ tools/card.js, learn.js         standalone copies of the marking and Learn-mode 
 tools/subset_fonts.py           subsets the fonts in app/fonts/ to the characters the app uses
 app/vendor/hanzi-writer.min.js  Hanzi Writer 3.7.2, served locally
 app/og.png                      the link-preview image
-tests/                          Playwright scripts that simulate Pencil strokes; sim.js measures marking acceptance
+tests/                          Playwright scripts that simulate Pencil strokes; sim.mjs simulates handwriting against the real marker
 ```
 
 ## Rebuild the data
@@ -84,7 +84,7 @@ cd app && python3 ../tools/make.py
 
 After adding lessons or UI text, rerun `python3 tools/subset_fonts.py` (needs `pip install fonttools brotli` and the full Noto Serif SC and Source Sans 3 TTFs in `pkgs/fonts/`, see the script) so the fonts cover the new characters.
 
-To fix a word's pinyin or hint, add an entry to `tools/overrides.py` keyed by its id. After editing `app/lessons.json`, run `node tests/lessons-check.js`. The other tests need Playwright with Chromium and a local Hanzi Writer at `pkgs/hw/package/dist/hanzi-writer.min.js` (`npm pack hanzi-writer@3.7.2`).
+To fix a word's pinyin or hint, add an entry to `tools/overrides.py` keyed by its id. After editing `app/lessons.json`, run `node tests/lessons-check.js`. `deno run --allow-read tests/sim.mjs` (or `node tests/sim.mjs`) checks marking on every character; `tests/sim.mjs 你叫` breaks one down by stroke. The other tests need Playwright with Chromium and a local Hanzi Writer at `pkgs/hw/package/dist/hanzi-writer.min.js` (`npm pack hanzi-writer@3.7.2`).
 
 ## Credits and licenses
 
