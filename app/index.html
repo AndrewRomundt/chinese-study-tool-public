@@ -1,6 +1,6 @@
 <title>Zìtiè Chinese Trainer</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<style>/* Hallmark · redesign: full · shape: app screen · genre: editorial · theme: broadside (dealt 2/3, seed handwriting-first-chinese-study-tool-3451·164cc597·2026-10-31·r0), colourway bill and inked · brand kept: Zìtiè, the 字 seal, jade, copybook red, Noto Serif SC · faces: Noto Serif SC heads and 汉字, Archivo Narrow for everything read (Bevan and Six Caps left out: an app has no display face) · signature: the current lesson printed in 田字格 on Home · v2.0.0 */
+<style>/* Hallmark · redesign: full · shape: app screen · genre: editorial · theme: broadside (dealt 2/3, seed handwriting-first-chinese-study-tool-3451·164cc597·2026-10-31·r0), colourway bill and inked · brand kept: Zìtiè, the 字 seal, jade, copybook red, Noto Serif SC · faces: Noto Serif SC heads and 汉字, Archivo Narrow for everything read (Bevan and Six Caps left out: an app has no display face) · signature: the current lesson printed in 田字格 on Home · v2.0.0 */
 /* critique: a template grid of soft cards became a copybook: buff stock, ink rules, square edges, the 字 seal red for the paper's guides and one ink action per screen */
 /* answered 39a: disabled buttons change fill, ink and cursor and keep the disabled attribute */
 /* waive 39b: the Home modes are two-line index rows, not controls; they keep a 76px row so the 汉字 and description read as one entry */
@@ -65,7 +65,7 @@ body {
 }
 ::selection { background: var(--jade-soft); color: var(--ink); }
 button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
-button:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible { outline: 3px solid var(--grid); outline-offset: 2px; transition: none; }
+button:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible, input:focus-visible, .filebtn:focus-within { outline: 3px solid var(--grid); outline-offset: 2px; transition: none; }
 .wrap {
   max-width: 1040px; margin: 0 auto;
   padding-left: max(var(--s4), env(safe-area-inset-left, 0px));
@@ -341,7 +341,41 @@ select { font: inherit; padding: var(--s2) var(--s3); border-radius: 0; border: 
 .wflag { min-height: 44px; padding: var(--s1) var(--s3); white-space: nowrap; }
 .qhead .line { padding: var(--s1) 0; min-height: 44px; }
 .tones .tbtn.word { font-family: var(--f-han); font-size: var(--t-lg); min-width: 56px; }
+/* My words */
+.sechead .settings-row { padding-top: 0; }
+h3.lbl { font-family: var(--f-ui); font-size: var(--t-base); font-weight: 600; margin-bottom: calc(-1 * var(--s3)); }
+.txt { font: inherit; padding: var(--s2) var(--s3); border: var(--rule-hair) solid var(--ink); border-radius: 0; background: var(--card); color: var(--ink); min-height: 44px; width: 100%; max-width: 520px; }
+.txt.big { font-size: var(--t-md); min-height: 52px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.mylist .row { grid-template-columns: minmax(0, .8fr) minmax(0, .8fr) minmax(0, 1.4fr) auto; }
+.myact { display: flex; gap: var(--s1); flex-wrap: wrap; justify-content: flex-end; }
+.picks .row { grid-template-columns: minmax(0, .8fr) minmax(0, .8fr) minmax(0, 1.6fr) 96px; width: 100%; background: none; border: 0; border-bottom: var(--rule-hair) solid var(--line); border-radius: 0; text-align: left; min-height: 56px; color: inherit; }
+.picks .row .note { text-align: right; }
+.hwrow { display: flex; gap: var(--s6); flex-wrap: wrap; align-items: flex-start; }
+.hwpad canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+.hwside { flex: 1 1 260px; display: flex; flex-direction: column; gap: var(--s3); min-width: 0; }
+.hwword { font-family: var(--f-han); font-size: var(--t-2xl); line-height: 1.2; min-height: 1.2em; margin: 0; }
+.hwword.empty { font-family: var(--f-ui); font-size: var(--t-base); color: var(--muted); }
+.cands { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s2); }
+.btn.cand { font-family: var(--f-han); font-size: var(--t-xl); font-weight: 500; padding: var(--s2); min-height: 56px; background: var(--card); }
+.filebtn { position: relative; display: inline-flex; align-items: center; cursor: pointer; }
+.filebtn input { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; }
+.phwrap { max-width: 100%; }
+.phwrap canvas { display: block; max-width: 100%; height: auto; touch-action: none; cursor: crosshair; border: var(--rule-hair) solid var(--ink); }
+.han-note { font-family: var(--f-han); }
+.talk { min-height: 72px; min-width: 240px; font-size: var(--t-md); }
+.choices { display: flex; flex-direction: column; gap: var(--s1); }
+.choice { display: flex; gap: var(--s3); align-items: flex-start; padding: var(--s2) 0; min-height: 44px; cursor: pointer; }
+.choice input { margin-top: var(--s1); width: 20px; height: 20px; flex: none; }
+@media (hover: hover) and (pointer: fine) { .picks .row:hover { background: var(--paper-2); } }
 @media (max-width: 760px) {
+  .mylist .row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .mylist .myh, .mylist .myact { grid-column: 1 / -1; }
+  .myact { justify-content: flex-start; }
+  /* a found word on a phone: the characters and pinyin side by side, the meaning and lesson underneath */
+  .results.picks .row { grid-template-columns: auto minmax(0, 1fr); column-gap: var(--s4); row-gap: var(--s1); }
+  .results.picks .row .note { grid-column: 1 / -1; text-align: left; }
+  .results.picks .row .note:empty { display: none; }
   h1, .today h1 { font-size: var(--t-xl); }
   .modes { grid-template-columns: minmax(0, 1fr); }
   .mode { grid-template-columns: 56px minmax(0, 1fr) auto; min-height: 64px; padding: var(--s3) 0; }
@@ -432,7 +466,7 @@ let WORDS = [], STROKES = {}, LESSONS = [], byLesson = {};
 
 /* ---------------- Progress store (synced via db, mirrored locally) ---------------- */
 const LS_KEY = "zitie-progress-v1";
-function blank() { return { v: 1, cur: "1.1", settings: { input: "auto", marking: "standard", sawPencil: false }, w: {}, tr: {}, rd: {}, flag: {}, hist: [], updatedAt: 0 }; }
+function blank() { return { v: 1, cur: "1.1", settings: { input: "auto", marking: "standard", sawPencil: false }, w: {}, tr: {}, rd: {}, flag: {}, my: [], hist: [], updatedAt: 0 }; }
 let P = blank();
 let dbRef = null, saveTimer = null, saving = false, dirty = false;
 
@@ -448,7 +482,7 @@ function adopt(data) {
   const b = blank();
   P = Object.assign(b, data || {});
   P.settings = Object.assign(blank().settings, (data && data.settings) || {});
-  P.w = P.w || {}; P.hist = P.hist || [];
+  P.w = P.w || {}; P.hist = P.hist || []; P.my = P.my || [];
 }
 function save() {
   P.updatedAt = Date.now();
@@ -495,7 +529,8 @@ async function connectDb() {
     dbRef = null; setSync("local", "Saved on this device");
   }
 }
-function refresh() { if (route === "home") renderHome(); }
+// progress arrived from another device: My words may have changed too
+function refresh() { setWords(); ensureStrokes(myChars()).catch(() => {}); if (route === "home") renderHome(); }
 
 /* ---------------- Word progress ---------------- */
 function rec(id) { return P.w[id] || null; }
@@ -509,6 +544,107 @@ function grade(id, result) {
   else if (result === "close") { r.c++; r.due = now + DAY; }
   else { r.m++; r.st = 0; r.due = now + 10 * 60 * 1000; }
   P.w[id] = r;
+}
+
+/* ---------------- My words: your own words, kept in P.my and studied like a lesson ---------------- */
+const MY = "My";
+const lessonName = l => l === MY ? "My words" : "Lesson " + l;
+const lessonLow = l => l === MY ? "My words" : "lesson " + l; // mid-sentence
+let COURSE = [], COURSE_LESSONS = [], WBY = new Map();
+const byId = id => WBY.get(String(id));
+// numbered pinyin from the dictionary ("hao3", "lu:4") to tone marks ("hǎo", "lǜ"): the mark goes on a or e, on o in ou, else on the last vowel
+const MARKS = { a: "āáǎà", e: "ēéěè", i: "īíǐì", o: "ōóǒò", u: "ūúǔù", ü: "ǖǘǚǜ" };
+function markSyl(s) {
+  const m = s.match(/^([a-zü:v]+)([1-5])$/i);
+  if (!m) return s.replace(/u:|v/g, "ü");
+  const b = m[1].replace(/u:|v/g, "ü").replace(/U:|V/g, "Ü"), t = +m[2], low = b.toLowerCase();
+  if (t === 5) return b;
+  let i = low.search(/[ae]/);
+  if (i < 0) i = low.indexOf("ou");
+  if (i < 0) for (let k = low.length - 1; k >= 0; k--) if ("iouü".includes(low[k])) { i = k; break; }
+  if (i < 0) return b;
+  const mk = MARKS[low[i]][t - 1];
+  return b.slice(0, i) + (b[i] === low[i] ? mk : mk.toUpperCase()) + b.slice(i + 1);
+}
+const markPinyin = n => n.split(" ").map(markSyl).join(" ");
+function myWord(e) {
+  const syl = e.p.split(" "), sy = syl.map(markSyl);
+  return { id: e.id, l: MY, d: e.t, t: e.t, p: sy.join(" "), h: e.h, pos: "", tn: syl.map(s => +(s.match(/[1-5]$/) || [5])[0]), sy };
+}
+// rebuilds the word list after My words change (here, on another device, or after a reset)
+function setWords() {
+  P.my = P.my || [];
+  WORDS = COURSE.concat(P.my.map(myWord));
+  WBY = new Map(WORDS.map(w => [String(w.id), w]));
+  LESSONS = COURSE_LESSONS.concat(P.my.length ? [MY] : []);
+  byLesson = {}; LESSONS.forEach(l => byLesson[l] = WORDS.filter(w => w.l === l));
+  if (!byLesson[P.cur]) P.cur = "1.1";
+  SOUNDS = null; VOCAB = null;
+}
+// full stroke data for characters outside the course comes in 64 shards, fetched only when needed
+const shardOf = c => "strokes/" + String(c.codePointAt(0) % 64).padStart(2, "0") + ".json";
+const shardsLoaded = new Set();
+async function ensureStrokes(chars) {
+  const need = [...new Set([...chars].filter(c => !STROKES[c]).map(shardOf))].filter(s => !shardsLoaded.has(s));
+  await Promise.all(need.map(s => fetch(s).then(r => r.json()).then(d => { Object.assign(STROKES, d); shardsLoaded.add(s); })));
+  return [...chars].filter(c => !STROKES[c]); // characters that still have no stroke data
+}
+const myChars = () => P.my.map(e => e.t).join("");
+
+// the dictionary (CC-CEDICT, simplified only), loaded the first time you add a word
+let DICT = null, DICTSET = null;
+const toneless = s => s.normalize("NFD").replace(/[̀́̄̌]/g, "").normalize("NFC"); // tone marks only: ü keeps its dots
+async function loadDict() {
+  if (DICT) return DICT;
+  const text = await fetch("dict.txt").then(r => { if (!r.ok) throw 0; return r.text(); });
+  DICT = text.split("\n").map(line => {
+    const [t, n, h] = line.split("\t"), low = n.toLowerCase();
+    return { t, n, h, p: markPinyin(n), num: low.replace(/ /g, ""), bare: low.replace(/[1-5 ]/g, ""), mark: markPinyin(low).replace(/ /g, "") };
+  });
+  DICTSET = new Set(DICT.map(e => e.t));
+  // CC-CEDICT has no frequencies, so a word counts as common when many other words contain it
+  // (熊猫 is in 大熊猫, 熊猫眼…; 雄猫 in none). Used only to order words of the same length.
+  const uses = {};
+  for (const e of DICT) { const t = [...e.t], seen = new Set(); for (let i = 0; i < t.length; i++) for (let L = 1; L <= 4 && i + L <= t.length; L++) seen.add(t.slice(i, i + L).join("")); seen.forEach(s => uses[s] = (uses[s] || 0) + 1); }
+  // a single character counts the words that use it with this reading, so 石 dàn (a grain measure) ranks below 石 shí
+  const reads = {};
+  for (const e of DICT) { const t = [...e.t], sy = e.n.toLowerCase().split(" "); if (t.length === sy.length) t.forEach((c, i) => { const k = c + sy[i]; reads[k] = (reads[k] || 0) + 1; }); }
+  for (const e of DICT) e.f = e.t.length === 1 ? reads[e.t + e.n.toLowerCase()] || 0 : uses[e.t] || 0;
+  return DICT;
+}
+const HANRE = /\p{Script=Han}/u;
+const courseHas = t => COURSE.find(w => w.t === t);
+// search as you type: characters, pinyin with tone numbers, tone marks or none, then English
+function searchDict(q, limit = 40) {
+  q = q.trim();
+  if (!DICT || !q) return [];
+  const han = [...q].filter(c => HANRE.test(c)).join("");
+  const rank = (hits, exact) => hits.sort((a, b) => (exact(b) - exact(a)) || (!!courseHas(b.t) - !!courseHas(a.t)) || a.t.length - b.t.length || b.f - a.f);
+  if (han) return rank(DICT.filter(e => e.t.includes(han)), e => e.t === han ? 2 : e.t.startsWith(han) ? 1 : 0).slice(0, limit);
+  const low = q.toLowerCase().normalize("NFC").replace(/[\s'’-]/g, "");
+  const key = /[1-5]/.test(low) ? "num" : low !== toneless(low) ? "mark" : "bare";
+  const k = key === "mark" ? low : low.replace(/u:|ü/g, "v");
+  const py = rank(DICT.filter(e => e[key].startsWith(k)), e => e[key] === k ? 1 : 0).slice(0, limit);
+  if (key !== "bare" || low.length < 3 || !/^[a-z]+$/.test(low)) return py;
+  // English: whole words in the gloss. They come after exact pinyin (ma, hao) but before pinyin that only starts with
+  // what you typed, so "panda" finds 熊猫 before 叛党
+  const re = new RegExp("\\b" + low + "\\b", "i"), en = rank(DICT.filter(e => re.test(e.h)), e => new RegExp("^(to )?" + low + "\\b", "i").test(e.h) ? 1 : 0).slice(0, 20);
+  const exact = py.filter(e => e.bare === k);
+  return [...new Set(exact.concat(en, py))].slice(0, limit);
+}
+// words in a run of text (from a photo or speech): longest dictionary match first, left to right
+function wordsIn(text) {
+  const out = [], seen = new Set();
+  for (const run of text.match(/\p{Script=Han}+/gu) || []) {
+    for (let i = 0; i < run.length;) {
+      let L = Math.min(8, run.length - i);
+      while (L > 1 && !DICTSET.has(run.slice(i, i + L))) L--;
+      const w = run.slice(i, i + L);
+      if (DICTSET.has(w) && !seen.has(w)) { seen.add(w); out.push(w); }
+      i += L;
+    }
+  }
+  return out;
 }
 
 /* ---------------- Flagged words ---------------- */
@@ -534,6 +670,7 @@ function pickVoice() {
   zhVoice = vs.filter(v => /^zh/i.test(v.lang)).sort((a, b) => score(b) - score(a))[0] || null;
 }
 if (window.speechSynthesis) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+const stopClip = () => {}; // the demo has no recorded course audio, so nothing to stop
 function speak(text, rate = 0.85) {
   if (!window.speechSynthesis) return;
   speechSynthesis.cancel();
@@ -624,14 +761,14 @@ function renderHome() {
   <div class="view">
     <section class="today">
       <div>
-        <h1>Lesson ${esc(cur)}</h1>
+        <h1>${esc(lessonName(cur))}</h1>
         <p>Your current lesson: ${cs.seen} of ${cs.total} words practised, ${cs.mastered} mastered${due ? `, ${due} word${due === 1 ? "" : "s"} due for review` : ""}</p>
       </div>
       <div class="copyrow" aria-label="Words in this lesson">${curSample}</div>
       <div class="actions">
         ${due ? `<button class="btn" id="reviewBtn" type="button">复习 ${due} due</button>` : ""}
-        <button class="btn" id="dictCur" type="button">听写 lesson ${esc(cur)}</button>
-        <button class="btn primary" id="startCur" type="button">Write lesson ${esc(cur)}</button>
+        <button class="btn" id="dictCur" type="button">听写 ${esc(lessonLow(cur))}</button>
+        <button class="btn primary" id="startCur" type="button">Write ${esc(lessonLow(cur))}</button>
       </div>
     </section>
 
@@ -643,12 +780,13 @@ function renderHome() {
       <button class="mode" id="modeReview" type="button"><span class="glyph">复习</span><b>Review</b><small>Words due again, from every lesson.</small><span class="tag">${due ? `${due} due` : "Up to date"}</span></button>
       <button class="mode" id="modeRead" type="button"><span class="glyph">读</span><b>Reading &amp; listening</b><small>A dialogue, a story and a text per lesson.</small></button>
       <button class="mode" id="modeGrammar" type="button"><span class="glyph">语法</span><b>Grammar</b><small>Grammar points, then quizzes.</small></button>
+      <button class="mode" id="modeMy" type="button"><span class="glyph">我的</span><b>My words</b><small>${P.my.length ? `${plural(P.my.length, "word")} you added.` : "Add your own words to study."}</small></button>
     </section>
 
     <section class="view" style="padding-top:0;gap:12px">
       <div class="sechead"><h2>Lessons</h2><p>Tap a lesson to see its words. The green bar is words mastered.</p></div>
       <p class="note">This demo has the first two lessons. The full app covers all 39 lessons of the course, 702 words. <button class="btn quiet" id="aboutDemo" type="button">About this demo</button> <button class="btn quiet" id="tourHome" type="button">Tutorial</button></p>
-      <div class="lessons">${LESSONS.map(l => {
+      <div class="lessons">${COURSE_LESSONS.map(l => {
         const s = lessonStats(l), pct = s.total ? Math.round(100 * s.mastered / s.total) : 0;
         return `<button class="lesson${l === cur ? " cur" : ""}" type="button" data-l="${l}">
           <div class="top"><span class="num">${l}</span><span class="meta">${s.total} words</span></div>
@@ -660,10 +798,10 @@ function renderHome() {
     </section>
   </div>`;
   // starts straight away with the Write settings last used (Write on the mode grid opens them)
-  $("#startCur").onclick = () => { let pool = buildPool(cur); if (setup.order === "shuffle") pool = shuffle(pool); if (setup.count) pool = pool.slice(0, setup.count); if (pool.length) startWrite(pool, "Lesson " + cur); else renderSetup(cur); };
+  $("#startCur").onclick = () => { let pool = buildPool(cur); if (setup.order === "shuffle") pool = shuffle(pool); if (setup.count) pool = pool.slice(0, setup.count); if (pool.length) startWrite(pool, lessonName(cur)); else renderSetup(cur); };
   if (due) $("#reviewBtn").onclick = renderReview; // the daily queue is one tap from the top
   // one tap to a real 听写: every word of the current lesson, shuffled, with the clue setting from Dictation (sound only by default)
-  $("#dictCur").onclick = () => !zhVoice ? renderSetup(cur, "dict") /* no voice: the setup screen says how to add one */ : startWrite(shuffle((byLesson[cur] || []).filter(dictable)), "Lesson " + cur, { dict: true, clue: setup.clue });
+  $("#dictCur").onclick = () => !zhVoice ? renderSetup(cur, "dict") /* no voice: the setup screen says how to add one */ : startWrite(shuffle((byLesson[cur] || []).filter(dictable)), lessonName(cur), { dict: true, clue: setup.clue });
   $("#modeWrite").onclick = () => renderSetup(cur);
   $("#modeLearn").onclick = () => renderLearn(cur);
   $("#modeDict").onclick = () => renderSetup(cur, "dict");
@@ -671,6 +809,7 @@ function renderHome() {
   $("#modeTrans").onclick = () => renderTranslate(cur);
   $("#modeRead").onclick = () => renderRead(cur);
   $("#modeGrammar").onclick = () => renderGrammar(cur);
+  $("#modeMy").onclick = renderMyWords;
   main.querySelectorAll(".lesson").forEach(b => b.onclick = () => renderWordList(b.dataset.l, "home"));
   $("#aboutDemo").onclick = renderWelcome;
   $("#tourHome").onclick = () => renderTutorial(0);
@@ -787,7 +926,7 @@ const setup = { scope: "this", count: 10, dcount: 0, order: "shuffle", clue: "so
 function renderSetup(lesson, kind = "write") {
   route = "setup";
   const dict = kind === "dict";
-  const opts = LESSONS.map(l => `<option value="${l}"${l === lesson ? " selected" : ""}>Lesson ${l}</option>`).join("");
+  const opts = LESSONS.map(l => `<option value="${l}"${l === lesson ? " selected" : ""}>${lessonName(l)}</option>`).join("");
   main.innerHTML = `
   <div class="view">
     <div><h2>${dict ? "Hear it, write it" : "Pinyin to characters"}</h2><div class="sub">${dict ? "Dictation (听写)" : "Write mode"}</div></div>
@@ -843,7 +982,7 @@ function renderSetup(lesson, kind = "write") {
     if (setup.order === "shuffle") pool = shuffle(pool);
     const count = dict ? setup.dcount : setup.count;
     if (count) pool = pool.slice(0, count);
-    startWrite(pool, "Lesson " + sel.value, dict ? { dict: true, clue: setup.clue } : {});
+    startWrite(pool, lessonName(sel.value), dict ? { dict: true, clue: setup.clue } : {});
   };
   note();
 }
@@ -1085,6 +1224,170 @@ const Mark = (() => {
   return { character };
 })();
 
+/* ---------------- Handwriting recognition (My words): rank every character against free writing ---------------- */
+// The marker above answers "is this the character?"; this answers "which character is it?". Both writing and
+// candidates are scaled into a unit square, each stroke resampled to K points, and scored by mean point distance,
+// in the order written or in the best order, so a stroke-order slip still finds the character.
+const Recog = (() => {
+  const K = 6, B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  let byCount = null; // stroke count → [{ c, s: normalised strokes }]
+  function resample(st) {
+    const L = [0]; for (let i = 1; i < st.length; i++) L.push(L[i - 1] + Math.hypot(st[i].x - st[i - 1].x, st[i].y - st[i - 1].y));
+    const tot = L[L.length - 1], out = [];
+    for (let k = 0, j = 0; k < K; k++) {
+      const t = tot * k / (K - 1);
+      while (j < st.length - 2 && L[j + 1] < t) j++;
+      const seg = (L[j + 1] - L[j]) || 1, f = st.length > 1 ? Math.min(1, Math.max(0, (t - L[j]) / seg)) : 0, b = st[Math.min(j + 1, st.length - 1)];
+      out.push({ x: st[j].x + (b.x - st[j].x) * f, y: st[j].y + (b.y - st[j].y) * f });
+    }
+    return out;
+  }
+  // one scale for both axes, so a flat 一 stays flat; centred on the bounding box
+  function norm(strokes) {
+    const all = strokes.flat(), xs = all.map(p => p.x), ys = all.map(p => p.y);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+    const sc = Math.max(x1 - x0, y1 - y0, 1), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+    return strokes.map(st => st.map(p => ({ x: (p.x - cx) / sc, y: (p.y - cy) / sc })));
+  }
+  // each stroke resampled, plus each pair of neighbouring strokes run together (people join strokes when writing fast)
+  // a stroke as where it is (its centre), how long it is, and its shape at unit length: handwriting moves and
+  // stretches strokes far more than it changes their shape, so the three are weighed separately
+  function feat(p) {
+    const c = { x: p.reduce((a, q) => a + q.x, 0) / K, y: p.reduce((a, q) => a + q.y, 0) / K };
+    let L = 0; for (let k = 1; k < K; k++) L += Math.hypot(p[k].x - p[k - 1].x, p[k].y - p[k - 1].y);
+    const s = Math.max(L, 0.08); // a dot has no shape worth comparing
+    return { c, L, u: p.map(q => ({ x: (q.x - c.x) / s, y: (q.y - c.y) / s })) };
+  }
+  const prep = raw => ({ s: raw.map(r => feat(resample(r))), j: raw.slice(1).map((st, i) => feat(resample(raw[i].concat(st)))) });
+  function dist(a, b) {
+    let d = 0; for (let k = 0; k < K; k++) d += Math.hypot(a.u[k].x - b.u[k].x, a.u[k].y - b.u[k].y);
+    return WP * Math.hypot(a.c.x - b.c.x, a.c.y - b.c.y) + WS * d / K + WL * Math.abs(Math.log((a.L + 0.05) / (b.L + 0.05)));
+  }
+  // in writing order: each stroke you wrote is one candidate stroke, two run together, or half of one you split;
+  // a candidate stroke may be left out. Lowest total, per stroke written.
+  function ordered(u, c) {
+    const n = u.s.length, m = c.s.length, D = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(Infinity));
+    D[0][0] = 0;
+    for (let i = 0; i <= n; i++) for (let j = 0; j <= m; j++) {
+      const v = D[i][j]; if (v === Infinity) continue;
+      if (i < n && j < m) D[i + 1][j + 1] = Math.min(D[i + 1][j + 1], v + dist(u.s[i], c.s[j]));
+      if (i < n && j < m - 1) D[i + 1][j + 2] = Math.min(D[i + 1][j + 2], v + dist(u.s[i], c.j[j]) + JOIN);
+      if (i < n - 1 && j < m) D[i + 2][j + 1] = Math.min(D[i + 2][j + 1], v + dist(u.j[i], c.s[j]) + JOIN);
+      if (j < m) D[i][j + 1] = Math.min(D[i][j + 1], v + SKIP);
+    }
+    return D[n][m] / n;
+  }
+  // in any order, stroke for stroke: finds the character when strokes are written out of order
+  function anyOrder(u, c) {
+    const n = Math.min(u.s.length, c.s.length), pairs = [];
+    for (let i = 0; i < u.s.length; i++) for (let j = 0; j < c.s.length; j++) pairs.push([dist(u.s[i], c.s[j]), i, j]);
+    pairs.sort((a, b) => a[0] - b[0]);
+    const ui = new Set(), cj = new Set(); let free = 0;
+    for (const [d, i, j] of pairs) if (!ui.has(i) && !cj.has(j)) { ui.add(i); cj.add(j); free += d; if (ui.size === n) break; }
+    return free / n + 0.03 + SKIP * Math.abs(u.s.length - c.s.length);
+  }
+  const WP = 0.5, WS = 0.5, WL = 0.1, JOIN = 0.2, SKIP = 0.3;
+  return {
+    // data: hw.txt, one character per line, strokes split by commas, each point two base-64 digits (x, y top-down, in 1/64ths)
+    load(text) {
+      byCount = {};
+      for (const line of text.split("\n")) {
+        const c = String.fromCodePoint(line.codePointAt(0)), rest = line.slice(c.length);
+        const x = prep(norm(rest.split(",").map(m => m.match(/../g).map(p => ({ x: B64.indexOf(p[0]), y: B64.indexOf(p[1]) })))));
+        x.c = c; (byCount[x.s.length] = byCount[x.s.length] || []).push(x);
+      }
+    },
+    ready: () => !!byCount,
+    // strokes: arrays of {x, y} with y running down; returns the best n characters
+    rank(strokes, top = 8) {
+      strokes = strokes.filter(st => st.length);
+      if (!byCount || !strokes.length) return [];
+      // a tap is a dot: give it a little length so it has a direction-free shape
+      const u = prep(norm(strokes.map(st => st.length > 1 ? st : [st[0], { x: st[0].x + 1, y: st[0].y + 1 }]))), n = u.s.length, out = [];
+      for (let m = n - 1; m <= n + 2; m++) for (const x of byCount[m] || []) out.push([Math.min(ordered(u, x), anyOrder(u, x)), x.c]);
+      return out.sort((a, b) => a[0] - b[0]).slice(0, top).map(x => x[1]);
+    },
+  };
+})();
+
+/* ---------------- Photo text recognition: PaddleOCR (PP-OCRv4) on ONNX Runtime, on this device ---------------- */
+// Two models: one finds where text is (a probability map), one reads each box of text (a character per time step).
+// Trained by Baidu on far more photos than Tesseract's, handwriting and busy backgrounds included.
+const Paddle = (() => {
+  let det = null, rec = null, keys = null;
+  const BASE = "vendor/ppocr/";
+  async function load() {
+    if (det) return;
+    if (!window.ort) await new Promise((ok, no) => { const s = document.createElement("script"); s.src = BASE + "ort.wasm.min.js"; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
+    ort.env.wasm.wasmPaths = new URL(BASE, location.href).href;
+    ort.env.wasm.numThreads = 1; // threads need a cross-origin isolated page
+    const opt = { executionProviders: ["wasm"] };
+    [det, rec, keys] = await Promise.all([ort.InferenceSession.create(BASE + "det.onnx", opt), ort.InferenceSession.create(BASE + "rec.onnx", opt),
+      fetch(BASE + "keys.txt").then(r => r.text()).then(t => ["", ...t.split(/\r?\n/).filter((k, i, a) => i < a.length - 1 || k), " "])]);
+  }
+  const pixels = (src, w, h) => { const c = document.createElement("canvas"); c.width = w; c.height = h; const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(src, 0, 0, w, h); return x.getImageData(0, 0, w, h).data; };
+  function tensor(d, w, h, mean, std) {
+    const f = new Float32Array(3 * w * h);
+    for (let i = 0; i < w * h; i++) for (let c = 0; c < 3; c++) f[c * w * h + i] = (d[i * 4 + c] / 255 - mean[c]) / std[c];
+    return new ort.Tensor("float32", f, [1, 3, h, w]);
+  }
+  // text boxes: connected regions of the probability map, grown back out (the model shrinks text regions when it learns them)
+  async function boxes(img, side) {
+    const k = Math.min(1, side / Math.max(img.width, img.height));
+    const w = Math.max(32, Math.round(img.width * k / 32) * 32), h = Math.max(32, Math.round(img.height * k / 32) * 32);
+    const out = (await det.run({ [det.inputNames[0]]: tensor(pixels(img, w, h), w, h, [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]) }))[det.outputNames[0]];
+    const p = out.data, seen = new Uint8Array(w * h), found = [];
+    for (let s = 0; s < w * h; s++) {
+      if (seen[s] || p[s] < 0.3) continue;
+      let n = 0, sum = 0, sx = 0, sy = 0, sxx = 0, syy = 0, sxy = 0; const q = [s], pts = []; seen[s] = 1;
+      while (q.length) {
+        const i = q.pop(), x = i % w, y = (i - x) / w; n++; sum += p[i]; pts.push(x, y);
+        sx += x; sy += y; sxx += x * x; syy += y * y; sxy += x * y;
+        for (const j of [i - 1, i + 1, i - w, i + w]) if (j >= 0 && j < w * h && !seen[j] && p[j] >= 0.3 && Math.abs((j % w) - x) <= 1) { seen[j] = 1; q.push(j); }
+      }
+      if (n < 12 || sum / n < 0.6) continue;
+      // a box turned to the text: its long axis from the spread of the region (photos are rarely level)
+      const mx = sx / n, my = sy / n, cxx = sxx / n - mx * mx, cyy = syy / n - my * my, cxy = sxy / n - mx * my;
+      let a = 0.5 * Math.atan2(2 * cxy, cxx - cyy);
+      if (Math.abs(a) < 0.05) a = 0;
+      const ca = Math.cos(a), sa = Math.sin(a);
+      let u0 = Infinity, u1 = -Infinity, v0 = Infinity, v1 = -Infinity;
+      for (let k = 0; k < pts.length; k += 2) { const dx = pts[k] - mx, dy = pts[k + 1] - my, u = dx * ca + dy * sa, v = -dx * sa + dy * ca; if (u < u0) u0 = u; if (u > u1) u1 = u; if (v < v0) v0 = v; if (v > v1) v1 = v; }
+      const bw = u1 - u0 + 1, bh = v1 - v0 + 1, d = bw * bh * 1.5 / (2 * (bw + bh)); // PaddleOCR's unclip ratio 1.5
+      const kx = img.width / w, ky = img.height / h, uc = (u0 + u1) / 2, vc = (v0 + v1) / 2;
+      found.push({ cx: (mx + uc * ca - vc * sa) * kx, cy: (my + uc * sa + vc * ca) * ky, w: (bw + 2 * d) * kx, h: (bh + 2 * d) * ky, a });
+    }
+    return found.sort((a, b) => a.cy - b.cy || a.cx - b.cx);
+  }
+  async function read(img, b) {
+    // a column of text (taller than wide) is read top to bottom: turn it a quarter so it reads left to right
+    let { w: bw, h: bh, a } = b; if (bh > bw * 1.5) { [bw, bh] = [bh, bw]; a -= Math.PI / 2; }
+    const H = 48, W = Math.max(16, Math.min(960, Math.round(bw / bh * H)));
+    const c = document.createElement("canvas"); c.width = W; c.height = H;
+    const x = c.getContext("2d"), bg = new ImageData(W, H); bg.data.fill(255); x.putImageData(bg, 0, 0); // white where the turned box runs past the photo
+    x.translate(W / 2, H / 2); x.scale(W / bw, H / bh); x.rotate(-a); x.drawImage(img, -b.cx, -b.cy);
+    const out = (await rec.run({ [rec.inputNames[0]]: tensor(c.getContext("2d").getImageData(0, 0, W, H).data, W, H, [0.5, 0.5, 0.5], [0.5, 0.5, 0.5]) }))[rec.outputNames[0]];
+    const [, T, C] = out.dims, d = out.data;
+    let text = "", conf = [], prev = 0;
+    for (let t = 0; t < T; t++) {
+      let best = 0, bp = -1; for (let j = 0; j < C; j++) if (d[t * C + j] > bp) { bp = d[t * C + j]; best = j; }
+      if (best && best !== prev) { text += keys[best] || ""; conf.push(bp); }
+      prev = best;
+    }
+    return { text, conf: conf.length ? conf.reduce((a, b) => a + b) / conf.length : 0, box: b };
+  }
+  return {
+    load,
+    // img: an image or canvas; lines of text, top to bottom, each with its mean confidence
+    async lines(img, side = 960) {
+      await load();
+      const out = [];
+      for (const b of await boxes(img, side)) out.push(await read(img, b));
+      return out;
+    },
+  };
+})();
+
 function markingMode() {
   const s = P.settings;
   if (!s.marking) s.marking = s.leniency > 1 ? "lenient" : "standard";
@@ -1135,7 +1438,7 @@ function renderCard() {
   <div class="practice">
     <div class="ptop">
       <button class="iconbtn" id="quit" type="button">End</button>
-      <span class="ctx">${esc(s.label)}${s.trace ? (tracing ? ", step 1: trace over the outline" : ", step 2: now from memory") : dict ? ", 听写: listen and write" : drill ? ", copy it as often as you like" : tr ? ", 译: write it in Chinese" : s.label === "Lesson " + w.l ? "" : ", from lesson " + esc(w.l)}</span>
+      <span class="ctx">${esc(s.label)}${s.trace ? (tracing ? ", step 1: trace over the outline" : ", step 2: now from memory") : dict ? ", 听写: listen and write" : drill ? ", copy it as often as you like" : tr ? ", 译: write it in Chinese" : s.label === lessonName(w.l) ? "" : ", from lesson " + esc(w.l)}</span>
       <div class="track"><i style="width:${100 * s.i / s.words.length}%"></i></div>
       <span class="count">${s.i + 1} / ${s.words.length}${drill ? `, ${s.reps} written` : ""}</span>
     </div>
@@ -1530,7 +1833,7 @@ function renderTranslate(lesson) {
   <div class="view">
     <div><h2>English to Chinese</h2><div class="sub">Translation (译)</div></div>
     <section class="sheet">
-      <div class="field"><label for="trSel">Lesson</label><select id="trSel">${lessonOptions(lesson)}</select></div>
+      <div class="field"><label for="trSel">Lesson</label><select id="trSel">${lessonOptions(lesson, true)}</select></div>
       <div class="field"><span class="lbl">How many</span><div class="seg" id="segTr">
         <button type="button" data-v="10">10</button><button type="button" data-v="25">25</button><button type="button" data-v="0">All</button>
       </div></div>
@@ -1580,7 +1883,7 @@ const TONE_NAMES = { 1: "1st ˉ", 2: "2nd ˊ", 3: "3rd ˇ", 4: "4th ˋ", 5: "neu
 let learnLesson = null;
 function uniqueWords(list) { const seen = new Set(); return list.filter(w => !seen.has(w.t) && seen.add(w.t)); }
 function lessonWords(l) { return uniqueWords(byLesson[l] || []); }
-function lessonOptions(sel) { return LESSONS.map(l => `<option value="${l}"${l === sel ? " selected" : ""}>Lesson ${l}</option>`).join(""); }
+function lessonOptions(sel, courseOnly) { return (courseOnly ? COURSE_LESSONS : LESSONS).map(l => `<option value="${l}"${l === sel ? " selected" : ""}>${lessonName(l)}</option>`).join(""); }
 function charLoader(ch, onLoad, onErr) { return STROKES[ch] ? onLoad(STROKES[ch]) : onErr(new Error("no data for " + ch)); }
 function themeColors() {
   const css = getComputedStyle(document.documentElement), tok = (k, d) => css.getPropertyValue(k).trim() || d;
@@ -1602,7 +1905,7 @@ function renderLearn(lesson) {
   <div class="view">
     <div class="sechead"><div><h2>Learn the words of a lesson</h2><div class="sub">Learn mode</div></div>
       <div class="field" style="min-width:200px"><label for="learnSel" class="lbl">Lesson</label><select id="learnSel">${lessonOptions(learnLesson)}</select></div></div>
-    <p class="note">${ws.length} words in lesson ${esc(learnLesson)}, ${fresh ? `${fresh} you haven't practised yet` : "all practised"}. A good order: word list, flashcards, trace and copy, then the match game and tones.</p>
+    <p class="note">${ws.length} words in ${esc(lessonLow(learnLesson))}, ${fresh ? `${fresh} you haven't practised yet` : "all practised"}. A good order: word list, flashcards, trace and copy, then the match game and tones.</p>
     <section class="modes tools">
       <button class="mode" type="button" data-t="list"><span class="glyph">词</span><b>Word list</b><small>Every word with audio, stroke order, the radical and related course words.</small></button>
       <button class="mode" type="button" data-t="cards"><span class="glyph">卡</span><b>Flashcards</b><small>Flip, then rate how well you knew it. Ratings set when each card returns.</small></button>
@@ -1637,7 +1940,7 @@ function renderWordList(lesson, from = "learn") {
   const C = themeColors();
   main.innerHTML = `
   <div class="view">
-    <div class="sechead"><div><h2>Word list</h2><div class="sub">${from === "home" ? "" : "Learn, "}Lesson ${esc(lesson)}</div></div>
+    <div class="sechead"><div><h2>Word list</h2><div class="sub">${from === "home" ? "" : "Learn, "}${esc(lessonName(lesson))}</div></div>
       <button class="btn" id="backLearn" type="button">${from === "home" ? "Back" : "Back to Learn"}</button></div>
     <div class="settings-row"><button class="btn primary" id="wlWrite" type="button">Write these words</button><button class="btn" id="wlCards" type="button">Flashcards</button>
       <button class="btn" id="wlCur" type="button"${lesson === P.cur ? " disabled" : ""}>${lesson === P.cur ? "This is your current lesson" : `Make ${esc(lesson)} my current lesson`}</button></div>
@@ -1657,21 +1960,21 @@ function renderWordList(lesson, from = "learn") {
   $("#wlWrite").onclick = () => renderSetup(lesson);
   $("#wlCards").onclick = () => renderCardSetup(lesson);
   $("#wlCur").onclick = () => { P.cur = lesson; save(); renderWordList(lesson, from); };
-  main.querySelectorAll(".wrow").forEach(row => wireFlag(row.querySelector(".wflag"), WORDS[+row.dataset.id]));
+  main.querySelectorAll(".wrow").forEach(row => wireFlag(row.querySelector(".wflag"), byId(row.dataset.id)));
   main.querySelectorAll(".wrow").forEach(row => {
     const head = row.querySelector(".whead"), body = row.querySelector(".wbody");
     head.onclick = () => {
       const open = body.hidden;
       body.hidden = !open; head.setAttribute("aria-expanded", String(open));
-      if (!open || body.dataset.built) { if (open) speak(WORDS[+row.dataset.id].t); return; }
-      const w = WORDS[+row.dataset.id];
+      if (!open || body.dataset.built) { if (open) speak(byId(row.dataset.id).t); return; }
+      const w = byId(row.dataset.id);
       body.dataset.built = "1";
       const related = WORDS.filter(o => o.t !== w.t && [...w.t].some(c => o.t.includes(c)));
       const relU = uniqueWords(related).slice(0, 10);
       body.innerHTML = `
         <div class="wchars">${[...w.t].map((c, k) => `<div class="wchar"><div class="anim" id="an${w.id}_${k}"></div><span class="note">${STROKES[c] ? STROKES[c].strokes.length : "?"} strokes</span></div>`).join("")}</div>
         <div class="settings-row"><button class="btn" data-a="play" type="button">Hear it</button><button class="btn" data-a="anim" type="button">Replay strokes</button>
-        ${w.pos ? `<span class="note">Part of speech: ${esc(w.pos)}</span>` : ""}<span class="note">Lesson ${esc(w.l)}</span></div>
+        ${w.pos ? `<span class="note">Part of speech: ${esc(w.pos)}</span>` : ""}<span class="note">${esc(lessonName(w.l))}</span></div>
         ${relU.length ? `<div><div class="lbl">Course words that share a character</div><div class="related">${relU.map(o => `<span class="rel"><span class="han">${esc(o.d)}</span> ${esc(o.p)}, ${esc(o.h)} <em>${esc(o.l)}</em></span>`).join("")}</div></div>` : ""}`;
       const writers = [...w.t].map((c, k) => HanziWriter.create(`an${w.id}_${k}`, c, {
         width: 120, height: 120, padding: 6, strokeColor: C.ink, radicalColor: C.jade, renderer: "svg",
@@ -1706,13 +2009,13 @@ function renderPicker(lesson) {
     });
     $("#pickGo").textContent = picked.length ? `Practise ${picked.length} word${picked.length === 1 ? "" : "s"}` : "Pick a word first";
     $("#pickGo").disabled = $("#pickClear").disabled = !picked.length;
-    $("#pickList").textContent = picked.map(id => WORDS[id].d).join("、");
+    $("#pickList").textContent = picked.map(id => byId(id).d).join("、");
   };
   main.querySelectorAll(".whead").forEach(b => b.onclick = () => { const id = +b.dataset.id, k = picked.indexOf(id); if (k >= 0) picked.splice(k, 1); else picked.push(id); paint(); });
   $("#pickSel").onchange = e => renderPicker(e.target.value);
   $("#pickClear").onclick = () => { picked.length = 0; paint(); };
   $("#backLearn").onclick = () => renderLearn(lesson);
-  $("#pickGo").onclick = () => startWrite(picked.map(id => WORDS[id]), "Practise", { drill: true, lesson });
+  $("#pickGo").onclick = () => startWrite(picked.map(id => byId(id)), "Practise", { drill: true, lesson });
   paint();
   window.scrollTo(0, 0);
 }
@@ -1724,7 +2027,7 @@ function renderFlagged() {
   <div class="view">
     <div class="sechead"><div><h2>Flagged words</h2><div class="sub">Learn</div></div><button class="btn" id="backLearn" type="button">Back to Learn</button></div>
     ${ws.length ? `<div class="settings-row"><button class="btn primary" id="fCards" type="button">Flashcards (${ws.length})</button><button class="btn" id="fWrite" type="button">Write them (${ws.length})</button></div>
-    <div class="results">${ws.map(w => `<div class="row"><span class="han">${esc(w.d)}</span><span>${esc(w.p)}</span><span class="muted">${esc(w.h)} (lesson ${esc(w.l)})</span><button class="btn" type="button" data-un="${w.id}">Unflag</button></div>`).join("")}</div>`
+    <div class="results">${ws.map(w => `<div class="row"><span class="han">${esc(w.d)}</span><span>${esc(w.p)}</span><span class="muted">${esc(w.h)} (${esc(lessonLow(w.l))})</span><button class="btn" type="button" data-un="${w.id}">Unflag</button></div>`).join("")}</div>`
     : `<p class="note">No flagged words yet. Flag a word from the word list or a flashcard, or tap a word in a reading passage.</p>`}
   </div>`;
   $("#backLearn").onclick = () => renderLearn();
@@ -1732,7 +2035,7 @@ function renderFlagged() {
     $("#fCards").onclick = () => startCards(shuffle(ws), null, "Flagged words");
     $("#fWrite").onclick = () => startWrite(shuffle(ws), "Flagged words");
   }
-  main.querySelectorAll("[data-un]").forEach(b => b.onclick = () => { toggleFlag(WORDS[+b.dataset.un]); renderFlagged(); });
+  main.querySelectorAll("[data-un]").forEach(b => b.onclick = () => { toggleFlag(byId(b.dataset.un)); renderFlagged(); });
   window.scrollTo(0, 0);
 }
 
@@ -1742,7 +2045,7 @@ function renderCardSetup(lesson) {
   route = "cardsetup";
   main.innerHTML = `
   <div class="view">
-    <div><h2>Flashcards</h2><div class="sub">Learn, lesson ${esc(lesson)}</div></div>
+    <div><h2>Flashcards</h2><div class="sub">Learn, ${esc(lessonLow(lesson))}</div></div>
     <section class="sheet">
       <div class="field"><span class="lbl">Front of the card</span><div class="seg" id="segFront">
         <button type="button" data-v="chars">Characters</button><button type="button" data-v="english">English</button><button type="button" data-v="audio">Audio only</button>
@@ -1766,7 +2069,7 @@ function renderCardSetup(lesson) {
   $("#cgo").onclick = () => startCards(shuffle(pool()), lesson);
 }
 // lesson is null for cards that aren't from one lesson (flagged words)
-function startCards(words, lesson, label = "Lesson " + lesson) {
+function startCards(words, lesson, label = lessonName(lesson)) {
   session = { kind: "cards", queue: words.slice(), total: words.length, done: 0, lesson, label, first: {}, again: 0 };
   route = "cards";
   showCard();
@@ -1804,7 +2107,7 @@ function showCard() {
         <div class="fc-row">${[...w.t].map((c, k) => `<div class="anim fc-anim" id="fa${k}"></div>`).join("")}</div>
         <div class="fc-py">${esc(w.p)}</div>
         <div class="fc-en">${esc(w.h)}</div>
-        <div class="note">${w.pos ? esc(w.pos) + ", " : ""}lesson ${esc(w.l)}. Tap the card to hear it again.</div>
+        <div class="note">${w.pos ? esc(w.pos) + ", " : ""}${esc(lessonLow(w.l))}. Tap the card to hear it again.</div>
       </div>`;
     // fits the card: its width less padding and the gaps between tiles, so a four-character word never spills out
     const inner = Math.min(560, main.clientWidth - 32) - 52, size = Math.min(130, Math.floor((inner - (w.t.length - 1) * 10) / w.t.length));
@@ -1838,7 +2141,7 @@ function cardsDone() {
   const f = Object.values(s.first), count = k => f.filter(x => x === k).length;
   if (f.length) logHist("cards", s.label, f.length, count("good") + count("easy"));
   route = "summary";
-  const weak = Object.keys(s.first).filter(id => s.first[id] === "again" || s.first[id] === "hard").map(id => WORDS[+id]);
+  const weak = Object.keys(s.first).filter(id => s.first[id] === "again" || s.first[id] === "hard").map(id => byId(id));
   main.innerHTML = `
   <div class="view">
     <div><h2>Flashcards done</h2><div class="sub">Learn, ${esc(s.label)}</div></div>
@@ -1899,7 +2202,7 @@ function showMatch() {
     if (!pick || pick.classList.contains("han-tile") === isLeft) {
       if (pick) pick.classList.remove("picked");
       pick = t; t.classList.add("picked");
-      if (isLeft) speak(WORDS[+t.dataset.id].t);
+      if (isLeft) speak(byId(t.dataset.id).t);
       return;
     }
     const a = pick, b = t; pick = null; a.classList.remove("picked");
@@ -1922,10 +2225,10 @@ function matchDone(early) {
   const newBest = !early && (!prev || ms < prev);
   if (newBest) { P.best[key] = ms; save(); }
   route = "summary";
-  const wrong = [...s.wrongIds].map(id => WORDS[id]);
+  const wrong = [...s.wrongIds].map(id => byId(id));
   main.innerHTML = `
   <div class="view">
-    <div><h2>${early ? "Match game stopped" : "All matched"}</h2><div class="sub">Learn, lesson ${esc(s.lesson)}</div></div>
+    <div><h2>${early ? "Match game stopped" : "All matched"}</h2><div class="sub">Learn, ${esc(lessonLow(s.lesson))}</div></div>
     <div class="score"><span class="big">${fmtTime(ms)}</span><span>${s.mistakes} mistake${s.mistakes === 1 ? "" : "s"}${newBest ? ", a new best time" : prev ? `, best ${fmtTime(prev)}` : ""}</span></div>
     ${wrong.length ? `<p class="note">Mixed up: <span class="han-inline">${uniqueWords(wrong).map(w => esc(w.d)).join("、")}</span></p>` : ""}
     <div class="settings-row"><button class="btn primary" id="again" type="button">Play again</button><button class="btn" id="toLearn" type="button">Back to Learn</button></div>
@@ -2005,7 +2308,7 @@ function tonesDone() {
   route = "summary";
   main.innerHTML = `
   <div class="view">
-    <div><h2>Tone trainer</h2><div class="sub">Learn, lesson ${esc(s.lesson)}</div></div>
+    <div><h2>Tone trainer</h2><div class="sub">Learn, ${esc(lessonLow(s.lesson))}</div></div>
     <div class="score"><span class="big">${s.right}/${n}</span><span>words with every tone right</span></div>
     ${s.missed.length ? `<div class="results">${uniqueWords(s.missed).map(w => `<div class="row"><span class="han">${esc(w.d)}</span><span>${esc(w.p)}</span><span class="muted">${w.tn.map(t => TONE_NAMES[t]).join(" + ")}</span><button class="btn" type="button" data-say="${esc(w.t)}">Hear it</button></div>`).join("")}</div>` : ""}
     <div class="settings-row">${s.missed.length ? `<button class="btn primary" id="retryT" type="button">Practise the ${s.missed.length} again</button>` : ""}<button class="btn" id="toLearn" type="button">Back to Learn</button></div>
@@ -2058,7 +2361,7 @@ function wordPop(w) {
   // focus moves into the card and back to where it came from when it closes
   const opener = pop.isConnected && pop.opener ? pop.opener : document.activeElement;
   pop.opener = opener;
-  pop.innerHTML = `<span class="han">${esc(w.d)}</span><div class="wpop-txt"><b>${esc(w.p)}</b><span class="note">${esc(w.h)} (lesson ${esc(w.l)})</span></div>
+  pop.innerHTML = `<span class="han">${esc(w.d)}</span><div class="wpop-txt"><b>${esc(w.p)}</b><span class="note">${esc(w.h)} (${esc(lessonLow(w.l))})</span></div>
     <button class="btn" id="wpHear" type="button">Hear</button><button class="btn" id="wpFlag" type="button"></button><button class="iconbtn" id="wpClose" type="button" aria-label="Close">✕</button>`;
   $("#wpHear").onclick = () => speak(w.t);
   wireFlag($("#wpFlag"), w, paintFlagged);
@@ -2069,7 +2372,7 @@ function wordPop(w) {
   $("#wpHear").focus({ preventScroll: true });
   speak(w.t);
 }
-const paintFlagged = () => main.querySelectorAll(".wd").forEach(sp => sp.classList.toggle("flagged", isFlagged(WORDS[+sp.dataset.id])));
+const paintFlagged = () => main.querySelectorAll(".wd").forEach(sp => sp.classList.toggle("flagged", isFlagged(byId(sp.dataset.id))));
 let readListen = false;
 function renderRead(lesson, pi = 0) {
   route = "read"; session = null;
@@ -2105,7 +2408,7 @@ function renderRead(lesson, pi = 0) {
     e.stopPropagation();
     const b = sp.closest(".line"); if (b) { b.querySelector(".gloss").hidden = false; b.setAttribute("aria-expanded", "true"); }
     main.querySelectorAll(".wd.active").forEach(x => x.classList.remove("active")); sp.classList.add("active"); // the tapped word stands out from its sentence
-    wordPop(WORDS[+sp.dataset.id]);
+    wordPop(byId(sp.dataset.id));
   });
   paintFlagged();
   $("#rPlay").onclick = () => speak(text);
@@ -2241,6 +2544,426 @@ function grammarDone() {
 }
 
 /* ---------------- Settings ---------------- */
+/* ---------------- My words: the list ---------------- */
+let myMsg = "", myUndo = null;
+function renderMyWords() {
+  route = "my"; session = null;
+  const ws = byLesson[MY] || [];
+  main.innerHTML = `
+  <div class="view">
+    <div class="sechead"><div><h2>My words</h2><div class="sub">${ws.length ? `${plural(ws.length, "word")} you added, studied like a lesson` : "Words you add yourself"}</div></div>
+      <div class="settings-row"><button class="btn primary" id="myAdd" type="button">Add a word</button><button class="btn" id="back" type="button">Home</button></div></div>
+    ${myMsg ? `<p class="note" role="status">${esc(myMsg)}${myUndo ? ` <button class="btn quiet" id="myUndo" type="button">Undo</button>` : ""}</p>` : ""}
+    ${ws.length ? `<div class="settings-row"><button class="btn" id="myLearn" type="button">Learn these</button><button class="btn" id="myWrite" type="button">Write these</button><button class="btn" id="myDict" type="button">听写 these</button></div>
+    <div class="results mylist">${ws.map((w, i) => `<div class="row" data-i="${i}">
+      <span class="han">${esc(w.d)}</span><span>${esc(w.p)}</span><span class="muted myh">${esc(w.h)}</span>
+      <span class="myact"><button class="btn small" type="button" data-a="up"${i ? "" : " disabled"} aria-label="Move ${esc(w.d)} up">Up</button><button class="btn small" type="button" data-a="down"${i < ws.length - 1 ? "" : " disabled"} aria-label="Move ${esc(w.d)} down">Down</button><button class="btn small" type="button" data-a="edit">Edit</button><button class="btn small" type="button" data-a="del">Delete</button></span>
+    </div>`).join("")}</div>`
+    : `<p class="note">Nothing here yet. Add a word by writing it, typing its pinyin, taking a photo of it or saying it. Your words then work in every study mode, as a lesson called My words.</p>`}
+  </div>`;
+  myMsg = "";
+  $("#back").onclick = () => go("home");
+  $("#myAdd").onclick = () => renderMyAdd();
+  if (myUndo) { const u = myUndo; myUndo = null; $("#myUndo").onclick = () => { P.my.splice(u.i, 0, u.e); if (u.rec) P.w[u.e.id] = u.rec; save(); setWords(); myMsg = `${u.e.t} is back.`; renderMyWords(); }; }
+  if (!ws.length) return;
+  $("#myLearn").onclick = () => renderLearn(MY);
+  $("#myWrite").onclick = () => startWrite(lessonWords(MY), lessonName(MY));
+  $("#myDict").onclick = () => startWrite(shuffle(lessonWords(MY).filter(dictable)), lessonName(MY), { dict: true, clue: setup.clue });
+  const redo = (msg, focus) => { save(); setWords(); myMsg = msg || ""; renderMyWords(); if (focus) { const b = main.querySelector(focus); if (b) (b.disabled ? b.parentNode.querySelector("[data-a=up]:not(:disabled), [data-a=down]:not(:disabled)") || b : b).focus(); } }; // at the top or bottom, the other arrow keeps the focus
+  main.querySelectorAll(".mylist .row").forEach(row => {
+    const i = +row.dataset.i, e = P.my[i];
+    let armed = 0;
+    row.querySelectorAll("[data-a]").forEach(b => b.onclick = () => {
+      const a = b.dataset.a;
+      if (a === "up" || a === "down") {
+        const j = a === "up" ? i - 1 : i + 1;
+        [P.my[i], P.my[j]] = [P.my[j], P.my[i]];
+        redo("", `.mylist .row[data-i="${j}"] [data-a="${a}"]`); // the button follows the word, so you can keep moving it
+      } else if (a === "del") {
+        // two taps within 4 s, like End and Reset; and Undo afterwards
+        if (Date.now() - armed > 4000) { armed = Date.now(); b.textContent = "Tap to delete"; setTimeout(() => { if (b.isConnected) b.textContent = "Delete"; }, 4000); return; }
+        myUndo = { e, i, rec: P.w[e.id] };
+        P.my.splice(i, 1); delete P.w[e.id];
+        redo(`Deleted ${e.t}.`);
+      } else if (a === "edit") {
+        row.querySelector(".myh").innerHTML = `<label class="sr" for="myEdit">English for ${esc(e.t)}</label><input class="txt" id="myEdit" value="${esc(e.h)}">`;
+        row.querySelector(".myact").innerHTML = `<button class="btn small primary" type="button" id="myOk">Save</button><button class="btn small" type="button" id="myNo">Cancel</button>`;
+        const inp = $("#myEdit"); inp.focus(); inp.select();
+        const ok = () => { const v = inp.value.trim(); if (v) e.h = v; redo(v ? `Saved the English for ${e.t}.` : ""); };
+        inp.onkeydown = ev => { if (ev.key === "Enter") ok(); if (ev.key === "Escape") renderMyWords(); };
+        $("#myOk").onclick = ok; $("#myNo").onclick = () => renderMyWords();
+      }
+    });
+  });
+}
+
+/* ---------------- My words: adding a word, four ways, all ending on the confirm screen ---------------- */
+let addTab = "write", addWord = "";
+const ADD_TABS = [["write", "Write it"], ["pinyin", "Pinyin or English"], ["photo", "Photo"], ["speech", "Say it"]];
+function renderMyAdd(tab = addTab) {
+  route = "myadd"; session = null; addTab = tab;
+  main.innerHTML = `
+  <div class="view">
+    <div class="sechead"><div><h2>Add a word</h2><div class="sub">My words</div></div><button class="btn" id="back" type="button">Back to My words</button></div>
+    <div class="seg" id="addTabs">${ADD_TABS.map(([k, n]) => `<button type="button" data-v="${k}" aria-pressed="${k === tab}">${n}</button>`).join("")}</div>
+    <div id="addPane"></div>
+    <p class="note" id="addStatus" role="status"></p>
+    <h3 class="lbl" id="addResHead" hidden>Tap a word to add it to My words</h3>
+    <div class="results picks" id="addRes"></div>
+  </div>`;
+  $("#back").onclick = renderMyWords;
+  main.querySelectorAll("#addTabs button").forEach(b => b.onclick = () => renderMyAdd(b.dataset.v));
+  const status = t => { const s = $("#addStatus"); if (s) s.textContent = t; };
+  // every method ends in a list of dictionary entries; tapping one opens the confirm screen
+  const show = list => {
+    const el = $("#addRes"); if (!el) return;
+    $("#addResHead").hidden = !list.length;
+    el.innerHTML = list.map((e, k) => `<button class="row" type="button" data-k="${k}"><span class="han">${esc(e.t)}</span><span>${esc(e.p)}</span><span class="muted">${esc(e.h)}</span><span class="note">${courseHas(e.t) ? esc(lessonName(courseHas(e.t).l)) : ""}</span></button>`).join("");
+    el.querySelectorAll("button").forEach(b => b.onclick = () => renderMyConfirm(list[+b.dataset.k].t, list[+b.dataset.k].n));
+  };
+  // a found word shows its everyday reading: names (capitalised pinyin, as in "surname Mu") last, then the most used reading
+  const firstOf = words => words.map(w => DICT.filter(e => e.t === w).sort((a, b) => (/^[A-Z]/.test(a.n) - /^[A-Z]/.test(b.n)) || b.f - a.f)[0]).filter(Boolean);
+  status("Loading the dictionary…");
+  loadDict().then(() => {
+    if (route !== "myadd" || addTab !== tab) return;
+    status("");
+    ({ write: paneWrite, pinyin: panePinyin, photo: panePhoto, speech: paneSpeech })[tab]({ status, show, firstOf });
+  }).catch(() => status("The dictionary did not load. Check your connection and try again."));
+}
+
+// 1. Handwriting: write a character, pick it, keep writing for the next one
+let hwLoad = null;
+function paneWrite({ status, show }) {
+  const size = Math.min(340, main.clientWidth - 32);
+  $("#addPane").innerHTML = `
+    <div class="hwrow">
+      <div class="box hwpad" style="width:${size}px">${gridSvg()}<canvas id="hwc" width="${size * 2}" height="${size * 2}" role="img" aria-label="Writing box: write one character"></canvas></div>
+      <div class="hwside">
+        <div class="lbl">Your word so far</div>
+        <div class="hwword" id="hwWord"></div>
+        <div class="cands" id="cands" aria-label="Characters it could be"></div>
+        <div class="settings-row"><button class="btn small" id="hwUndo" type="button">Undo stroke</button><button class="btn small" id="hwClear" type="button">Clear box</button><button class="btn small" id="hwBack" type="button">Delete last character</button></div>
+        <p class="note">Write one character, then tap it above. Keep writing to add the next character.</p>
+        <p class="note"><b>To add the word, tap it in the list below.</b> You check its meaning, then it goes into My words.</p>
+      </div>
+    </div>`;
+  const cv = $("#hwc"), cx = cv.getContext("2d"), strokes = [];
+  let cur = null;
+  const ink = () => getComputedStyle(document.documentElement).getPropertyValue("--stroke").trim();
+  const draw = () => {
+    cx.clearRect(0, 0, cv.width, cv.height); cx.lineCap = cx.lineJoin = "round"; cx.lineWidth = size / 28 * 2; cx.strokeStyle = ink();
+    for (const st of strokes) { cx.beginPath(); st.forEach((p, i) => i ? cx.lineTo(p.x * 2, p.y * 2) : cx.moveTo(p.x * 2, p.y * 2)); if (st.length === 1) cx.lineTo(st[0].x * 2 + 0.5, st[0].y * 2); cx.stroke(); }
+  };
+  const word = () => {
+    $("#hwWord").textContent = addWord || "Nothing yet";
+    $("#hwWord").classList.toggle("empty", !addWord);
+    $("#hwBack").disabled = !addWord;
+    show(addWord ? searchDict(addWord).filter(e => e.t.startsWith(addWord)) : []);
+  };
+  const cands = () => {
+    const r = strokes.length ? Recog.rank(strokes, 8) : [];
+    $("#cands").innerHTML = r.map(c => `<button class="btn cand" type="button">${esc(c)}</button>`).join("");
+    $("#cands").querySelectorAll("button").forEach(b => b.onclick = () => { addWord += b.textContent; strokes.length = 0; draw(); cands(); word(); });
+  };
+  const at = ev => { const r = cv.getBoundingClientRect(); return { x: (ev.clientX - r.left) * size / r.width, y: (ev.clientY - r.top) * size / r.height }; };
+  cv.onpointerdown = ev => {
+    if (ev.pointerType === "pen" && !P.settings.sawPencil) { P.settings.sawPencil = true; save(); }
+    if (ev.pointerType === "touch" && pencilOnly()) return; // the resting palm, once a Pencil is in use
+    ev.preventDefault(); cv.setPointerCapture(ev.pointerId); cur = [at(ev)]; strokes.push(cur); draw();
+  };
+  cv.onpointermove = ev => { if (!cur) return; for (const e of ev.getCoalescedEvents ? ev.getCoalescedEvents() : [ev]) cur.push(at(e)); draw(); };
+  cv.onpointerup = cv.onpointercancel = () => { if (!cur) return; cur = null; if (Recog.ready()) cands(); };
+  $("#hwUndo").onclick = () => { strokes.pop(); draw(); cands(); };
+  $("#hwClear").onclick = () => { strokes.length = 0; draw(); cands(); };
+  $("#hwBack").onclick = () => { addWord = [...addWord].slice(0, -1).join(""); word(); };
+  word();
+  if (!Recog.ready()) {
+    status("Loading handwriting recognition…");
+    hwLoad = hwLoad || fetch("hw.txt").then(r => { if (!r.ok) throw 0; return r.text(); }).then(t => Recog.load(t));
+    hwLoad.then(() => { status(""); if (strokes.length) cands(); }).catch(() => { hwLoad = null; status("Handwriting recognition did not load. Check your connection, or use Pinyin or English."); });
+  }
+}
+
+// 2. Pinyin with tone numbers, tone marks or none; also characters (from Scribble, Scan Text or dictation) and English
+function panePinyin({ show }) {
+  $("#addPane").innerHTML = `
+    <label class="lbl" for="pyq">Pinyin, characters or English</label>
+    <input class="txt big" id="pyq" type="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="ni3hao3, nǐhǎo, nihao, 你好 or hello">
+    <p class="note">On iPad this box also takes Apple Pencil writing, Scan Text (touch the box, then the scan button) and the keyboard's microphone.</p>`;
+  const q = $("#pyq");
+  let t = 0;
+  q.oninput = () => { clearTimeout(t); t = setTimeout(() => show(searchDict(q.value)), 120); };
+  q.focus();
+}
+
+// 3. Photo: PaddleOCR (above) reads it on this device. You can drag over the part you want first, so a busy photo
+// (a screen, a sign among others) gives only the words you meant.
+const photoImage = file => new Promise((ok, no) => {
+  // a 12-megapixel photo is far more than the text needs: scale it to 2000 px at most
+  const img = new Image(), url = URL.createObjectURL(file);
+  img.onload = () => {
+    const k = Math.min(1, 2000 / Math.max(img.width, img.height)), c = document.createElement("canvas");
+    c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    URL.revokeObjectURL(url); ok(c);
+  };
+  img.onerror = () => { URL.revokeObjectURL(url); no(); };
+  img.src = url;
+});
+function panePhoto({ status, show, firstOf }) {
+  $("#addPane").innerHTML = `
+    <div class="settings-row">
+      <label class="btn primary filebtn">Take a photo<input type="file" id="phCam" accept="image/*" capture="environment"></label>
+      <label class="btn filebtn">Choose a photo<input type="file" id="phPick" accept="image/*"></label>
+    </div>
+    <p class="note">Handwriting and print both work. The photo is read on this device; the first one loads about 30 MB.</p>
+    <div id="phArea"></div>`;
+  Paddle.load().catch(() => {}); // start the download while you take the photo
+  let img = null, sel = null;
+  const area = $("#phArea");
+  const read = async () => {
+    show([]); status("Reading the photo…");
+    $("#phRead").disabled = true;
+    try {
+      let src = img;
+      if (sel && sel.w > 8 && sel.h > 8) { src = document.createElement("canvas"); src.width = sel.w; src.height = sel.h; src.getContext("2d").drawImage(img, sel.x, sel.y, sel.w, sel.h, 0, 0, sel.w, sel.h); }
+      const lines = (await Paddle.lines(src)).filter(l => l.conf > 0.5 && HANRE.test(l.text));
+      const text = lines.map(l => l.text).join(" "), found = wordsIn(text);
+      $("#phText").textContent = text ? `Text found: ${text.slice(0, 200)}` : "";
+      status(found.length ? `${plural(found.length, "word")} found. Tap one to add it.` : sel ? "No Chinese words in the part you selected. Drag over the characters, a little wider." : "No Chinese words found. Try a closer, sharper photo, or drag over the characters.");
+      show(firstOf(found));
+    } catch (e) { status("The photo could not be read here. On iPad, use Scan Text in the Pinyin or English box instead."); }
+    if ($("#phRead")) $("#phRead").disabled = false;
+  };
+  const pick = async file => {
+    if (!file) return;
+    show([]); status("Opening the photo…");
+    try { img = await photoImage(file); } catch (e) { status("That photo could not be opened."); return; }
+    sel = null;
+    area.innerHTML = `
+      <p class="note">Drag over the characters you want, or read the whole photo.</p>
+      <div class="phwrap"><canvas id="phView" role="img" aria-label="Your photo. Drag to select the part to read."></canvas></div>
+      <div class="settings-row"><button class="btn primary" id="phRead" type="button">Read the whole photo</button><button class="btn" id="phAll" type="button" hidden>Select all</button></div>
+      <p class="note han-note" id="phText"></p>`;
+    const cv = $("#phView"), W = Math.min(img.width, main.clientWidth - 32, 760), k = W / img.width;
+    cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
+    const x = cv.getContext("2d");
+    const draw = () => {
+      x.drawImage(img, 0, 0, cv.width, cv.height);
+      if (!sel) return;
+      const css = getComputedStyle(document.documentElement);
+      x.fillStyle = css.getPropertyValue("--shade"); x.fillRect(0, 0, cv.width, cv.height); x.fillRect(0, 0, cv.width, cv.height); // dims the rest of the photo
+      x.drawImage(img, sel.x, sel.y, sel.w, sel.h, sel.x * k, sel.y * k, sel.w * k, sel.h * k);
+      x.strokeStyle = css.getPropertyValue("--grid"); x.lineWidth = 2; x.setLineDash([6, 4]); x.strokeRect(sel.x * k, sel.y * k, sel.w * k, sel.h * k); x.setLineDash([]);
+    };
+    const at = ev => { const r = cv.getBoundingClientRect(); return { x: Math.max(0, Math.min(img.width, (ev.clientX - r.left) / r.width * img.width)), y: Math.max(0, Math.min(img.height, (ev.clientY - r.top) / r.height * img.height)) }; };
+    let start = null;
+    cv.onpointerdown = ev => { ev.preventDefault(); cv.setPointerCapture(ev.pointerId); start = at(ev); };
+    cv.onpointermove = ev => {
+      if (!start) return;
+      const p = at(ev); sel = { x: Math.min(start.x, p.x), y: Math.min(start.y, p.y), w: Math.abs(p.x - start.x), h: Math.abs(p.y - start.y) }; draw();
+    };
+    cv.onpointerup = cv.onpointercancel = () => {
+      start = null;
+      if (sel && (sel.w < 8 || sel.h < 8)) sel = null; // a tap clears the selection
+      draw();
+      $("#phRead").textContent = sel ? "Read the selected part" : "Read the whole photo"; $("#phAll").hidden = !sel;
+    };
+    $("#phAll").onclick = () => { sel = null; draw(); $("#phRead").textContent = "Read the whole photo"; $("#phAll").hidden = true; };
+    $("#phRead").onclick = read;
+    draw(); status("");
+    read(); // a photo of just the characters needs no selecting
+  };
+  $("#phCam").onchange = e => pick(e.target.files[0]);
+  $("#phPick").onchange = e => pick(e.target.files[0]);
+}
+
+// 4. Speech: say a word or a whole sentence, then tap the words you want. Two recognisers:
+//   - the browser's own (Apple's on iPad and iPhone), when it works here;
+//   - Whisper (OpenAI's open speech model) running on this device: used where the browser's is missing or refuses,
+//     as in apps added to the Home Screen. It downloads once (about 70 MB) and then works offline.
+const LOCAL_SPEECH_KEY = "zitie-local-speech";
+let T2S = null;
+const toSimplified = async s => {
+  if (!T2S) { const a = [...await fetch("t2s.txt").then(r => r.text())]; T2S = new Map(); for (let i = 0; i < a.length; i += 2) T2S.set(a[i], a[i + 1]); }
+  return [...s].map(c => T2S.get(c) || c).join("");
+};
+// Whisper writes numbers in digits (12, 3月): say them as characters, so 十二 and 三月 can be found
+const DIG = "零一二三四五六七八九";
+function zhNum(n) {
+  if (n < 10) return DIG[n];
+  if (n < 100) return (n >= 20 ? DIG[Math.floor(n / 10)] : "") + "十" + (n % 10 ? DIG[n % 10] : "");
+  if (n < 1000) return DIG[Math.floor(n / 100)] + "百" + (n % 100 ? (n % 100 < 10 ? "零" : "") + (n % 100 < 20 && n % 100 >= 10 ? "一" : "") + zhNum(n % 100) : "");
+  if (n < 10000) return DIG[Math.floor(n / 1000)] + "千" + (n % 1000 ? (n % 1000 < 100 ? "零" : "") + zhNum(n % 1000) : "");
+  return String(n);
+}
+const digitsToZh = s => s.replace(/\d+/g, d => d.length > 4 ? d : zhNum(+d));
+// the words to offer for a transcript: the words in it, then for a short one the words that sound the same
+// (one word said alone has no context to settle 试 or 是)
+function heardWords(text) {
+  const s = text.replace(/[^\p{Script=Han}]/gu, "");
+  const words = DICTSET.has(s) ? [s, ...wordsIn(s).filter(w => w !== s)] : wordsIn(s), alike = [];
+  if (words.length && words.length <= 3) for (const w of words) {
+    const e = DICT.filter(x => x.t === w).sort((a, b) => b.f - a.f)[0]; if (!e) continue;
+    const tones = e.n.replace(/[^1-5]/g, "");
+    for (const o of DICT.filter(x => x.bare === e.bare && x.t.length === w.length).sort((a, b) => (b.n.replace(/[^1-5]/g, "") === tones) - (a.n.replace(/[^1-5]/g, "") === tones) || b.f - a.f))
+      if (o.t !== w && !alike.includes(o.t) && !words.includes(o.t)) alike.push(o.t);
+  }
+  return { words, alike: alike.slice(0, 8) };
+}
+let whisper = null;
+function getWhisper() {
+  if (whisper) return whisper;
+  const base = new URL("vendor/whisper/", location.href).href;
+  whisper = import(base + "transformers.min.js").then(async ({ pipeline, env }) => {
+    env.allowRemoteModels = false; env.allowLocalModels = true; env.localModelPath = base + "models/";
+    env.backends.onnx.wasm.wasmPaths = base; env.backends.onnx.wasm.numThreads = 1;
+    // the decoder is stored in parts (no host here takes one 50 MB file); put it back together when it is asked for
+    env.useBrowserCache = false; env.useCustomCache = true;
+    env.customCache = {
+      async match(key) {
+        const u = String(key && key.url || key);
+        if (!u.endsWith("decoder_model_merged_quantized.onnx")) return undefined;
+        const n = +(await fetch(u + ".parts").then(r => r.text())), parts = [];
+        for (let i = 0; i < n; i++) parts.push(await fetch(`${u}.${i}`).then(r => { if (!r.ok) throw 0; return r.blob(); }));
+        return new Response(new Blob(parts));
+      },
+      async put() {},
+    };
+    return pipeline("automatic-speech-recognition", "whisper", { dtype: { encoder_model: "q8", decoder_model_merged: "q8" }, device: "wasm" });
+  });
+  whisper.catch(() => { whisper = null; });
+  return whisper;
+}
+// recorded audio → 16 kHz mono samples, as Whisper takes them
+async function toSamples(blob) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)(), buf = await ctx.decodeAudioData(await blob.arrayBuffer());
+  ctx.close();
+  const off = new OfflineAudioContext(1, Math.ceil(buf.duration * 16000), 16000), src = off.createBufferSource();
+  src.buffer = buf; src.connect(off.destination); src.start();
+  return (await off.startRendering()).getChannelData(0);
+}
+function paneSpeech({ status, show }) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const apple = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const homeScreen = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+  let local = !SR || (apple && homeScreen); try { local = local || localStorage.getItem(LOCAL_SPEECH_KEY) === "1"; } catch (e) {}
+  const canRecord = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+  $("#addPane").innerHTML = `
+    <button class="btn primary talk" id="talk" type="button">Tap and speak</button>
+    <p class="note" id="talkNote"></p>
+    <p class="hwword empty han-note" id="heard" aria-live="polite"></p>
+    <div id="alikeHead" hidden><h3 class="lbl">Sounds the same</h3><div class="results picks" id="alikeRes"></div></div>`;
+  const btn = $("#talk"), note = $("#talkNote");
+  const explain = () => note.textContent = local
+    ? `Say a word or a sentence, then tap again. It is recognised on this device${whisper ? "" : " (the first time downloads about 70 MB)"}; nothing is sent anywhere.`
+    : "Say a word or a sentence: it stops when you pause, or tap again. Your speech goes to your browser's speech service (Apple's on iPad and iPhone).";
+  explain();
+  if (local && !canRecord) { note.textContent = "This browser cannot record audio. The microphone key of the Chinese keyboard in the Pinyin or English box dictates into the box."; btn.hidden = true; return; }
+  if (local) getWhisper().catch(() => {}); // start the download now
+  let busy = false, stopNow = null;
+  const done = async text => {
+    const s = digitsToZh(await toSimplified(text).catch(() => text));
+    $("#heard").textContent = s.trim() || ""; $("#heard").classList.toggle("empty", !s.trim());
+    const { words, alike } = heardWords(s), entry = w => DICT.filter(e => e.t === w).sort((a, b) => /^[A-Z]/.test(a.n) - /^[A-Z]/.test(b.n) || b.f - a.f)[0];
+    show(words.map(entry).filter(Boolean));
+    const al = alike.map(entry).filter(Boolean), el = $("#alikeRes");
+    $("#alikeHead").hidden = !al.length;
+    el.innerHTML = al.map((e, k) => `<button class="row" type="button" data-k="${k}"><span class="han">${esc(e.t)}</span><span>${esc(e.p)}</span><span class="muted">${esc(e.h)}</span><span class="note"></span></button>`).join("");
+    el.querySelectorAll("button").forEach(b => b.onclick = () => renderMyConfirm(al[+b.dataset.k].t, al[+b.dataset.k].n));
+    status(words.length ? `${plural(words.length, "word")} heard.` : s.trim() ? "No dictionary words in what was heard. Try again, a little slower." : "Nothing heard. Tap, then speak.");
+  };
+  // the browser's recogniser; if it refuses here, switch to the one on this device for good
+  const browser = () => {
+    stopClip(); if (speechSynthesis.speaking) speechSynthesis.cancel(); // playback while listening breaks recognition on iOS
+    const r = new SR(); let said = "", heardAny = false, failed = null;
+    r.lang = "zh-CN"; r.interimResults = true; r.continuous = false;
+    r.onresult = e => { said = [...e.results].map(x => x[0].transcript).join(""); heardAny = true; $("#heard").textContent = said; $("#heard").classList.remove("empty"); };
+    r.onerror = e => { failed = e.error; };
+    r.onend = () => {
+      busy = false; btn.textContent = "Tap and speak"; stopNow = null;
+      if (failed && failed !== "no-speech" && !heardAny) {
+        if (!canRecord) { status(`Speech recognition is not working here (${failed}). The microphone key of the Chinese keyboard in the Pinyin or English box dictates into the box.`); return; }
+        local = true; try { localStorage.setItem(LOCAL_SPEECH_KEY, "1"); } catch (e) {}
+        explain(); getWhisper().catch(() => {});
+        status(`Your browser's speech recognition is not available here (${failed}), so this device will recognise your speech instead. Tap and speak again.`);
+        return;
+      }
+      done(said);
+    };
+    try { r.start(); busy = true; stopNow = () => r.stop(); btn.textContent = "Listening… tap to stop"; status("Listening…"); }
+    catch (e) { failed = e.name; r.onend(); }
+  };
+  // record here and run Whisper on this device
+  const onDevice = async () => {
+    let stream;
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } }); }
+    catch (e) { status(`The microphone is not allowed for this page (${e.name}). Allow it in Settings for this site, then try again.`); return; }
+    stopClip();
+    const rec = new MediaRecorder(stream), chunks = [];
+    rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+    const limit = setTimeout(() => stopNow && stopNow(), 20000); // a sentence fits in 20 seconds
+    rec.onstop = async () => {
+      clearTimeout(limit); stream.getTracks().forEach(t => t.stop());
+      btn.textContent = "Tap and speak"; stopNow = null;
+      status(whisper ? "Recognising…" : "Recognising… (downloading the speech model the first time)");
+      try {
+        const [asr, samples] = await Promise.all([getWhisper(), toSamples(new Blob(chunks, { type: rec.mimeType }))]);
+        if (samples.length < 4000) { busy = false; status("That was too short. Tap, speak, then tap again."); return; }
+        const r = await asr(samples, { language: "chinese", task: "transcribe" });
+        busy = false; explain(); await done(r.text);
+      } catch (e) { busy = false; status("The speech model could not run here. The microphone key of the Chinese keyboard in the Pinyin or English box dictates into the box."); }
+    };
+    rec.start(); busy = true; stopNow = () => rec.state === "recording" && rec.stop();
+    btn.textContent = "Recording… tap when done"; status("Recording…");
+  };
+  btn.onclick = () => {
+    if (stopNow) { stopNow(); return; }
+    if (busy) return;
+    show([]); $("#alikeHead").hidden = true; $("#heard").textContent = ""; $("#heard").classList.add("empty");
+    local ? onDevice() : browser();
+  };
+}
+
+// the confirm screen: every reading of the word, so you pick the right one before it is saved
+async function renderMyConfirm(t, n) {
+  route = "myconfirm";
+  main.innerHTML = `<div class="loading">Getting ${esc(t)} ready…</div>`;
+  let missing;
+  try { await loadDict(); missing = await ensureStrokes(t); } catch (e) { missing = null; }
+  if (route !== "myconfirm") return;
+  const es = DICT ? DICT.filter(e => e.t === t) : [];
+  let sel = Math.max(0, es.findIndex(e => e.n === n));
+  const course = courseHas(t);
+  main.innerHTML = `
+  <div class="view">
+    <div><h2>Add ${esc(t)} to My words?</h2><div class="sub">Pick the meaning you want to study</div></div>
+    <div class="copyrow" aria-hidden="true"><span class="w">${[...t].map(c => `<span class="c">${esc(c)}</span>`).join("")}</span></div>
+    <section class="sheet">
+      <div class="field"><span class="lbl">Meaning</span><div class="choices">${es.map((e, i) => `<label class="choice"><input type="radio" name="ent" value="${i}"${i === sel ? " checked" : ""}><span><b>${esc(e.p)}</b> ${esc(e.h)}</span></label>`).join("")}</div></div>
+      <div class="field"><label for="myH">English hint</label><input class="txt" id="myH" value="${esc(es[sel] ? es[sel].h : "")}"></div>
+      <p class="note" id="myNote"></p>
+      <div class="settings-row"><button class="btn primary" id="mySave" type="button">Add to My words</button><button class="btn" id="myBack" type="button">Back</button></div>
+    </section>
+  </div>`;
+  const note = () => {
+    const e = es[sel], dup = e && P.my.some(m => m.t === t && m.p === e.n);
+    const why = !e ? "This word is not in the dictionary." : missing === null ? "The stroke data did not load. Check your connection and try again."
+      : missing.length ? `There is no stroke data for ${missing.join(" ")}, so this word can't be written in the app.` : dup ? "This reading is already in My words." : "";
+    $("#myNote").textContent = why || (course ? `${t} is also a course word, in ${lessonLow(course.l)}.` : "");
+    $("#mySave").disabled = !!why;
+  };
+  main.querySelectorAll('input[name="ent"]').forEach(r => r.onchange = () => { sel = +r.value; $("#myH").value = es[sel].h; note(); });
+  $("#myBack").onclick = () => renderMyAdd();
+  $("#mySave").onclick = () => {
+    const e = es[sel];
+    P.my.push({ id: "m" + Date.now().toString(36), t, p: e.n, h: $("#myH").value.trim() || e.h, at: Date.now() });
+    save(); setWords(); addWord = "";
+    myMsg = `Added ${t}. It is in every study mode now, as the lesson My words.`;
+    renderMyWords();
+  };
+  note();
+}
+
 function renderSettings() {
   const s = P.settings;
   main.innerHTML = `
@@ -2255,6 +2978,7 @@ function renderSettings() {
       </div><p class="note">Your writing is marked when you tap Check. Standard checks stroke order and shape. Lenient accepts much looser stroke shapes. Neither minds if the character is big, small or off-centre in the box. Any stroke order checks only that every stroke is there, in the right shape and direction.</p></div>
       <div class="field"><span class="lbl">Audio</span><p class="note" id="voiceNote"></p><div><button class="btn" id="testVoice" type="button">Test voice: 你好，我叫王小明。</button></div></div>
       <div class="field"><span class="lbl">Keyboard</span><p class="note">With a keyboard attached, Enter checks your writing and then moves on, Esc closes a word card, and in flashcards Space flips the card and 1–4 rate it (Again, Hard, Good, Easy).</p></div>
+      <div class="field"><span class="lbl">Dictionary</span><p class="note">My words looks words up in <a href="https://cc-cedict.org/" target="_blank" rel="noopener">CC-CEDICT</a>, by MDBG and contributors, under the <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> licence. Photos are read on this device by PaddleOCR (Apache 2.0) on ONNX Runtime (MIT).</p></div>
       <div class="field"><span class="lbl">Progress</span><p class="note">${Object.keys(P.w).length} words practised, ${WORDS.filter(w => mastered(w.id)).length} mastered, ${flaggedWords().length} flagged. ${plural(Object.values(P.tr).filter(r => r.c).length, "translation sentence")} right, ${plural(Object.keys(P.rd).length, "reading passage")} done. ${dbRef ? "Progress syncs to every device where you open this page signed in to Claude." : "Progress is saved in this browser only right now."}</p>
         <div class="settings-row"><button class="btn" id="resetBtn" type="button">Reset all progress</button><span class="note" id="resetNote"></span></div></div>
       <div><button class="btn primary" id="done" type="button">Done</button></div>
@@ -2274,8 +2998,8 @@ function renderSettings() {
   let armed = false;
   $("#resetBtn").onclick = () => {
     // armed for 4 s only, like End, so a stray tap minutes later can never erase everything
-    if (!armed) { const was = [$("#resetBtn").textContent, $("#resetNote").textContent]; armed = true; $("#resetBtn").textContent = "Tap again to erase everything"; $("#resetNote").textContent = "This cannot be undone."; setTimeout(() => { if (!$("#resetBtn")) return; armed = false; [$("#resetBtn").textContent, $("#resetNote").textContent] = was; }, 4000); return; }
-    const keep = P.settings, cur = P.cur; adopt(blank()); P.settings = keep; P.cur = cur; save(); renderSettings();
+    if (!armed) { const was = [$("#resetBtn").textContent, $("#resetNote").textContent]; armed = true; $("#resetBtn").textContent = "Tap again to erase everything"; $("#resetNote").textContent = "This cannot be undone. My words stay."; setTimeout(() => { if (!$("#resetBtn")) return; armed = false; [$("#resetBtn").textContent, $("#resetNote").textContent] = was; }, 4000); return; }
+    const keep = P.settings, cur = P.cur, my = P.my; adopt(blank()); P.settings = keep; P.cur = cur; P.my = my; save(); setWords(); renderSettings(); // My words is your list, not progress, so it stays
   };
   $("#done").onclick = closeSettings;
 }
@@ -2287,16 +3011,16 @@ async function boot() {
   connectDb();
   try {
     const [w, s, t, x, rd] = await Promise.all(["words.json", "strokes.json", "lessons.json", "exercises/translation.json", "exercises/reading.json"].map(f => fetch(f).then(r => r.json())));
-    WORDS = w; STROKES = s; TEXTS = t; TRANS = Object.fromEntries(x.lessons.map(L => [L.lesson, L.items]));
+    COURSE = w; STROKES = s; TEXTS = t; TRANS = Object.fromEntries(x.lessons.map(L => [L.lesson, L.items]));
     READS = Object.fromEntries(rd.lessons.map(L => [L.lesson, L.passages]));
   } catch (e) {
     main.innerHTML = `<div class="loading">The word list did not load. Check your connection and reload the page.</div>`;
     return;
   }
   const num = l => l.split(".").map(Number);
-  LESSONS = [...new Set(WORDS.map(w => w.l))].sort((a, b) => { const [a1, a2] = num(a), [b1, b2] = num(b); return a1 - b1 || a2 - b2; });
-  LESSONS.forEach(l => byLesson[l] = WORDS.filter(w => w.l === l));
-  if (!byLesson[P.cur]) P.cur = "1.1";
+  COURSE_LESSONS = [...new Set(COURSE.map(w => w.l))].sort((a, b) => { const [a1, a2] = num(a), [b1, b2] = num(b); return a1 - b1 || a2 - b2; });
+  setWords();
+  await ensureStrokes(myChars()).catch(() => {}); // My words outside the course need their stroke data before you write them
   if (typeof HanziWriter === "undefined") {
     main.innerHTML = `<div class="loading">The handwriting engine did not load. Check your connection and reload the page.</div>`;
     return;

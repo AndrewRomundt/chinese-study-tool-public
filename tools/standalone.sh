@@ -5,8 +5,8 @@
 set -e
 cd "$(dirname "$0")/.."
 rm -rf dist && mkdir dist
-cp app/words.json app/strokes.json app/lessons.json app/manifest.webmanifest app/icon-180.png app/icon-512.png app/og.png dist/
-cp -r app/exercises app/fonts app/vendor dist/
+cp app/words.json app/strokes.json app/lessons.json app/dict.txt app/hw.txt app/t2s.txt app/manifest.webmanifest app/icon-180.png app/icon-512.png app/og.png dist/
+cp -r app/exercises app/fonts app/vendor app/strokes dist/
 {
   printf '%s\n' '<!doctype html><html lang="en"><head><meta charset="utf-8">' \
     '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' \

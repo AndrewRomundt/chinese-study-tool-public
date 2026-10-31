@@ -8,7 +8,7 @@ import glob, os
 from fontTools import subset
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-text = "".join(open(f, encoding="utf-8").read() for f in [os.path.join(ROOT, "app", "index.html")] + glob.glob(os.path.join(ROOT, "app", "**", "*.json"), recursive=True))
+text = "".join(open(f, encoding="utf-8").read() for f in [os.path.join(ROOT, "app", "index.html")] + glob.glob(os.path.join(ROOT, "app", "*.json")) + glob.glob(os.path.join(ROOT, "app", "exercises", "*.json")))  # the app's own text, not the stroke shards or the models: they hold every character
 ascii_ = "".join(chr(c) for c in range(0x20, 0x7f))
 latin = ascii_ + "".join(chr(c) for c in range(0xa0, 0x250)) + "".join(chr(c) for c in range(0x2000, 0x2070)) + "·–—‘’“”…•→←↑↓★☆−×"
 han = latin + "".join(sorted({c for c in text if ord(c) >= 0x2e80}))
