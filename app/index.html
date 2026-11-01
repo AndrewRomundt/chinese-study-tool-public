@@ -448,6 +448,8 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 #tourBox h3 { font-size: var(--t-md); margin: 0 0 var(--s2); }
 #tourBox p { margin: 0 0 var(--s3); text-wrap: pretty; }
 #tourBox .settings-row { padding-top: 0; }
+#tourBox .tour-list { margin: calc(-1 * var(--s2)) 0 var(--s3); padding-left: var(--s4); }
+#tourBox .tour-list li { margin-bottom: var(--s1); }
 #tourBox .tour-n, #tourBox .tour-credit { font-size: var(--t-xs); color: var(--muted); margin-bottom: var(--s1); }
 #tourBox::before { content: ""; position: absolute; left: calc(var(--ax, 50%) - 8px); width: 14px; height: 14px; background: var(--card); border: var(--rule-hair) solid var(--ink); transform: rotate(45deg); }
 #tourBox[data-side="below"]::before { top: -8px; border-right: 0; border-bottom: 0; }
@@ -888,7 +890,8 @@ const TOUR = [
   { go: () => startCards(lessonWords("1.1").slice(0, 3), "1.1", "Tutorial", true), el: "#flash",
     h: "Flashcards", p: "Learn has flashcards: the front shows the characters (or the pinyin, the English or just the sound). Recall the word, then tap the card to flip it and see the answer." },
   { go: () => { if (!$("#flash")) startCards(lessonWords("1.1").slice(0, 3), "1.1", "Tutorial", true); if (!$("#flash").classList.contains("flipped")) $("#flash").click(); }, el: "#rate",
-    h: "Rate how well you knew it", p: "Your rating sets when the card comes back. <b>Again</b>: you didn't know it; it returns this round. <b>Hard</b>: due tomorrow. <b>Good</b>: due later each time, from 1 day up to 30. <b>Easy</b>: later still. With a keyboard, Space flips and 1–4 rate." },
+    h: "How well did you know it?", p: "Tap the answer that fits. It decides when you see this card again:",
+    list: ["<b>Again</b>: I didn't know it. It comes back in a few cards.", "<b>Hard</b>: I got it, just. It comes back tomorrow.", "<b>Good</b>: I knew it. It comes back in a day, then 3, 7, 14 and 30 days.", "<b>Easy</b>: I knew it at once. It skips a step and waits longer."] },
   { go: () => renderRead("1.1"), el: "#passage .line:nth-of-type(2)",
     h: "Reading", p: "Every lesson has a dialogue, a story and a short text. Tap any underlined word to see just that word: its pinyin and meaning, to hear it or flag it." },
   { el: "#rTrans", h: "The whole translation", p: "<b>Reveal translation</b> shows the pinyin and English of every sentence at once; tap it again to hide them. <b>Listen only</b> hides the text for a listening test." },
@@ -927,7 +930,7 @@ async function tourStep(i) {
   const el = await waitFor(s.el, s.wait || 4000);
   if (!tour || tour.i !== i) return;
   if (el) el.scrollIntoView({ block: "center", behavior: "instant" });
-  box.innerHTML = `<p class="tour-n">${i + 1} of ${TOUR.length}</p><h3>${s.h}</h3><p>${s.p}</p>${s.credit ? `<p class="tour-credit">${esc(s.credit)}</p>` : ""}
+  box.innerHTML = `<p class="tour-n">${i + 1} of ${TOUR.length}</p><h3>${s.h}</h3><p>${s.p}</p>${s.list ? `<ul class="tour-list">${s.list.map(x => `<li>${x}</li>`).join("")}</ul>` : ""}${s.credit ? `<p class="tour-credit">${esc(s.credit)}</p>` : ""}
     <div class="settings-row"><button class="btn primary" id="tourNext" type="button">${i + 1 < TOUR.length ? "Next" : "Finish"}</button>${i ? `<button class="btn" id="tourBack" type="button">Back</button>` : ""}<button class="btn quiet" id="tourEnd" type="button">End tour</button></div>`;
   $("#tourNext").onclick = () => i + 1 < TOUR.length ? tourStep(i + 1) : endTour();
   if (i) $("#tourBack").onclick = () => tourStep(i - 1);
