@@ -892,10 +892,10 @@ const TOUR = [
   { go: () => renderRead("1.1"), el: "#passage .line:nth-of-type(2)",
     h: "Reading", p: "Every lesson has a dialogue, a story and a short text. Tap any underlined word to see just that word: its pinyin and meaning, to hear it or flag it." },
   { el: "#rTrans", h: "The whole translation", p: "<b>Reveal translation</b> shows the pinyin and English of every sentence at once; tap it again to hide them. <b>Listen only</b> hides the text for a listening test." },
+  { go: () => go("home"), el: "#modeMy", h: "My words", p: "Words you add live here, as a lesson of their own: every study mode works on them. Add one by writing it, by pinyin or English, from a photo or by saying it; the next two steps show the last two." },
   { go: () => { addSample = "tour-photo.jpg"; renderMyAdd("photo"); }, el: "#phArea", wait: 15000,
     h: "Add words from a photo", p: "Here is a photo of handwriting. Drag over a few characters to select them, then press <b>Read the selected part</b>. It is read on this device (the first time loads the reader, about 30 MB), then you tap the words to add." },
-  { go: () => renderMyAdd("speech"), el: "#talk", h: "Or say it", p: "Tap, say a word or a whole sentence in Mandarin, and tap again. The words you said are listed to tap and add. Where the browser's recognition is not available, it runs on this device (about 77 MB, once)." },
-  { go: () => go("home"), el: "#modeMy", h: "My words", p: "Words you add live here, as a lesson of their own: every study mode works on them. That's the tour. Enjoy!" },
+  { go: () => renderMyAdd("speech"), el: "#talk", h: "Or say it", p: "Tap, say a word or a whole sentence in Mandarin, and tap again. The words you said are listed to tap and add. Where the browser's recognition is not available, it runs on this device (about 77 MB, once). That's the tour. Enjoy!" },
 ];
 let tour = null;
 function startTour() { endTour(true); tour = { i: -1 }; welcomed(); document.documentElement.classList.add("js"); tourStep(0); }
