@@ -140,6 +140,7 @@ h2 { font-size: var(--t-lg); }
   display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; column-gap: var(--s3); align-items: center; min-height: 76px;
 }
 .mode .glyph { font-family: var(--f-han); font-size: var(--t-xl); line-height: 1; color: var(--ink); grid-row: 1 / 3; }
+.mode .glyph .py { display: block; font-family: var(--f-ui); font-style: normal; font-size: var(--t-xs); line-height: 1.2; color: var(--muted); margin-top: var(--s1); }
 .mode b { font-size: var(--t-md); font-weight: 600; line-height: 1.2; }
 .mode small { color: var(--muted); font-size: var(--t-sm); grid-column: 2; }
 .mode .tag { grid-column: 3; grid-row: 1 / 3; }
@@ -788,14 +789,14 @@ function renderHome() {
     </section>
 
     <section class="modes" aria-label="Practice modes">
-      <button class="mode" id="modeLearn" type="button"><span class="glyph">学</span><b>Learn</b><small>Word list, flashcards, tracing, matching and tones.</small></button>
-      <button class="mode" id="modeWrite" type="button"><span class="glyph">写</span><b>Write</b><small>See the pinyin, write the characters.</small></button>
-      <button class="mode" id="modeDict" type="button"><span class="glyph">听写</span><b>Dictation</b><small>Hear a word, write it down.</small></button>
-      <button class="mode" id="modeTrans" type="button"><span class="glyph">译</span><b>Translation</b><small>English sentences, written in Chinese.</small></button>
-      <button class="mode" id="modeReview" type="button"><span class="glyph">复习</span><b>Review</b><small>Words due again, from every lesson.</small><span class="tag">${due ? `${due} due` : "Up to date"}</span></button>
-      <button class="mode" id="modeRead" type="button"><span class="glyph">读</span><b>Reading &amp; listening</b><small>A dialogue, a story and a text per lesson.</small></button>
-      <button class="mode" id="modeGrammar" type="button"><span class="glyph">语法</span><b>Grammar</b><small>Grammar points, then quizzes.</small></button>
-      <button class="mode" id="modeMy" type="button"><span class="glyph">我的</span><b>My words</b><small>${P.my.length ? `${plural(P.my.length, "word")} you added.` : "Add your own words to study."}</small></button>
+      <button class="mode" id="modeLearn" type="button"><span class="glyph">学<i class="py">xué</i></span><b>Learn</b><small>Word list, flashcards, tracing, matching and tones.</small></button>
+      <button class="mode" id="modeWrite" type="button"><span class="glyph">写<i class="py">xiě</i></span><b>Write</b><small>See the pinyin, write the characters.</small></button>
+      <button class="mode" id="modeDict" type="button"><span class="glyph">听写<i class="py">tīngxiě</i></span><b>Dictation</b><small>Hear a word, write it down.</small></button>
+      <button class="mode" id="modeTrans" type="button"><span class="glyph">译<i class="py">yì</i></span><b>Translation</b><small>English sentences, written in Chinese.</small></button>
+      <button class="mode" id="modeReview" type="button"><span class="glyph">复习<i class="py">fùxí</i></span><b>Review</b><small>Words due again, from every lesson.</small><span class="tag">${due ? `${due} due` : "Up to date"}</span></button>
+      <button class="mode" id="modeRead" type="button"><span class="glyph">读<i class="py">dú</i></span><b>Reading &amp; listening</b><small>A dialogue, a story and a text per lesson.</small></button>
+      <button class="mode" id="modeGrammar" type="button"><span class="glyph">语法<i class="py">yǔfǎ</i></span><b>Grammar</b><small>Grammar points, then quizzes.</small></button>
+      <button class="mode" id="modeMy" type="button"><span class="glyph">我的<i class="py">wǒ de</i></span><b>My words</b><small>${P.my.length ? `${plural(P.my.length, "word")} you added.` : "Add your own words to study."}</small></button>
     </section>
 
     <section class="view" style="padding-top:0;gap:12px">
@@ -884,6 +885,10 @@ const TOUR = [
     h: "Write in the boxes", p: "Each character gets its own 田字格 box. Write the word for the pinyin above with an Apple Pencil, a finger or a mouse. Try it now: nothing is marked until you press Check." },
   { el: "#dock", h: "Check, and fix", p: "<b>Undo stroke</b> and <b>Clear box</b> fix a slip. <b>Check</b> marks every stroke against the character's real stroke order: amber means right stroke, wrong order or direction; red means the wrong shape or place, with a note on what to fix. Press Check when you are ready." },
   { el: "#ctl", h: "When you are stuck", p: "<b>Hint</b> shows the outline for a moment, <b>Hear it</b> says the word, <b>Show answer</b> draws it. After Check, <b>Stroke order</b> animates the character and <b>It was right</b> overrules the marker. This round is practice: nothing here is scored." },
+  { go: () => startCards(lessonWords("1.1").slice(0, 3), "1.1", "Tutorial", true), el: "#flash",
+    h: "Flashcards", p: "Learn has flashcards: the front shows the characters (or the pinyin, the English or just the sound). Recall the word, then tap the card to flip it and see the answer." },
+  { go: () => { if (!$("#flash")) startCards(lessonWords("1.1").slice(0, 3), "1.1", "Tutorial", true); if (!$("#flash").classList.contains("flipped")) $("#flash").click(); }, el: "#rate",
+    h: "Rate how well you knew it", p: "Your rating sets when the card comes back. <b>Again</b>: you didn't know it; it returns this round. <b>Hard</b>: due tomorrow. <b>Good</b>: due later each time, from 1 day up to 30. <b>Easy</b>: later still. With a keyboard, Space flips and 1–4 rate." },
   { go: () => renderRead("1.1"), el: "#passage .line:nth-of-type(2)",
     h: "Reading", p: "Every lesson has a dialogue, a story and a short text. Tap any underlined word to see just that word: its pinyin and meaning, to hear it or flag it." },
   { el: "#rTrans", h: "The whole translation", p: "<b>Reveal translation</b> shows the pinyin and English of every sentence at once; tap it again to hide them. <b>Listen only</b> hides the text for a listening test." },
@@ -2126,8 +2131,8 @@ function renderCardSetup(lesson) {
   $("#cgo").onclick = () => startCards(shuffle(pool()), lesson);
 }
 // lesson is null for cards that aren't from one lesson (flagged words)
-function startCards(words, lesson, label = lessonName(lesson)) {
-  session = { kind: "cards", queue: words.slice(), total: words.length, done: 0, lesson, label, first: {}, again: 0 };
+function startCards(words, lesson, label = lessonName(lesson), tour = false) {
+  session = { kind: "cards", queue: words.slice(), total: words.length, done: 0, lesson, label, first: {}, again: 0, tour };
   route = "cards";
   showCard();
 }
@@ -2184,10 +2189,12 @@ function rateCard(w, r) {
   s.queue.shift();
   if (!(w.id in s.first)) {
     s.first[w.id] = r;
+    if (s.tour) { /* practice */ } else {
     // only the first rating of a round moves the review schedule
     grade(w.id, r === "again" ? "miss" : r === "hard" ? "close" : "good");
     if (r === "easy") { const x = P.w[w.id]; x.st = Math.min(x.st + 1, INTERVALS.length - 1); x.due = Date.now() + INTERVALS[x.st] * DAY; }
     save();
+    }
   }
   if (r === "again") { s.again++; s.queue.splice(Math.min(3, s.queue.length), 0, w); }
   else s.done++;
@@ -2196,7 +2203,7 @@ function rateCard(w, r) {
 function cardsDone() {
   const s = session; if (!s) return renderLearn();
   const f = Object.values(s.first), count = k => f.filter(x => x === k).length;
-  if (f.length) logHist("cards", s.label, f.length, count("good") + count("easy"));
+  if (f.length && !s.tour) logHist("cards", s.label, f.length, count("good") + count("easy"));
   route = "summary";
   const weak = Object.keys(s.first).filter(id => s.first[id] === "again" || s.first[id] === "hard").map(id => byId(id));
   main.innerHTML = `
