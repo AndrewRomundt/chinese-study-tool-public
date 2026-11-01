@@ -111,7 +111,6 @@ To fix a word's pinyin or hint, add an entry to `tools/overrides.py` keyed by it
 - **[CC-CEDICT](https://cc-cedict.org/)** again for My words: `app/dict.txt` and `app/t2s.txt` are derived from it and shared under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); the app credits it in Settings. `app/strokes/` and `app/hw.txt` come from hanzi-writer-data (Arphic Public License).
 - **[PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)** PP-OCRv4 models (Apache 2.0) and **[ONNX Runtime Web](https://github.com/microsoft/onnxruntime)** (MIT): reading photos, in `app/vendor/ppocr/` with their licences.
 - **[Whisper](https://github.com/openai/whisper)** by OpenAI (MIT) on **[Transformers.js](https://github.com/huggingface/transformers.js)** (Apache 2.0): speech, in `app/vendor/whisper/` with their licences.
-- **Tour photo** (`app/tour-photo.jpg`): [Chinese handwriting](https://commons.wikimedia.org/wiki/File:Chinese_handwriting.jpg) by Bdubbs09, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), via Wikimedia Commons; credited in the tour.
 - **[pypinyin](https://github.com/mozillazg/python-pinyin)** (MIT): pinyin for words not in CC-CEDICT and for the reading and translation texts.
 
 *Contemporary Chinese for Beginners* is named only to describe which course the lesson order follows; the title belongs to its publisher.
