@@ -792,7 +792,7 @@ function renderHome() {
       <button class="mode" id="modeLearn" type="button"><span class="glyph">学<i class="py">xué</i></span><b>Learn</b><small>Word list, flashcards, tracing, matching and tones.</small></button>
       <button class="mode" id="modeWrite" type="button"><span class="glyph">写<i class="py">xiě</i></span><b>Write</b><small>See the pinyin, write the characters.</small></button>
       <button class="mode" id="modeDict" type="button"><span class="glyph">听写<i class="py">tīngxiě</i></span><b>Dictation</b><small>Hear a word, write it down.</small></button>
-      <button class="mode" id="modeTrans" type="button"><span class="glyph">译<i class="py">yì</i></span><b>Translation</b><small>English sentences, written in Chinese.</small></button>
+      <button class="mode" id="modeTrans" type="button"><span class="glyph">翻译<i class="py">fānyì</i></span><b>Translation</b><small>English sentences, written in Chinese.</small></button>
       <button class="mode" id="modeReview" type="button"><span class="glyph">复习<i class="py">fùxí</i></span><b>Review</b><small>Words due again, from every lesson.</small><span class="tag">${due ? `${due} due` : "Up to date"}</span></button>
       <button class="mode" id="modeRead" type="button"><span class="glyph">读<i class="py">dú</i></span><b>Reading &amp; listening</b><small>A dialogue, a story and a text per lesson.</small></button>
       <button class="mode" id="modeGrammar" type="button"><span class="glyph">语法<i class="py">yǔfǎ</i></span><b>Grammar</b><small>Grammar points, then quizzes.</small></button>
@@ -1499,7 +1499,7 @@ function renderCard() {
   <div class="practice">
     <div class="ptop">
       <button class="iconbtn" id="quit" type="button">End</button>
-      <span class="ctx">${esc(s.label)}${s.trace ? (tracing ? ", step 1: trace over the outline" : ", step 2: now from memory") : dict ? ", 听写: listen and write" : drill ? ", copy it as often as you like" : tr ? ", 译: write it in Chinese" : s.label === lessonName(w.l) ? "" : ", from lesson " + esc(w.l)}</span>
+      <span class="ctx">${esc(s.label)}${s.trace ? (tracing ? ", step 1: trace over the outline" : ", step 2: now from memory") : dict ? ", 听写: listen and write" : drill ? ", copy it as often as you like" : tr ? ", 翻译: write it in Chinese" : s.label === lessonName(w.l) ? "" : ", from lesson " + esc(w.l)}</span>
       <div class="track"><i style="width:${100 * s.i / s.words.length}%"></i></div>
       <span class="count">${s.i + 1} / ${s.words.length}${drill ? `, ${s.reps} written` : ""}</span>
     </div>
@@ -1892,7 +1892,7 @@ function renderTranslate(lesson) {
   const items = trItems(lesson), right = it => P.tr[it.id] && P.tr[it.id].c > 0;
   main.innerHTML = `
   <div class="view">
-    <div><h2>English to Chinese</h2><div class="sub">Translation (译)</div></div>
+    <div><h2>English to Chinese</h2><div class="sub">Translation (翻译)</div></div>
     <section class="sheet">
       <div class="field"><label for="trSel">Lesson</label><select id="trSel">${lessonOptions(lesson, true)}</select></div>
       <div class="field"><span class="lbl">How many</span><div class="seg" id="segTr">
