@@ -250,6 +250,17 @@ select { font: inherit; padding: var(--s2) var(--s3); border-radius: 0; border: 
 .results { border-top: var(--rule-hair) solid var(--ink); }
 .results .row { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.4fr) auto; gap: var(--s3); padding: var(--s3) 0; align-items: center; border-bottom: var(--rule-hair) solid var(--line); }
 .results .han { font-family: var(--f-han); font-size: var(--t-lg); }
+.results.ref button.row { width: 100%; text-align: left; background: none; border: 0; border-bottom: var(--rule-hair) solid var(--line); }
+.results.ref .hz { font-family: var(--f-han); }
+/* the mark on the left, name over meaning, the example on the right, at every width */
+.results.ref .row { grid-template-columns: 56px minmax(0, 1fr) auto; row-gap: 0; }
+.results.ref .row > :first-child, .results.ref .row > :last-child { grid-row: 1 / 3; }
+.results.ref .row > :nth-child(2) { grid-column: 2; grid-row: 1; }
+.results.ref .row .muted { grid-column: 2; grid-row: 2; }
+.results.ref .row > :last-child { grid-column: 3; }
+.stk { width: 56px; height: 56px; }
+.stk path { fill: var(--line); }
+.stk path.on { fill: var(--grid); }
 .results .muted { color: var(--muted); font-size: var(--t-sm); min-width: 0; overflow-wrap: anywhere; }
 /* the round ends like a corrected copybook page: your own characters, red and amber marks included, in small 田字格 */
 .results .inkrow { grid-column: 1 / -1; display: flex; gap: var(--s2); flex-wrap: wrap; }
@@ -803,7 +814,7 @@ function renderHome() {
 
     <section class="view" style="padding-top:0;gap:12px">
       <div class="sechead"><h2>Lessons</h2><p>Tap a lesson to see its words. The green bar is words mastered.</p></div>
-      <p class="note">This demo has the first two lessons. The full app covers all 39 lessons of the course, 702 words. <button class="btn quiet" id="aboutDemo" type="button">About this demo</button> <button class="btn quiet" id="tourHome" type="button">Tutorial</button></p>
+      <p class="note">This demo has lesson 0 and the first two lessons. The full app covers lesson 0 and all 39 lessons of the course, 751 words. <button class="btn quiet" id="aboutDemo" type="button">About this demo</button> <button class="btn quiet" id="tourHome" type="button">Tutorial</button></p>
       <div class="lessons">${COURSE_LESSONS.map(l => {
         const s = lessonStats(l), pct = s.total ? Math.round(100 * s.mastered / s.total) : 0;
         return `<button class="lesson${l === cur ? " cur" : ""}" type="button" data-l="${l}">
@@ -854,7 +865,7 @@ function renderWelcome() {
     <section class="view welcome">
       <div class="sechead"><h2>This is a demo</h2></div>
       <ul class="note">
-        <li>It has <b>lessons 1.1 and 1.2 only</b>: 41 words with their reading passages, translation sentences and grammar. The full app covers all 39 lessons, 702 words.</li>
+        <li>It has <b>lesson 0 and lessons 1.1 and 1.2 only</b>: 90 words, with the reading passages, translation sentences and grammar of 1.1 and 1.2. The full app covers lesson 0 and all 39 lessons, 751 words.</li>
         <li>Every study mode works on those two lessons.</li>
         <li>Your progress is saved in this browser only. Nothing is sent anywhere.</li>
         <li>It works best on an iPad with an Apple Pencil. A finger or mouse works too.</li>
@@ -1892,12 +1903,13 @@ const trItems = l => (TRANS[l] || []).map(it => {
 });
 function renderTranslate(lesson) {
   route = "trsetup"; session = null;
+  if (!TRANS[lesson]) lesson = COURSE_LESSONS.find(l => TRANS[l]);
   const items = trItems(lesson), right = it => P.tr[it.id] && P.tr[it.id].c > 0;
   main.innerHTML = `
   <div class="view">
     <div><h2>English to Chinese</h2><div class="sub">Translation (翻译)</div></div>
     <section class="sheet">
-      <div class="field"><label for="trSel">Lesson</label><select id="trSel">${lessonOptions(lesson, true)}</select></div>
+      <div class="field"><label for="trSel">Lesson</label><select id="trSel">${COURSE_LESSONS.filter(l => TRANS[l]).map(l => `<option value="${l}"${l === lesson ? " selected" : ""}>${lessonName(l)}</option>`).join("")}</select></div>
       <div class="field"><span class="lbl">How many</span><div class="seg" id="segTr">
         <button type="button" data-v="10">10</button><button type="button" data-v="25">25</button><button type="button" data-v="0">All</button>
       </div></div>
@@ -1960,6 +1972,57 @@ function stageLabel(id) {
   return { cls: "learn", text: "Learning" }; // in progress is normal, not a warning
 }
 
+/* ---------------- Reference (lesson 0): radicals and strokes, with their names ---------------- */
+// [radical, name, pinyin, the character it comes from, meaning, an example]
+const RADICALS = [
+  ["亻", "单人旁", "dānrénpáng", "人", "person, man", "你"], ["彳", "双人旁", "shuāngrénpáng", "", "to pace", "行"], ["女", "女字旁", "nǚzìpáng", "女", "woman", "妈"],
+  ["氵", "三点水", "sāndiǎnshuǐ", "水", "water", "河"], ["木", "木字旁", "mùzìpáng", "木", "tree, wood", "林"], ["讠", "言字旁", "yánzìpáng", "言", "words, speech", "语"],
+  ["口", "口字旁", "kǒuzìpáng", "", "mouth", "吃"], ["饣", "食字旁", "shízìpáng", "食", "eat, food", "饭"], ["日", "日字旁", "rìzìpáng", "", "sun", "明"],
+  ["目", "目字旁", "mùzìpáng", "", "eye", "眼"], ["忄", "竖心旁", "shùxīnpáng", "心", "heart", "忙"], ["土", "提土旁", "títǔpáng", "土", "earth, soil", "地"],
+  ["扌", "提手旁", "tíshǒupáng", "手", "hand", "打"], ["阝", "左耳旁", "zuǒ'ěrpáng", "阜", "hill", "附"], ["阝", "右耳旁", "yòu'ěrpáng", "邑", "city", "都"],
+  ["子", "子字旁", "zǐzìpáng", "子", "son, child", "孩"], ["纟", "绞丝旁", "jiǎosīpáng", "丝", "silk", "红"], ["王", "王字旁", "wángzìpáng", "玉", "jade", "玩"],
+  ["车", "车字旁", "chēzìpáng", "车", "cart", "较"], ["火", "火字旁", "huǒzìpáng", "火", "fire", "灯"], ["钅", "金字旁", "jīnzìpáng", "金", "metal, gold", "钱"],
+  ["礻", "示字旁", "shìzìpáng", "示", "god", "视"], ["衤", "衣字旁", "yīzìpáng", "衣", "clothes", "裤"], ["⻊", "足字旁", "zúzìpáng", "足", "foot", "路"],
+  ["马", "马字旁", "mǎzìpáng", "马", "horse", "骑"], ["疒", "病字旁", "bìngzìpáng", "病", "sickness", "疼"], ["刂", "立刀", "lìdāo", "刀", "knife", "到"],
+  ["攵", "反文", "fǎnwén", "文", "culture", "教"], ["艹", "草字头", "cǎozìtóu", "", "grass", "茶"], ["⺮", "竹字头", "zhúzìtóu", "竹", "bamboo", "等"],
+  ["宀", "宝盖", "bǎogài", "", "roof", "家"], ["穴", "穴宝盖", "xuébǎogài", "", "cave", "空"], ["冖", "秃宝盖", "tūbǎogài", "", "to cover", "写"],
+  ["⺍", "学字头", "xuézìtóu", "", "", "学"], ["⺌", "尝字头", "chángzìtóu", "", "", "常"], ["灬", "四点底", "sìdiǎndǐ", "火", "fire", "点"],
+  ["心", "心字底", "xīnzìdǐ", "心", "heart", "您"], ["辶", "走之", "zǒuzhī", "走", "walk", "这"], ["囗", "口字框", "kǒuzìkuàng", "口", "enclosure", "国"],
+];
+// [name, pinyin, English, a character, which of its strokes (from 0)]
+const STROKE_NAMES = [
+  ["横", "héng", "horizontal", "一", 0], ["竖", "shù", "vertical", "十", 1], ["撇", "piě", "falling to the left", "人", 0], ["捺", "nà", "falling to the right", "人", 1],
+  ["点", "diǎn", "dot", "六", 0], ["提", "tí", "rising", "习", 2], ["横折", "héngzhé", "horizontal, then turn down", "口", 1], ["竖折", "shùzhé", "vertical, then turn right", "山", 1],
+  ["横撇", "héngpiě", "horizontal, then fall left", "又", 0], ["撇点", "piědiǎn", "fall left, then a dot", "女", 0], ["撇折", "piězhé", "fall left, then turn right", "么", 1],
+  ["竖提", "shùtí", "vertical, then rise", "以", 0], ["横钩", "hénggōu", "horizontal with a hook", "写", 1], ["竖钩", "shùgōu", "vertical with a hook", "小", 0],
+  ["弯钩", "wāngōu", "bending, with a hook", "子", 1], ["斜钩", "xiégōu", "slanting, with a hook", "我", 4], ["横折钩", "héngzhégōu", "horizontal, turn down, hook", "月", 1],
+  ["竖弯钩", "shùwāngōu", "vertical, bend right, hook", "七", 1], ["横折弯钩", "héngzhéwāngōu", "horizontal, turn, bend, hook", "九", 1], ["竖折折钩", "shùzhézhégōu", "vertical, turn, turn, hook", "马", 1],
+];
+// the character with one stroke inked and the rest faint
+const strokeSvg = (c, k) => `<svg class="stk" viewBox="0 0 1024 1024" aria-hidden="true"><g transform="translate(0, 900) scale(1, -1)">${(STROKES[c] ? STROKES[c].strokes : []).map((d, i) => `<path d="${d}"${i === k ? ' class="on"' : ""}/>`).join("")}</g></svg>`;
+function refPage(title, sub, intro, rows) {
+  main.innerHTML = `
+  <div class="view">
+    <div class="sechead"><div><h2>${title}</h2><div class="sub">${sub}</div></div></div>
+    <p class="note">${intro}</p>
+    <div class="results ref">${rows}</div>
+    <div class="settings-row"><button class="btn" id="back" type="button">Back</button></div>
+  </div>`;
+  main.querySelectorAll("[data-say]").forEach(b => b.onclick = () => speak(b.dataset.say));
+  $("#back").onclick = () => renderLearn();
+  window.scrollTo(0, 0);
+}
+function renderRadicals() {
+  route = "radicals"; session = null;
+  refPage("Names of some common radicals", "部首 bùshǒu, Learn mode", "A radical is the part of a character that hints at its meaning or sound, and each has a name. Tap a row to hear the name.",
+    RADICALS.map(([r, zh, py, full, en, ex]) => `<button type="button" class="row" data-say="${zh}"><span class="han">${r}</span><span><span class="hz">${zh}</span> ${py}</span><span class="muted">${full ? `<span class="hz">${full}</span> ` : ""}${en}</span><span class="han">${ex}</span></button>`).join(""));
+}
+function renderStrokes() {
+  route = "strokes"; session = null;
+  refPage("The basic strokes", "笔画 bǐhuà, Learn mode", "Every character is built from these strokes. Each is shown in red inside a character. Tap a row to hear its name.",
+    STROKE_NAMES.map(([zh, py, en, c, k]) => `<button type="button" class="row" data-say="${zh}">${strokeSvg(c, k)}<span><span class="hz">${zh}</span> ${py}</span><span class="muted">${en}</span><span class="han">${c}</span></button>`).join(""));
+}
+
 function renderLearn(lesson) {
   route = "learn"; session = null;
   learnLesson = lesson || learnLesson || P.cur;
@@ -1977,6 +2040,8 @@ function renderLearn(lesson) {
       <button class="mode" type="button" data-t="match"><span class="glyph">配</span><b>Match game</b><small>Pair characters with their meaning or pinyin, against the clock.</small></button>
       <button class="mode" type="button" data-t="tones"><span class="glyph">声</span><b>Tone trainer</b><small>Hear the word and pick the tone of each syllable.</small></button>
       <button class="mode" type="button" data-t="drill"><span class="glyph">练</span><b>Practise words</b><small>Pick words from any lessons and write each one again and again.</small></button>
+      <button class="mode" type="button" data-t="radicals"><span class="glyph">部首</span><b>Radicals</b><small>Names of common radicals, what each means, and a character with it.</small></button>
+      <button class="mode" type="button" data-t="strokes"><span class="glyph">笔画</span><b>Strokes</b><small>The basic strokes and their names, each shown in a character.</small></button>
       <button class="mode" type="button" data-t="flagged"><span class="glyph">旗</span><b>Flagged words</b><small>${flaggedWords().length ? `${flaggedWords().length} flagged word${flaggedWords().length === 1 ? "" : "s"}. Practise them with flashcards or Write mode, or unflag them.` : "None yet. Flag a word from the word list, a flashcard or a reading passage."}</small></button>
     </section>
     <div class="settings-row"><button class="btn" id="back" type="button">Back</button></div>
@@ -1992,6 +2057,8 @@ function renderLearn(lesson) {
     if (t === "tones") startTones(learnLesson);
     if (t === "drill") renderPicker(learnLesson);
     if (t === "flagged") renderFlagged();
+    if (t === "radicals") renderRadicals();
+    if (t === "strokes") renderStrokes();
   });
   window.scrollTo(0, 0);
 }

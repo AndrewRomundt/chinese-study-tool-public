@@ -2,7 +2,7 @@
 
 Zìtiè is a study tool for English speakers learning Mandarin, built for an **iPad with an Apple Pencil** in Safari. You write every answer by hand, and the app marks your strokes against each character's real stroke order. It follows the lesson sequence of the textbook *Contemporary Chinese for Beginners* (simplified characters only). The full app covers 702 words over 39 lessons.
 
-**This repository is a demo:** it includes only lessons 1.1 and 1.2 (41 words, with their reading passages, translation exercises and grammar). Every study mode works on those two lessons.
+**This repository is a demo:** it includes only lesson 0 (the characters of the book's first pages, 0.1 to 0.5) and lessons 1.1 and 1.2: 90 words, with the reading passages, translation exercises and grammar of 1.1 and 1.2. Learn also has two reference pages, Radicals (names of common radicals) and Strokes (the basic strokes, each drawn in a character).
 
 **Live demo:** https://andrewromundt.github.io/chinese-study-tool-public/ (progress is saved in your browser)
 

@@ -15,9 +15,9 @@ cp -r app/exercises app/fonts app/vendor app/strokes dist/
     '<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f3f6f4"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111a1c">' \
     '<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png">' \
     '<title>Zìtiè: handwriting-first Chinese trainer (demo)</title>' \
-    '<meta name="description" content="Write Chinese characters by hand on an iPad and have every stroke marked. A demo of lessons 1.1 and 1.2, following Contemporary Chinese for Beginners.">' \
+    '<meta name="description" content="Write Chinese characters by hand on an iPad and have every stroke marked. A demo of lessons 0, 1.1 and 1.2, following Contemporary Chinese for Beginners.">' \
     '<meta property="og:type" content="website"><meta property="og:title" content="Zìtiè: handwriting-first Chinese trainer">' \
-    '<meta property="og:description" content="Write Chinese characters by hand on an iPad and have every stroke marked. Demo of lessons 1.1 and 1.2.">' \
+    '<meta property="og:description" content="Write Chinese characters by hand on an iPad and have every stroke marked. Demo of lessons 0, 1.1 and 1.2.">' \
     '<meta property="og:url" content="https://andrewromundt.github.io/chinese-study-tool-public/"><meta property="og:image" content="https://andrewromundt.github.io/chinese-study-tool-public/og.png">' \
     '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">' \
     '</head><body>'
