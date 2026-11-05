@@ -3174,7 +3174,7 @@ async function boot() {
     return;
   }
   const num = l => l.split(".").map(Number);
-  COURSE_LESSONS = [...new Set(COURSE.map(w => w.l))].sort((a, b) => { const [a1, a2] = num(a), [b1, b2] = num(b); return a1 - b1 || a2 - b2; });
+  COURSE_LESSONS = [...new Set(COURSE.map(w => w.l))].sort((a, b) => { const [a1, a2] = num(a), [b1, b2] = num(b); return a1 - b1 || (a2 || 0) - (b2 || 0); });
   setWords();
   await ensureStrokes(myChars()).catch(() => {}); // My words outside the course need their stroke data before you write them
   if (typeof HanziWriter === "undefined") {
