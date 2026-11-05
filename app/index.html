@@ -996,7 +996,7 @@ function renderReview() {
 
 /* ---------------- Setup ---------------- */
 // a class 听写 covers the whole lesson, so Dictation keeps its own count and starts at All
-const setup = { scope: "this", count: 10, dcount: 0, order: "shuffle", clue: "sound" };
+const setup = { scope: "this", count: 10, dcount: 0, order: "shuffle", clue: "sound", picked: [] }; // picked: the lessons of "Choose lessons"
 // kind "write" shows pinyin; kind "dict" (听写) plays the word and hides the pinyin
 function renderSetup(lesson, kind = "write") {
   route = "setup";
@@ -1011,7 +1011,9 @@ function renderSetup(lesson, kind = "write") {
         <button type="button" data-v="this">This lesson only</button>
         <button type="button" data-v="upto">All lessons up to this one</button>
         <button type="button" data-v="weak">Not yet mastered (up to this one)</button>
+        <button type="button" data-v="pick">Choose lessons</button>
       </div></div>
+      <div class="field" id="pickField"><span class="lbl">Lessons to include</span><div class="seg" id="segPick">${LESSONS.map(l => `<button type="button" data-v="${l}">${l === MY ? "My words" : l}</button>`).join("")}</div></div>
       <div class="field"><span class="lbl">How many</span><div class="seg" id="segCount">
         <button type="button" data-v="10">10</button><button type="button" data-v="20">20</button><button type="button" data-v="0">All</button>
       </div></div>
@@ -1035,11 +1037,20 @@ function renderSetup(lesson, kind = "write") {
     paint();
   };
   const pick = () => buildPool(sel.value).filter(w => !dict || dictable(w));
+  setup.picked = setup.picked.filter(l => LESSONS.includes(l));
+  if (!setup.picked.length) setup.picked = [lesson];
+  $("#segPick").querySelectorAll("button").forEach(b => b.onclick = () => {
+    const l = b.dataset.v, k = setup.picked.indexOf(l);
+    if (k >= 0) setup.picked.splice(k, 1); else setup.picked.push(l);
+    note();
+  });
   const note = () => {
-    const pool = pick();
+    const pool = pick(), choosing = setup.scope === "pick";
+    $("#pickField").hidden = !choosing;
+    $("#segPick").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(setup.picked.includes(b.dataset.v))));
     $("#poolNote").textContent = pool.length
       ? `${pool.length} word${pool.length === 1 ? "" : "s"} available, ${pool.reduce((a, w) => a + w.t.length, 0)} characters.`
-      : "Nothing to practise here: every word up to this lesson is mastered.";
+      : choosing && !setup.picked.length ? "Choose at least one lesson." : "Nothing to practise here: every word up to this lesson is mastered.";
     $("#go").disabled = !pool.length;
     const isCur = sel.value === P.cur;
     $("#setCur").textContent = isCur ? "This is your current lesson" : `Make ${sel.value} my current lesson`;
@@ -1057,7 +1068,9 @@ function renderSetup(lesson, kind = "write") {
     if (setup.order === "shuffle") pool = shuffle(pool);
     const count = dict ? setup.dcount : setup.count;
     if (count) pool = pool.slice(0, count);
-    startWrite(pool, lessonName(sel.value), dict ? { dict: true, clue: setup.clue } : {});
+    const ls = LESSONS.filter(l => setup.picked.includes(l));
+    const label = setup.scope !== "pick" ? lessonName(sel.value) : ls.length === 1 ? lessonName(ls[0]) : ls.length <= 3 ? "Lessons " + ls.map(l => l === MY ? "My words" : l).join(", ") : ls.length + " lessons";
+    startWrite(pool, label, dict ? { dict: true, clue: setup.clue } : {});
   };
   note();
 }
@@ -1067,7 +1080,10 @@ function buildPool(lesson) {
   const seen = new Set();
   let ws;
   if (setup.scope === "this") ws = byLesson[lesson].slice();
+  else if (setup.scope === "pick") ws = WORDS.filter(w => setup.picked.includes(w.l));
   else ws = WORDS.filter(w => lessonIndex(w.l) <= li);
+  // book order is lesson order (lesson 0 sits at the end of words.json); sort is stable, so the words of a lesson keep theirs
+  ws.sort((a, b) => lessonIndex(a.l) - lessonIndex(b.l));
   if (setup.scope === "weak") ws = ws.filter(w => !mastered(w.id));
   // the course repeats some words across lessons; keep the first copy of each character string
   return ws.filter(w => !seen.has(w.t) && seen.add(w.t));
