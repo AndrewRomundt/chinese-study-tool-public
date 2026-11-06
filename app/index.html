@@ -349,7 +349,7 @@ select { font: inherit; padding: var(--s2) var(--s3); border-radius: 0; border: 
 .wpop .han { font-family: var(--f-han); font-size: 32px; }
 #wpClose { min-width: 44px; }
 .wpop-txt { display: flex; flex-direction: column; flex: 1; min-width: 140px; }
-#fcFlag[aria-pressed="true"], #wpFlag[aria-pressed="true"], .wflag[aria-pressed="true"] { color: var(--warn); border-color: var(--warn); }
+#fcFlag[aria-pressed="true"], #wFlag[aria-pressed="true"], #wpFlag[aria-pressed="true"], .wflag[aria-pressed="true"] { color: var(--warn); border-color: var(--warn); }
 .wline { display: flex; align-items: center; gap: var(--s2); }
 .wline .whead { flex: 1; min-width: 0; }
 .wflag { min-height: 44px; padding: var(--s1) var(--s3); white-space: nowrap; }
@@ -1532,6 +1532,7 @@ function renderCard() {
       <span class="ctx">${esc(s.label)}${s.trace ? (tracing ? ", step 1: trace over the outline" : ", step 2: now from memory") : dict ? ", 听写: listen and write" : drill ? ", copy it as often as you like" : tr ? ", 翻译: write it in Chinese" : s.label === lessonName(w.l) ? "" : ", from lesson " + esc(w.l)}</span>
       <div class="track"><i style="width:${100 * s.i / s.words.length}%"></i></div>
       <span class="count">${s.i + 1} / ${s.words.length}${drill ? `, ${s.reps} written` : ""}</span>
+      ${tr ? "" : `<button class="iconbtn" id="wFlag" type="button"></button>`}
     </div>
     <div class="prompt">
       ${drill ? `<div class="fc-han small" id="drillWord"${drillHide ? " hidden" : ""}>${esc(w.d)}</div><button class="btn" id="hideBtn" type="button">${drillHide ? "Show the word" : "Hide the word"}</button>` : ""}
@@ -1575,6 +1576,7 @@ function renderCard() {
     $("#slowBtn").onclick = () => speak(w.t, 0.5);
     speak(w.t); // runs inside the tap that opened this card, so iPad Safari allows it
   } else if (!tr) $("#hearBtn").onclick = () => speak(w.t);
+  if (!tr) wireFlag($("#wFlag"), w); // translation sentences aren't course words, so they can't be flagged
 
   const st = { ink: Array.from({ length: n }, () => []), order: [], hints: 0, revealed: false, done: false, marks: null, writers: [], models: [] };
   s.cur = st;
