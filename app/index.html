@@ -1719,7 +1719,8 @@ function renderCard() {
     const markBox = (k, c) => seen.get(k + c) || seen.set(k + c, ink[k].length ? Mark.character(ink[k], STROKES[c], mode, size) : { marks: [], good: 0, expected: STROKES[c].medians.length, drawn: 0, correct: false }).get(k + c);
     let best = null;
     for (const a of answersFor(st.ink.length)) {
-      const marks = [...a].map((c, k) => markBox(k, c)), good = marks.reduce((x, m) => x + m.good, 0);
+      // a missing or extra stroke counts against an answer, so a 你 is never marked as 您 with 4 strokes short
+      const marks = [...a].map((c, k) => markBox(k, c)), good = marks.reduce((x, m) => x + m.good - Math.abs(m.expected - m.drawn), 0);
       if (!best || good > best.good) best = { a, marks, good };
     }
     st.answer = best.a; st.marks = best.marks;
