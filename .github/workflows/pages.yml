@@ -7,6 +7,11 @@ permissions:
   contents: read
   pages: write
   id-token: write
+# one deploy at a time: a push right after another waits for it instead of both deploying at once
+# (a failed run can't be re-run: the re-run uploads a second artifact and deploy-pages refuses; push again instead)
+concurrency:
+  group: pages
+  cancel-in-progress: false
 jobs:
   deploy:
     runs-on: ubuntu-latest
