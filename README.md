@@ -102,6 +102,10 @@ After adding lessons or UI text, rerun `python3 tools/subset_fonts.py` (needs `p
 
 To fix a word's pinyin or hint, add an entry to `tools/overrides.py` keyed by its id. After editing `app/lessons.json`, run `node tests/lessons-check.js`. `deno run --allow-read tests/sim.mjs` (or `node tests/sim.mjs`) checks marking on every character; `tests/sim.mjs 你叫` breaks one down by stroke. `node tests/recog.mjs` writes every character in seven styles (neat to messy, finger, strokes swapped, strokes run together, parts moved) and reports how often the recogniser ranks it first and in the top 5. `node tests/photo.mjs` (needs `npm i puppeteer-core` and Chrome) runs the photo reader on real photos of handwritten Chinese from Wikimedia Commons, listed in `tests/photos.json` and downloaded on the first run (not kept in the repo). The My words data is rebuilt with `node tools/mywords_data.mjs <cedict.txt> <hanzi-writer-data package folder>`.
 
+## Privacy
+
+The demo has no server, analytics, trackers or cookies. Your progress, flagged words, My words and settings stay in your browser's local storage, and photos are read on your device (PaddleOCR in the browser). The one exception is **Say it**: where the browser has its own speech recognition, the app uses it, and that sends what you say to the browser's maker (Google in Chrome, Apple in Safari); otherwise speech is recognised on your device with Whisper. GitHub Pages, which hosts the demo, keeps visitors' IP addresses in its logs under [GitHub's privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).
+
 ## Credits and licenses
 
 - **Code and original content** (app, exercises, reading texts, grammar notes, tools, tests): MIT, see [LICENSE](LICENSE).
