@@ -1587,7 +1587,7 @@ function renderCard() {
   const writerFor = (k, c, show) => {
     const wr = HanziWriter.create("hw" + k, c, {
       width: size, height: size, padding: pad, showCharacter: show, showOutline: tracing,
-      strokeColor: C.jade, outlineColor: "rgba(127,127,127,.28)", renderer: "svg", charDataLoader: loader,
+      strokeColor: C.jade, outlineColor: OUTLINE, renderer: "svg", charDataLoader: loader,
     });
     // a viewBox lets the model and outline scale with the box if it shrinks
     const svg = $("#hw" + k + " svg");
@@ -1794,7 +1794,7 @@ function renderCard() {
       const m = st.marks[k], col = b.parentElement, note = col.querySelector(".mnote");
       if (!revealed) b.classList.add(m.correct ? "done" : "wrongbox"); // a shown answer is a study aid, not a mistake
       col.querySelector(".model").hidden = revealed; // a shown answer is already in the boxes; no second copy underneath
-      st.modelFor = (k, ms) => { $("#mw" + k).innerHTML = ""; st.models[k] = HanziWriter.create("mw" + k, [...st.answer][k], { width: ms, height: ms, padding: 3, strokeColor: C.ink, renderer: "svg", charDataLoader: loader, strokeAnimationSpeed: 1.4, delayBetweenStrokes: 150 }); };
+      st.modelFor = (k, ms) => { $("#mw" + k).innerHTML = ""; st.models[k] = HanziWriter.create("mw" + k, [...st.answer][k], { width: ms, height: ms, padding: 3, strokeColor: C.ink, outlineColor: OUTLINE, renderer: "svg", charDataLoader: loader, strokeAnimationSpeed: 1.4, delayBetweenStrokes: 150 }); };
       st.modelFor(k, ms); st.ms = ms;
       const msgs = [];
       if (m.correct) msgs.push("All strokes right");
@@ -1868,7 +1868,14 @@ function renderCard() {
     }
     if (drill) $("#drillNext").onclick = () => { s.reps = 0; s.i++; if (s.i < s.words.length) renderCard(); else renderPicker(s.lesson); };
     // plays in the small model under each box, or in the box itself where the answer was shown there
-    $("#animBtn").onclick = async () => { for (const [k, m] of st.models.entries()) await (boxes[k].parentElement.querySelector(".model").hidden && st.writers[k] ? st.writers[k] : m).animateCharacter(); };
+    // a second tap starts over from the first character: what is still playing stops and shows whole
+    let play = 0;
+    $("#animBtn").onclick = async () => {
+      const run = ++play;
+      const shown = [...st.models.entries()].map(([k, m]) => boxes[k].parentElement.querySelector(".model").hidden && st.writers[k] ? st.writers[k] : m);
+      shown.forEach(wr => wr.showCharacter());
+      for (const wr of shown) { if (run !== play) return; await wr.animateCharacter(); }
+    };
     if (!drill) $("#againBtn").onclick = () => practiseAgain();
     $("#nextBtn").onclick = goNext;
     $("#nextBtn").focus({ preventScroll: true });
@@ -1979,6 +1986,9 @@ let learnLesson = null;
 function uniqueWords(list) { const seen = new Set(); return list.filter(w => !seen.has(w.t) && seen.add(w.t)); }
 function lessonWords(l) { return uniqueWords(byLesson[l] || []); }
 function lessonOptions(sel, courseOnly) { return (courseOnly ? COURSE_LESSONS : LESSONS).map(l => `<option value="${l}"${l === sel ? " selected" : ""}>${lessonName(l)}</option>`).join(""); }
+// Hanzi Writer's default outline is #DDD, which is nearly the ink colour in dark mode, so the stroke-order
+// animation seemed not to play: the whole character stayed on screen. A faint grey reads on either paper.
+const OUTLINE = "rgba(127,127,127,.28)";
 function charLoader(ch, onLoad, onErr) { return STROKES[ch] ? onLoad(STROKES[ch]) : onErr(new Error("no data for " + ch)); }
 function themeColors() {
   const css = getComputedStyle(document.documentElement), tok = (k, d) => css.getPropertyValue(k).trim() || d;
@@ -2127,7 +2137,7 @@ function renderWordList(lesson, from = "learn") {
         ${w.pos ? `<span class="note">Part of speech: ${esc(w.pos)}</span>` : ""}<span class="note">${esc(lessonName(w.l))}</span></div>
         ${relU.length ? `<div><div class="lbl">Course words that share a character</div><div class="related">${relU.map(o => `<span class="rel"><span class="han">${esc(o.d)}</span> ${esc(o.p)}, ${esc(o.h)} <em>${esc(o.l)}</em></span>`).join("")}</div></div>` : ""}`;
       const writers = [...w.t].map((c, k) => HanziWriter.create(`an${w.id}_${k}`, c, {
-        width: 120, height: 120, padding: 6, strokeColor: C.ink, radicalColor: C.jade, renderer: "svg",
+        width: 120, height: 120, padding: 6, strokeColor: C.ink, radicalColor: C.jade, outlineColor: OUTLINE, renderer: "svg",
         charDataLoader: charLoader, strokeAnimationSpeed: 1.2, delayBetweenStrokes: 180,
       }));
       const play = async () => { for (const wr of writers) await wr.animateCharacter(); };
@@ -2262,7 +2272,7 @@ function showCard() {
     // fits the card: its width less padding and the gaps between tiles, so a four-character word never spills out
     const inner = Math.min(560, main.clientWidth - 32) - 52, size = Math.min(130, Math.floor((inner - (w.t.length - 1) * 10) / w.t.length));
     // flipped many times a session, so the back shows the characters still; the word list has Replay strokes
-    [...w.t].forEach((c, k) => HanziWriter.create("fa" + k, c, { width: size, height: size, padding: 4, strokeColor: C.ink, renderer: "svg", charDataLoader: charLoader, strokeAnimationSpeed: 1.5, delayBetweenStrokes: 120 }));
+    [...w.t].forEach((c, k) => HanziWriter.create("fa" + k, c, { width: size, height: size, padding: 4, strokeColor: C.ink, outlineColor: OUTLINE, renderer: "svg", charDataLoader: charLoader, strokeAnimationSpeed: 1.5, delayBetweenStrokes: 120 }));
     speak(w.t);
     $("#rate").innerHTML = `
       <button class="btn rate-again" data-r="again" type="button">Again</button>
